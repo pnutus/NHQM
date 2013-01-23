@@ -1,6 +1,4 @@
-import numpy as np
-import scipy
-import matplotlib.pyplot as plt
+from imports import *
 from scipy.interpolate import interpolate
 
 def numerov(f, start, stop, dx, first, second):

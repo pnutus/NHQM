@@ -1,7 +1,8 @@
+from imports import *
 from math import *
-import matplotlib.pyplot as plt
-import numpy as np
 import sympy
+import scipy.integrate
+from sympy.physics.sho import R_nl
 
 @np.vectorize
 def V(r, l, s):
