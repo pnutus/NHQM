@@ -24,7 +24,7 @@ def Kdelta(x, y):
     return x == y
 
 @sp.vectorize
-def hamiltonian(n, n_prim, l, s, eps):
+def H_element(n, n_prim, l, s, eps):
     """Returns matrix element of the Hamiltonian"""
     #n' => m; n => n
     # http://docs.sympy.org/0.7.2/modules/physics/sho.html
@@ -41,29 +41,35 @@ def hamiltonian(n, n_prim, l, s, eps):
 
 @sp.vectorize
 def ground_energy(omega):
-    return hamiltonian(0, 0, 0, .5, omega)
+    return H_element(0, 0, 0, .5, omega)
 
+# Plots the ground energy as a function of the frequency parameter
 # x = sp.linspace(0,2)
 # plt.plot(x, ground_energy(x))
 # plt.show()
 
+# Varies the frequency to minimize the ground energy
 # res = optimize.minimize_scalar(ground_energy, bounds=(0, 2), method='bounded')
-# print res.x
+# print res.x # 0.752252778064
 
+minomega = 0.752252778064
 
-minomega = 0.141471649968
-# 
-# print hamiltonian(0, 0, 0, .5, res.x)
+def hamiltonian(n):
+    """Calculates the n x n hamiltonian matrix."""
+    n = 10
+    H = sp.zeros((n,n))
+    for i in range(n):
+        for j in range(i+1):
+            H[i, j] = H[j, i] = H_element(i, j, 0, .5, minomega)
+    return H
 
-n = 10
-H = sp.zeros((n,n))
-
-for i in range(n):
-    for j in range(i+1):
-        H[i, j] = H[j, i] = hamiltonian(i, j, 0, .5, 0.752252778064)
-
+# Diagonalize
+H = hamiltonian(3)
 energies = linalg.eigvals(H)
 print H
 print energies
 
+# Save to file
 sp.savetxt("matris.txt",H)
+
+# Profit???
