@@ -49,27 +49,24 @@ def ground_energy(omega):
 # plt.show()
 
 # Varies the frequency to minimize the ground energy
-# res = optimize.minimize_scalar(ground_energy, bounds=(0, 2), method='bounded')
-# print res.x # 0.752252778064
-
-minomega = 0.752252778064
+res = optimize.minimize_scalar(ground_energy, bounds=(0, 2), method='bounded')
+print res.x 
 
 def hamiltonian(n):
     """Calculates the n x n hamiltonian matrix."""
-    n = 10
     H = sp.zeros((n,n))
     for i in range(n):
         for j in range(i+1):
-            H[i, j] = H[j, i] = H_element(i, j, 0, .5, minomega)
+            H[i, j] = H[j, i] = H_element(i, j, 0, .5, res.x)
     return H
 
 # Diagonalize
-H = hamiltonian(3)
-energies = linalg.eigvals(H)
+H = hamiltonian(5)
+energies = linalg.eigh(H, eigvals_only = True)
 print H
 print energies
 
 # Save to file
-sp.savetxt("matris.txt",H)
+sp.savetxt("matris.txt", H)
 
 # Profit???
