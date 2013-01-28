@@ -17,10 +17,10 @@ def numerov(f, start, stop, dx, first, second):
         psi[i] = q1/(1 - dx2*f1/12)
     return interpolate.interp1d(x, psi)
        
-fun = numerov(lambda x: -1, 0, 10, 0.01, 0, 0.001)
-
-x = np.arange(0,10,0.01)
-y = fun(x)
-
-plt.plot(x,y)
-plt.show()
+# fun = numerov(lambda x: -1, 0, 10, 0.01, 0, 0.001)
+# 
+# x = np.arange(0,10,0.01)
+# y = fun(x)
+# 
+# plt.plot(x,y)
+# plt.show()
