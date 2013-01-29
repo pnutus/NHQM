@@ -2,7 +2,7 @@ from imports import *
 from scipy.interpolate import interpolate
 
 def numerov(f, start, stop, dx, first, second):
-    x = np.arange(start, stop, dx)
+    x = np.linspace(start, stop, abs(start - stop)/dx )
     psi = np.empty(len(x))
     dx2 = dx**2
     f1 = f(start)
@@ -15,12 +15,16 @@ def numerov(f, start, stop, dx, first, second):
         q2 = 2*q1 - q0 + dx2*f1*psi[i-1]
         q0, q1 = q1, q2
         psi[i] = q1/(1 - dx2*f1/12)
+
     return interpolate.interp1d(x, psi)
        
-# fun = numerov(lambda x: -1, 0, 10, 0.01, 0, 0.001)
+# def V(r):
+#     return - 1. / r
+#        
+# sol = numerov(lambda r: -1, 1e-10, 100, 0.01, 0, 1)
 # 
-# x = np.arange(0,10,0.01)
-# y = fun(x)
+# x = np.arange(1e-10,100,0.01)
+# y = sol(x)
 # 
 # plt.plot(x,y)
 # plt.show()
