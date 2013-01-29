@@ -16,6 +16,9 @@ Steps:
 5. Use these to calculate more matrix elements of H.
 """
 
+k, l, nu, r = sym.var('k, l, nu, r')
+print R_nl(k, l, nu, r)
+
 @sp.vectorize
 def V(r):
     return - 1 / r
@@ -30,11 +33,11 @@ def H_element(n, n_prim, l, s, eps):
     # http://docs.sympy.org/0.7.2/modules/physics/sho.html
     rsq = eps**2 * .5 * ( \
         sp.sqrt(n * (n + l + .5)) * Kdelta(n_prim, n - 1) + \
-        2.*(2*n + l + 1.5) * Kdelta(n_prim, n) + \
+        (2*n + l + 1.5) * Kdelta(n_prim, n) + \
         sp.sqrt( (n + 1) * (n + l + 1.5) ) * Kdelta(n_prim, n + 1) \
         )
     def integrand(r):
-        return R_nl(n_prim, l, 1, r) * V(r) * R_nl(n, l, 1, r) * r**2.
+        return R_nl(n_prim, l, .5, r) * V(r) * R_nl(n, l, .5, r) * r**2.
     
     (integral, _) = integrate.quad(integrand, 0, sp.inf)
     return rsq + sp.sqrt(2) * eps * integral
@@ -70,3 +73,4 @@ print energies
 sp.savetxt("matris.txt", H)
 
 # Profit???
+
