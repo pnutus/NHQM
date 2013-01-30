@@ -3,10 +3,7 @@ import HO_basis
 
 @sp.vectorize
 def V(r, l, s):
-    return - 1 / r
+    return - 1. / r
 
-print HO_basis.energies(30, V)
-
-# Save to file
-# sp.savetxt("matris3.txt", H)
-
+H = HO_basis.hamiltonian(V, 10, verbose=True)
+print HO_basis.energies(H)

@@ -32,7 +32,7 @@ def optimized_eps(V):
     res = optimize.minimize_scalar(ground_energy, bounds=(0, 10), method='bounded')
     return float(res.x) # 1.06384608107
 
-def hamiltonian(N, V, verbose=False):
+def hamiltonian(V, N, verbose=False):
     """Calculates the N x N hamiltonian matrix."""
     eps = optimized_eps(V)
     H = sp.zeros((N, N))
@@ -43,10 +43,9 @@ def hamiltonian(N, V, verbose=False):
             H[i, j] = H[j, i] = H_element(i, j, 0, .5, eps, V)
     return H
 
-def energies(N = 1, V = lambda x: 0, H=False, verbose=False):
-    """Calculates energies from the hamiltonian matrix."""
-    if H:
-        return linalg.eigh(H, eigvals_only = True)
-    else:
-        return linalg.eigh(hamiltonian(N, V, verbose), eigvals_only = True)
-
+def energies(H):
+    return linalg.eigh(H, eigvals_only = True)
+    
+def ground_state_wavefunction(H):
+    """docstring for ground_state_wavefunction"""
+    pass
