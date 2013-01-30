@@ -8,12 +8,10 @@ def V(r, l, s):
     Vso = -7.5 # MeV
     r0 = 2. # fm
     d = .65 # fm
-    g = e**((r - r0)/d)
-    f = 1/(1 + g)
-    df = 
+    f = 1/(1 + sp.e**((r - r0)/d))
     j = l + s
     spin_orbit = .5 * ( j*(j + 1) - l*(l + 1) - s*(s + 1) )
-    return f * (V0 - 4 * Vso * spin_orbit / (d * r))
+    return f * (V0 - 4 * Vso * spin_orbit * (f - 1) / (d * r))
 
 # x = sp.linspace(1e-16, 5e-15, 100)
 # plt.plot(x, V(x, 1, .5), 'r', x, V(x, 0, .5), 'k')
