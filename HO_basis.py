@@ -27,11 +27,11 @@ def H_element2(n, n_prim, l, s, omega, V):
     m = 1
     result = 0
     if n == n_prim:
-        result += omega * (2*n + l + 1.5)
+        result += omega / 2. * (2*n + l + 1.5)
     elif n_prim == (n - 1):
-        result += m * omega**2 / 4 * sp.sqrt( n*(n + l + .5) )
+        result += m * omega / 2. * sp.sqrt( n*(n + l + .5) )
     elif n_prim == (n + 1):
-        result += m * omega**2 / 4 * sp.sqrt( (n + 1)*(n + l + 1.5) )
+        result += m * omega / 2. * sp.sqrt( (n + 1)*(n + l + 1.5) )
     
     nu = m * omega * .5
     
@@ -72,3 +72,6 @@ def energies(H):
 def ground_state_wavefunction(H):
     """docstring for ground_state_wavefunction"""
     pass
+
+if __name__ == '__main__':
+    import H_moshinsky
