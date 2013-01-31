@@ -6,7 +6,7 @@ def Kdelta(x, y):
     return x == y
 
 @sp.vectorize
-def H_element(n, n_prim, l, s, eps, V):
+def H_element_mosh(n, n_prim, l, s, eps, V):
     """Returns matrix element of the Hamiltonian"""
     # http://docs.sympy.org/0.7.2/modules/physics/sho.html
     rsq = eps**2 * .5 * ( \
@@ -22,7 +22,7 @@ def H_element(n, n_prim, l, s, eps, V):
     return rsq + sp.sqrt(2) * eps * integral
 
 @sp.vectorize
-def H_element2(n, n_prim, l, s, omega, V):
+def H_element(n, n_prim, l, s, omega, V):
     """Returns matrix element of the Hamiltonian"""
     result = 0
     if n == n_prim:
@@ -42,26 +42,26 @@ def H_element2(n, n_prim, l, s, omega, V):
     return omega / 2. * result + float(integral)
 
 
-def optimized_eps(V):
+def optimized_eps(V, l, s):
     """Returns the epsilon that gives the minimum ground energy"""
     @sp.vectorize
     def ground_energy(eps):
         """First matrix element as a function of epsilon"""
-        return H_element2(0, 0, 0, .5, eps, V)
+        return H_element(0, 0, l, s, eps, V)
     res = optimize.minimize_scalar(ground_energy, bounds=(0, 2), method='bounded')
     return float(res.x) # 1.06384608107
 
-def hamiltonian(V, N, verbose=False):
+def hamiltonian(V, N, l = 0, s = .5, verbose=False):
     """Calculates the N x N hamiltonian matrix."""
-    eps = optimized_eps(V)
+    eps = optimized_eps(V, l, s)
     if verbose:
         print "omega", eps
-    H = sp.zeros((N, N))
+    H = sp.empty((N, N))
     for i in range(N):
         if verbose:
             print "rad", i+1
         for j in range(i+1):
-            H[i, j] = H[j, i] = H_element2(i, j, 0, .5, eps, V)
+            H[i, j] = H[j, i] = H_element(i, j, l, s, eps, V)
     return H
 
 
