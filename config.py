@@ -1,2 +1,2 @@
 mass = 1
-omega_interval = None
+omega_interval = (0, 1)

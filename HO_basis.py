@@ -50,7 +50,8 @@ def optimized_eps(V, l, s):
     def ground_energy(eps):
         """First matrix element as a function of epsilon"""
         return H_element(0, 0, l, s, eps, V)
-    res = optimize.minimize_scalar(ground_energy)
+    res = optimize.minimize_scalar(ground_energy, \
+                method = 'bounded', bounds = config.omega_interval)
     return float(res.x) # 1.06384608107
 
 def hamiltonian(V, N, l = 0, s = .5, verbose=False):

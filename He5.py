@@ -3,7 +3,7 @@ import HO_basis
 import config
 
 config.mass = 0.019272
-omega_interval = (0, 50)
+config.omega_interval = (0, 50)
 
 @sp.vectorize
 def V(r, l, s):
@@ -24,7 +24,7 @@ def plotV():
     plt.show()
     
 def calc_energies():
-    H = HO_basis.hamiltonian(V, 10, l = 0, s = .5, verbose=True)
+    H = HO_basis.hamiltonian(V, 10, l = 1, s = .5, verbose=True)
     E = HO_basis.energies(H)
     # print "H =", H
     print "E =", E
@@ -34,7 +34,7 @@ calc_energies()
 
 if __name__ == '__main__':
     pass
-    plotV()
+    # plotV()
     
     
 
