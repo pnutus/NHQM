@@ -24,23 +24,22 @@ def H_element(n, n_prim, l, s, eps, V):
 @sp.vectorize
 def H_element2(n, n_prim, l, s, omega, V):
     """Returns matrix element of the Hamiltonian"""
-    m = 1
     result = 0
     if n == n_prim:
-        result += omega / 2. * (2*n + l + 1.5)
+        result += (2*n + l + 1.5)
     elif n_prim == (n - 1):
-        result += m * omega / 2. * sp.sqrt( n*(n + l + .5) )
+        result += sp.sqrt( n*(n + l + .5) )
     elif n_prim == (n + 1):
-        result += m * omega / 2. * sp.sqrt( (n + 1)*(n + l + 1.5) )
+        result += sp.sqrt( (n + 1)*(n + l + 1.5) )
     
-    nu = m * omega * .5
-    
+    # hbar = 1
+    mass = 1 
+    nu = mass * omega * .5
     @sp.vectorize
     def integrand(r):
         return R_nl(n_prim, l, nu, r) * V(r, l, s) * R_nl(n, l, nu, r) * r**2.
-    
     (integral, _) = integrate.fixed_quad(integrand, 0, 10, n = 20)
-    return result + float(integral)
+    return omega / 2. * result + float(integral)
 
 
 def optimized_eps(V):
