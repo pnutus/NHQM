@@ -1,6 +1,7 @@
 from imports import *
 from scipy import integrate, optimize, linalg
 from sympy.physics.sho import R_nl
+import config
 
 def Kdelta(x, y):
     return x == y
@@ -33,12 +34,13 @@ def H_element(n, n_prim, l, s, omega, V):
         result += sp.sqrt( (n + 1)*(n + l + 1.5) )
     
     # hbar = 1
-    mass = 1 
-    nu = mass * omega * .5
+    # mass = 1
+    nu = config.mass * omega * .5
     @sp.vectorize
     def integrand(r):
         return R_nl(n_prim, l, nu, r) * V(r, l, s) * R_nl(n, l, nu, r) * r**2.
     (integral, _) = integrate.fixed_quad(integrand, 0, 10, n = 20)
+    # (integral, _) = integrate.quad(integrand, 0, sp.inf)
     return omega / 2. * result + float(integral)
 
 
@@ -48,7 +50,7 @@ def optimized_eps(V, l, s):
     def ground_energy(eps):
         """First matrix element as a function of epsilon"""
         return H_element(0, 0, l, s, eps, V)
-    res = optimize.minimize_scalar(ground_energy, bounds=(0, 2), method='bounded')
+    res = optimize.minimize_scalar(ground_energy)
     return float(res.x) # 1.06384608107
 
 def hamiltonian(V, N, l = 0, s = .5, verbose=False):
@@ -71,6 +73,7 @@ def energies(H):
 def ground_state_wavefunction(H):
     """docstring for ground_state_wavefunction"""
     pass
-
+    
 if __name__ == '__main__':
-    import H_moshinsky
+    # import H_moshinsky
+    import He5
