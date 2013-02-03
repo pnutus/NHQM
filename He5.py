@@ -30,10 +30,9 @@ def calc_energies():
     print "E =", E
 
 
-calc_energies()
-
 if __name__ == '__main__':
     pass
+    calc_energies()
     # plotV()
     
     

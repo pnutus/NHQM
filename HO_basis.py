@@ -76,5 +76,6 @@ def ground_state_wavefunction(H):
     pass
     
 if __name__ == '__main__':
+    pass
     # import H_moshinsky
-    import He5
+    # import He5
