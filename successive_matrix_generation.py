@@ -6,7 +6,7 @@ from numpy import *
 
 import os
 
-def findExistingMatrix( matrixFileNameBasis, matrixFilePath, matrixFileFormat,  n = -1 , verbose = 0 ):
+def findExistingMatrix( matrixFileNameBasis, matrixFilePath, matrixFileFormat,  n = -1 , verbose = False ):
 
     """Scans a folder and find a matrix stored in a file with a given name stem
     and returns the most suitable matrix, if no n is specified the largest is returned
@@ -26,7 +26,7 @@ def findExistingMatrix( matrixFileNameBasis, matrixFilePath, matrixFileFormat,  
     #just larger than n, or if no such matrix exist returning the largest matrix
     os.chdir( matrixFilePath ) 
     for files in os.listdir( "." ):
-        if files.rfind( matrixFileNameBasis ) == 0:
+        if files.rfind( matrixFileNameBasis ) == 0: #checks whether the filename starts with desired substring
             outputStrings.append( 'applicable file: ' + files )
             temporaryDimension = int( files[ len( matrixFileNameBasis ):( len(files) - 4 )] )
             
@@ -46,11 +46,11 @@ def findExistingMatrix( matrixFileNameBasis, matrixFilePath, matrixFileFormat,  
         
     if verbose:
         for arg in outputStrings:
-            arg    
+            print arg    
     
     return result, existingMatrixPath
 
-def generateSuccMatrixFromMatrix( n, elementGeneratingFunction, existingMatrix, matrixFileNameBasis, matrixFilePath, matrixFileFormat, verbose = 0):
+def generateSuccMatrixFromMatrix( n, elementGeneratingFunction, existingMatrix, matrixFileNameBasis, matrixFilePath, matrixFileFormat, verbose = False):
     
     """Generates a new matrix using some function of the indices and copying existing values from a 
     provided matrix. Saves the result in a txt file according the the matrixFile... parameters
@@ -104,7 +104,7 @@ def generateSuccMatrixFromMatrix( n, elementGeneratingFunction, existingMatrix, 
     
     return matris
     
-def generateSuccMatrix( n, elementGeneratingFunction, matrixFileNameBasis, matrixFilePath, matrixFileFormat, verbose = 0):
+def generateSuccMatrix( n, elementGeneratingFunction, matrixFileNameBasis, matrixFilePath, matrixFileFormat, verbose = False):
 
     """Generates a new matrix using some function of the indices and if possible copies existing values from a matrix saved in a .txt file. Saves the result in a .txt file according the the matrixFile... parameters
     
@@ -130,12 +130,6 @@ def generateSuccMatrix( n, elementGeneratingFunction, matrixFileNameBasis, matri
                     matris[i,j] = existingMatrix[i,j]
                     if not (i == j):
                         matris[j,i]=matris[i,j]
-    
-    """if existingMatrixDimension == 1:
-            if existingMatrix == 0:
-                matris[0,0] = elementGeneratingFunction( 1, 1 )
-            else:
-                matris[0,0] = existingMatrix"""
     
     #If the existing matrix is smaller than the required one the remaining valuues are calculated
     #using provided function.            

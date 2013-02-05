@@ -8,7 +8,7 @@ matris_path = '/Users/Spill/Documents/kandidatarbete/matrisdata'
 matris_format = '.txt'
 matris_namn = 'He5_matris_'
 
-n = 2
+n = 12
 toggle = 0
 
 #element generating function
@@ -30,6 +30,6 @@ if toggle:
     print 'generated matrix: ' 
     print hamilton
 else:
-    hamilton = successive_matrix_generation.generateSuccMatrix( n, H_element_wrapper, matris_namn, matris_path, matris_format, 1 )
+    hamilton = successive_matrix_generation.generateSuccMatrix( n, H_element_wrapper, matris_namn, matris_path, matris_format, True )
     print 'generated matrix: ' 
     print hamilton
