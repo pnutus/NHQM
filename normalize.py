@@ -32,6 +32,12 @@ class SinTests(unittest.TestCase):
         g = normalize(self.f, self.a, self.b)
         N = norm(g, self.a, self.b)
         self.assertEquals(N, 1.0)
+        
+class ComplexTests(unittest.TestCase):
+    pass
+    
+class WeightTests(unittest.TestCase):
+    pass
 
 if __name__ == '__main__':
     unittest.main()
