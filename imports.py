@@ -5,4 +5,3 @@ import scipy as sp
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from __future__ import division
