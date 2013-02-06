@@ -14,26 +14,36 @@ def index_to_coord(i, size):
     return sp.array([x, y, z]) - (size - 1)/2.
 
 @sp.vectorize
-def fourier_integrand(r, p_0, V):
+def fourier_integrand(r, p_0, V, l, j):
     if p_0 == 0:
-        return V(r, 0, 0) * r**2
+        return V(r, l, j) * r**2
     else:
-        return 1 / p_0 * r * V(r, 0, 0) * sp.sin(p_0 * r)
+        return r / p_0 * V(r, l, j) * sp.sin(p_0 * r)
 
 @sp.vectorize
-def cos_integrand(x, p, p_prim, V, l):
+def cos_integrand(x, p, p_prim, V, l, j):
     p_0 = sp.sqrt(p**2 + p_prim**2 - 2*p*p_prim*x)
-    V_tilde, _ = integrate.fixed_quad(fourier_integrand, 0, 10, n = 20, \
-                 args = (p_0, V))
+    V_tilde, _ = integrate.fixed_quad(fourier_integrand, 0, 5, n = 20, \
+                 args = (p_0, V, l, j))
     return V_tilde * special.legendre(l)(x)
+
+@sp.vectorize
+def l_zero_integrand(r, p, p_prim, V):
+    return V(r, 0, .5) * sp.sin(p * r) * sp.sin(p_prim * r)
+
+def H_element(n, n_prim, V, l = 0, j = .5, step_size = 0.25):
+    p, p_prim = [(x + 1)*step_size for x in (n, n_prim)]
+    diagonal = p**2 / (2 * config.mass) * (n == n_prim)
+    if l == 0:
+        integral, _ =integrate.fixed_quad(l_zero_integrand, 0, 10, n = 20, \
+                        args = (p, p_prim, V))
+        integral *=  2 / (p * p_prim)
+    else:
+        integral, _ = integrate.fixed_quad(cos_integrand, -1, 1, n = l + 5, \
+                args = (p, p_prim, V, l, j))
+    return diagonal + p_prim**2 * step_size / sp.pi * integral
     
 
-def H_element(n, n_prim, V, l = 0, step_size = 0.1):
-    p, p_prim = [x*step_size for x in (n, n_prim)]
-    diagonal = p**2 / (2 * config.mass) * (n == n_prim)
-    integral, _ = integrate.fixed_quad(cos_integrand, -1, 1, n = l + 5, \
-                args = (p, p_prim, V, l))
-    return diagonal + 1 / sp.pi * p_prim**2 * step_size * integral
     
 # import He5
 
@@ -48,14 +58,15 @@ def V(r, l, j):
     spin_orbit = .5 * ( j*(j + 1) - l*(l + 1) - .75 )
     return f * (V0 - 4 * Vso * spin_orbit * (f - 1) / (d * r))
 
-size = 100
+size = 20
 H = sp.empty((size, size))
 for i in xrange(size):
     print "rad", i + 1
-    for j in xrange(i + 1):
-        H[i, j] = H[j, i] = H_element(i, j, V)
+    for j in xrange(size):
+        H[i, j] = H_element(i, j, V, l = 0, j = .5)
 
-print sp.linalg.eigh(H, eigvals_only=True)#[:3]
+print H
+print np.sort( sp.real_if_close( sp.linalg.eigvals(H) ) )#[:3]
 
 
 #
