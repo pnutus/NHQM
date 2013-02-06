@@ -1,5 +1,5 @@
 from imports import *
-from scipy import integrate, optimize, linalg
+from scipy import integrate, linalg, special
 import config
 
 config.mass = 0.019272
@@ -12,21 +12,28 @@ def index_to_coord(i, size):
     y = tmp % size
     z = tmp / size
     return sp.array([x, y, z]) - (size - 1)/2.
-    
-def fourier_integrand(r, V, p, p_prim):
-    p_0 = sp.linalg.norm(p - p_prim)
-    if p_0 == 0:
-        return 1 / (2 * sp.pi**2) * V(r, 0, 0) * r**2
-    else:
-        return 2 / (p_0 * (2*sp.pi)**2) * r * V(r, 0, 0) * sp.sin(p_0 * r)
 
-def H_element(n, n_prim, size, V, step_size = .5):
-    p = index_to_coord(n, size) * step_size
-    p_prim = index_to_coord(n_prim, size) * step_size
-    diagonal = sp.sum(p**2) / (2 * config.mass) * (n == n_prim)
-    integral, _ = integrate.fixed_quad(fourier_integrand, 0, 10, n = 20, \
-                 args = (V, p, p_prim))
-    return diagonal + integral * step_size**3
+@sp.vectorize
+def fourier_integrand(r, p_0, V):
+    if p_0 == 0:
+        return V(r, 0, 0) * r**2
+    else:
+        return 1 / p_0 * r * V(r, 0, 0) * sp.sin(p_0 * r)
+
+@sp.vectorize
+def cos_integrand(x, p, p_prim, V, l):
+    p_0 = sp.sqrt(p**2 + p_prim**2 - 2*p*p_prim*x)
+    V_tilde, _ = integrate.fixed_quad(fourier_integrand, 0, 10, n = 20, \
+                 args = (p_0, V))
+    return V_tilde * special.legendre(l)(x)
+    
+
+def H_element(n, n_prim, V, l = 0, step_size = 0.1):
+    p, p_prim = [x*step_size for x in (n, n_prim)]
+    diagonal = p**2 / (2 * config.mass) * (n == n_prim)
+    integral, _ = integrate.fixed_quad(cos_integrand, -1, 1, n = l + 5, \
+                args = (p, p_prim, V, l))
+    return diagonal + 1 / sp.pi * p_prim**2 * step_size * integral
     
 # import He5
 
@@ -41,14 +48,14 @@ def V(r, l, j):
     spin_orbit = .5 * ( j*(j + 1) - l*(l + 1) - .75 )
     return f * (V0 - 4 * Vso * spin_orbit * (f - 1) / (d * r))
 
-size = 10
-H = sp.empty((size**3, size**3))
-for i in xrange(size**3):
-    print "rad", i
+size = 100
+H = sp.empty((size, size))
+for i in xrange(size):
+    print "rad", i + 1
     for j in xrange(i + 1):
-        H[i, j] = H[j, i] = H_element(i, j, size, V)
+        H[i, j] = H[j, i] = H_element(i, j, V)
 
-print sp.linalg.eigh(H, eigvals_only=True)[:3]
+print sp.linalg.eigh(H, eigvals_only=True)#[:3]
 
 
 #
