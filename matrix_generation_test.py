@@ -8,8 +8,8 @@ matris_path = '/Users/Spill/Documents/kandidatarbete/matrisdata'
 matris_format = '.txt'
 matris_namn = 'He5_matris_'
 
-n = 14
-toggle = True
+n = 17
+toggle = False
 
 #element generating function
 def H_element_wrapper(n,nprim):
