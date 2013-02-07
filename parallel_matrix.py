@@ -38,7 +38,7 @@ def parallel_matrix(f, matrix_dim, hermitian = False, existing_dim = 0):
             
     # p = mp.Pool()
     #    result = p.imap(element_from_index, mat_range(matrix_dim))
-    imap = IMap()
+    imap = IMap(func=None, iterable=None, args=None, kwargs=None, worker_type=None, worker_num=None, worker_remote=None, stride=4, buffer=1000, ordered=True, skip=False, name=None)
     result = imap.add_task(element_from_index, \
                 mat_range(matrix_dim, existing_dim, hermitian), (f, matrix_dim))
     imap.start()

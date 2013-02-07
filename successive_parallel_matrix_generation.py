@@ -4,7 +4,6 @@ import time
 from numpy import *
 import parallel_matrix as pm
 import os
-from math import *
 
 def find_existing_matrix( matrix_file_name_basis, matrix_file_path, matrix_file_format,  sought_dim = -1 , verbose = False ):
 
@@ -107,17 +106,26 @@ def generate_succ_para_matrix( matrix_dim, element_generating_function, matrix_f
     print time.time() - t 
     
     existing_matrix_dimension,_ = existing_matrix.shape
+    
+    t = time.time()
     matris = pm.parallel_matrix( element_generating_function, matrix_dim, False, existing_matrix_dimension)
+    print "creating new matrix elements in parallel:"
+    print time.time() - t
+    
     output_strings = []
     
     #Copies existing values from the existing matrix so as to avoid having to calculate the values
     #in a costly manner
+    t = time.time()
     if existing_matrix_dimension > 0: 
         for i in xrange( min( existing_matrix_dimension, matrix_dim ) ):
                 for j in xrange( 0, i + 1 ):
                     matris[i,j] = existing_matrix[i,j]
                     if not (i == j):
                         matris[j,i]=matris[i,j]
+                        
+    print "copying existing elements:"
+    print time.time() - t                    
                     
     save_matrix_path = matrix_file_path + matrix_file_name_basis + str(matrix_dim) + matrix_file_format
     #verify that the new and old matrices are not the same to avoid needless file operations
