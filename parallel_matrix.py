@@ -3,8 +3,6 @@ from IMap import IMap
 import multiprocessing as mp
 import unittest
 
-def one(i,j):
-    return i*j + 1
 
 def above_diagonal(row, col):
     return (col - row) > 0
@@ -13,7 +11,7 @@ def matrix_indices(k, matrix_dim):
     """Generates matrix indices from a single number."""
     return (k // matrix_dim, k % matrix_dim) 
     
-def mat_range(matrix_dim, existing_dim, hermitian = False):
+def mat_range(matrix_dim, existing_dim = 0, hermitian = False):
     """Generates indices for """
     
     for i in xrange(matrix_dim**2):
@@ -34,7 +32,7 @@ def element_from_index(k, f, matrix_dim):
     else:
         return f(*matrix_indices(k, matrix_dim))
     
-def parallel_matrix(f, matrix_dim, hermitian = False, existing_dim = 0 ):
+def parallel_matrix(f, matrix_dim, hermitian = False, existing_dim = 0):
     """Calculates a matrix in parallel using multiple processes."""
     
             
@@ -57,10 +55,7 @@ def parallel_matrix(f, matrix_dim, hermitian = False, existing_dim = 0 ):
 # Tests
 #
 
-liten = 3
-stor = 7
-mat = parallel_matrix (one, stor, False, liten)
-print mat
+
    
 """class hermitizeTests(unittest.TestCase):
     

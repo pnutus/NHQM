@@ -1,4 +1,3 @@
-from math import *
 
 import numpy as np
 import scipy as sp
@@ -6,7 +5,7 @@ from numpy import *
 
 import os
 
-def find_existing_matrix( matrix_file_name_basis, matrix_file_path, matrix_file_format,  sought_dim = -1 , verbose = False ):
+def find_existing_matrix( matrix_file_name_basis, matrix_file_path, matrix_file_format, sought_dim = -1 , verbose = False ):
 
     """Scans a folder and find a matrix stored in a file with a given name stem
     and returns the most suitable matrix, if no n is specified the largest is returned
@@ -104,7 +103,7 @@ def generate_succ_matrix_from_matrix( matrix_dim, element_generating_function, e
     
     return matris
     
-def generate_succ_matrix( matrix_dim, element_generating_function, matrix_file_name_basis, matrix_file_path, matrix_file_format, verbose = False):
+def generate_succ_matrix( matrix_dim, element_generating_function, matrix_file_name_basis, matrix_file_path, matrix_file_format, hermitian = False, verbose = False):
 
     """Generates a new matrix using some function of the indices and if possible copies existing values from a matrix saved in a .txt file. Saves the result in a .txt file according the the matrixFile... parameters
     
@@ -138,15 +137,22 @@ def generate_succ_matrix( matrix_dim, element_generating_function, matrix_file_n
         for i in xrange( existing_matrix_dimension, matrix_dim ):
             for j in xrange( 0 , existing_matrix_dimension ):
                 output_strings.append( 'calculating element: ' + str(i) + ', ' + str(j) )
-                matris[j,i] = matris[i,j] = element_generating_function( i, j )
+                if hermitian:
+                    matris[i,j] = matris[j,i] = element_generating_function( i, j )
+                else:    
+                    matris[j,i] = element_generating_function( j, i )
+                    matris[i,j] = element_generating_function( i, j )
         
         
         for i in xrange( existing_matrix_dimension, matrix_dim ):        
             for j in xrange( existing_matrix_dimension, i + 1 ): 
                 output_strings.append( 'calculating element: ' + str(i) + ', ' + str(j) )
-                matris[i,j] = element_generating_function(i,j)       
-                if ( i != j):
-                    matris[j,i] = matris[i,j]
+                if hermitian:
+                    matris[i,j] = matris[j,i] = element_generating_function( i, j )
+                else:    
+                    matris[j,i] = element_generating_function( j, i )
+                    matris[i,j] = element_generating_function( i, j )
+                
                     
                     
     save_matrix_path = matrix_file_path + matrix_file_name_basis + str(matrix_dim) + matrix_file_format

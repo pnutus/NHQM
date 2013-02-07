@@ -1,26 +1,22 @@
-from math import *
-
 import numpy as np
 import scipy as sp
+import time
 from numpy import *
-import parallel_matrix
-
-
+import parallel_matrix as pm
 import os
-
-
+from math import *
 
 def find_existing_matrix( matrix_file_name_basis, matrix_file_path, matrix_file_format,  sought_dim = -1 , verbose = False ):
 
     """Scans a folder and find a matrix stored in a file with a given name stem
-    and returns the most suitable matrix, if no sought_dim is specified the largest is returned
+    and returns the most suitable matrix, if no n is specified the largest is returned
     
     returns a matrix and its file path (NULL if no suitable matrix was found)"""
     
     output_strings = []
     
     #Redundancy check for directory names, making sure it ends with the required '/'
-    if matrix_file_path[ len( matrix_file_path ) - 1 ] != '/':
+    if matrix_file_path[ len( matrix_file_path )-1 ] != '/':
         matrix_file_path = matrix_file_path + '/'
     
     existing_matrix_dimension = 0 
@@ -54,12 +50,12 @@ def find_existing_matrix( matrix_file_name_basis, matrix_file_path, matrix_file_
     
     return result, existing_matrix_path
 
-def generate_succ_matrix_from_matrix( matrix_dim, element_generating_function, existing_matrix, matrix_file_name_basis, matrix_file_path, matrix_file_format, verbose = False):
+"""def generate_succ_para_matrix_from_matrix( matrix_dim, element_generating_function, existing_matrix, matrix_file_name_basis, matrix_file_path, matrix_file_format, verbose = False):
     
-    """Generates a new matrix using some function of the indices and copying existing values from a 
-    provided matrix. Saves the result in a txt file according the the matrixFile... parameters
+    #Generates a new matrix using some function of the indices and copying existing values from a 
+    #provided matrix. Saves the result in a txt file according the the matrixFile... parameters
     
-    Returns a matrix of desired dimensions"""
+    #Returns a matrix of desired dimensions
    
     #Redundancy check for directory names, making sure it ends with the required '/'
     if matrix_file_path[ len( matrix_file_path ) - 1 ] != '/':
@@ -67,14 +63,14 @@ def generate_succ_matrix_from_matrix( matrix_dim, element_generating_function, e
     
     existing_matrix_dimension,_ = existing_matrix.shape
     
-    matris = parallel_matrix.parallel_matrix(element_generating_function, n,)
+    matris = parallel_matrix.parallel_matrix( element_generating_function, matrix_dim, False, existing_matrix_dimension )
         
     output_strings = []
     
     #Copies existing values from the existing matrix so as to avoid having to calculate the values
     #in a costly manner
     if existing_matrix_dimension > 0: 
-        for i in xrange( min( existing_matrix_dimension, n ) ):
+        for i in xrange( min( existing_matrix_dimension, matrix_dim ) ):
                 for j in xrange( 0, i + 1 ):
                     matris[i,j] = existing_matrix[i,j]
                     if not (i == j):
@@ -83,19 +79,6 @@ def generate_succ_matrix_from_matrix( matrix_dim, element_generating_function, e
     #If the existing matrix is smaller than the required one the remaining valuues are calculated
     #using provided function.            
     if matrix_dim > existing_matrix_dimension:
-            
-        for i in xrange( existing_matrix_dimension, matrix_dim ):
-            for j in xrange( 0 , existing_matrix_dimension ):
-                output_strings.append( 'calculating element: ' + str(i) + ', ' + str(j) )
-                matris[j,i] = matris[i,j] = element_generating_function( i, j )
-        
-        
-        for i in xrange( existing_matrix_dimension , matrix_dim ):        
-            for j in xrange( existing_matrix_dimension, i + 1 ): 
-                output_strings.append( 'calculating element: ' + str(i) + ', ' + str(j) )
-                matris[i,j] = element_generating_function(i,j)       
-                if ( i != j):
-                    matris[j,i] = matris[i,j]
     
     #saves the matrix to a .txt file
     save_matrix_path = matrix_file_path + matrix_file_name_basis + str(matrix_dim) + matrix_file_format
@@ -106,9 +89,9 @@ def generate_succ_matrix_from_matrix( matrix_dim, element_generating_function, e
         for arg in output_strings:
             print arg
     
-    return matris
+    return matris"""
     
-def generate_succ_matrix( n, element_generating_function, matrix_file_name_basis, matrix_file_path, matrix_file_format, verbose = False):
+def generate_succ_para_matrix( matrix_dim, element_generating_function, matrix_file_name_basis, matrix_file_path, matrix_file_format, verbose = False):
 
     """Generates a new matrix using some function of the indices and if possible copies existing values from a matrix saved in a .txt file. Saves the result in a .txt file according the the matrixFile... parameters
     
@@ -118,45 +101,28 @@ def generate_succ_matrix( n, element_generating_function, matrix_file_name_basis
     if matrix_file_path[ len( matrix_file_path ) - 1 ] != '/':
         matrix_file_path = matrix_file_path + '/'
         
-    existing_matrix, old_matrix_path = find_existing_matrix( matrix_file_name_basis, matrix_file_path, matrix_file_format,  n, verbose )    
+    t = time.time()
+    existing_matrix, old_matrix_path = find_existing_matrix( matrix_file_name_basis, matrix_file_path, matrix_file_format,  matrix_dim, verbose ) 
+    print "loading existing matrix:"   
+    print time.time() - t 
     
     existing_matrix_dimension,_ = existing_matrix.shape
-    
-    matris = sp.mat(sp.empty( (n,n) ))
-        
+    matris = pm.parallel_matrix( element_generating_function, matrix_dim, False, existing_matrix_dimension)
     output_strings = []
     
     #Copies existing values from the existing matrix so as to avoid having to calculate the values
     #in a costly manner
     if existing_matrix_dimension > 0: 
-        for i in xrange( min( existing_matrix_dimension, n ) ):
+        for i in xrange( min( existing_matrix_dimension, matrix_dim ) ):
                 for j in xrange( 0, i + 1 ):
                     matris[i,j] = existing_matrix[i,j]
                     if not (i == j):
                         matris[j,i]=matris[i,j]
-    
-    #If the existing matrix is smaller than the required one the remaining valuues are calculated
-    #using provided function.            
-    if n > existing_matrix_dimension:
-            
-        for i in xrange( existing_matrix_dimension, n ):
-            for j in xrange( 0 , existing_matrix_dimension ):
-                output_strings.append( 'calculating element: ' + str(i) + ', ' + str(j) )
-                matris[j,i] = matris[i,j] = element_generating_function( i, j )
-        
-        
-        for i in xrange( existing_matrix_dimension , n ):        
-            for j in xrange( existing_matrix_dimension, i + 1 ): 
-                output_strings.append( 'calculating element: ' + str(i) + ', ' + str(j) )
-                matris[i,j] = element_generating_function(i,j)       
-                if ( i != j):
-                    matris[j,i] = matris[i,j]
                     
-                    
-    save_matrix_path = matrix_file_path + matrix_file_name_basis + str(n) + matrix_file_format
+    save_matrix_path = matrix_file_path + matrix_file_name_basis + str(matrix_dim) + matrix_file_format
     #verify that the new and old matrices are not the same to avoid needless file operations
     #and make sure to only keep the file with the most information
-    if ( save_matrix_path != old_matrix_path and n > existing_matrix_dimension ):                
+    if ( save_matrix_path != old_matrix_path and matrix_dim > existing_matrix_dimension ):                
         #saves the matrix to a .txt file
         output_strings.append( 'saving to: ' + save_matrix_path )
         savetxt(save_matrix_path, matris) 
