@@ -5,7 +5,7 @@ from central_problem import CentralProblem
 def V(r, l, s):
     return - 1. / r
     
-problem = CentralProblem()
+problem = CentralProblem("Hydrogen atom")
 problem.potential = V
 problem.mass = 1
 problem.eV_factor = 27.7

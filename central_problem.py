@@ -7,7 +7,8 @@ def V(r, l, j):
 class CentralProblem:
     """Describes a quantum mechanical problem with spherical symmetry."""
     
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.potential = V # Spherically symmetric potential
         self.mass = 1 # Mass in units of the problem
         self.eV_factor = 27.3 # Scaling factor to get to eV

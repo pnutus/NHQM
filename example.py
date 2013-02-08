@@ -6,12 +6,14 @@ import problem_H_atom as H_atom
 import calculate_serial as calc
 
 
-problems = H_atom.problem, He5.problem
+problems = [H_atom.problem, He5.problem]
 order = 20
 l = 0
 j = .5
 
 for problem in problems:
+    print problem.name
+    
     H_mom = calc.hamiltonian(mom.H_element, args=(problem, l, j), order=order)
     lowest_energy = calc.energies(H_mom)[0] * problem.eV_factor
     print "MomSpace lowest energy:", lowest_energy, "eV"

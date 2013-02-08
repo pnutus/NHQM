@@ -12,7 +12,7 @@ def V(r, l, j):
     spin_orbit = .5*(j*(j + 1) - l*(l + 1) - .75)
     return f * (V0 - 4*Vso*spin_orbit*(f - 1) / (d * r))
     
-problem = CentralProblem()
+problem = CentralProblem("Helium-5")
 problem.potential = V
 problem.mass = 0.019272
 problem.eV_factor = 1e6
