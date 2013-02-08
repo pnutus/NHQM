@@ -1,12 +1,11 @@
 from imports import *
-import HO_basis
+import central_problem import CentralProblem
 
 @sp.vectorize
 def V(r, l, s):
     return - 1. / r
-
-H = HO_basis.hamiltonian(V, 10, verbose=True)
-E = HO_basis.energies(H)
-print "H =", H
-print "E =", E
-print "GT = ", E[0] * 2.
+    
+problem = CentralProblem()
+problem.potential = V
+problem.mass = 1
+problem.eV_factor = 13.6
