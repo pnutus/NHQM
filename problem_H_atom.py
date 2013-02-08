@@ -1,5 +1,5 @@
 from imports import *
-import central_problem import CentralProblem
+from central_problem import CentralProblem
 
 @sp.vectorize
 def V(r, l, s):
@@ -8,4 +8,5 @@ def V(r, l, s):
 problem = CentralProblem()
 problem.potential = V
 problem.mass = 1
-problem.eV_factor = 13.6
+problem.eV_factor = 27.7
+problem.omega_interval = (0, 2)
