@@ -50,13 +50,12 @@ def optimal_osc_freq(problem, l = 0, j = .5):
     """Returns the epsilon that gives the minimum ground energy"""
     @sp.vectorize
     def ground_energy(omega):
-        """First matrix element as a function of epsilon"""
         return H_element(0, 0, problem, omega, l, j)
     res = optimize.minimize_scalar(ground_energy, \
                 method = 'bounded', bounds = problem.omega_interval)
     return float(res.x) # 1.06384608107
 
-def basis_function(problem, omega, l = 0, j = .5):
+def gen_basis_function(problem, omega, l = 0, j = .5):
     nu = problem.mass * omega / 2
     def basis_function(r, n):
         return R_nl(n, l, nu, r)

@@ -26,9 +26,7 @@ def plotV():
 
 
 if __name__ == '__main__':
-    pass
-    # calc_energies()
-    # plotV()
+    plotV()
     
     
 

@@ -1,6 +1,6 @@
 from imports import *
 
-def wavefunction(eigvec, basis_function):
+def gen_wavefunction(eigvec, basis_function):
     length = len(eigvec)
     @sp.vectorize
     def wavefunction(r):
