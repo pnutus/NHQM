@@ -18,30 +18,11 @@ problem.mass = 0.019272
 problem.eV_factor = 1e6
 problem.omega_interval = (0, 50)
 
-from scipy import fftpack
-import HO_basis
-
 def plotV():
     x = sp.linspace(0.1, 10, 100)
     plt.plot(x, V(x, 0, 0.5), 'k', x, V(x, 1, 1.5), 'r', x, V(x, 1, .5), 'b')
     # plt.axis([7, 10, -2, 2])
     plt.show()
-    
-def calc_energies():
-    l = 0
-    j = .5
-    H = HO_basis.hamiltonian(V, 10, l, j, verbose=True)
-    E = HO_basis.energies(H)
-    # print "H =", H
-    print "E =", E
-    wavef = HO_basis.ground_state_wavefunction(H, V, l, j)
-    r = sp.linspace(0, 10, 1024)
-    y = fftpack.fft(wavef(r))
-    plt.plot(y[1:128])
-    plt.show()
-    
-    # plt.plot(r, wavef(r) )
-    # plt.show()
 
 
 if __name__ == '__main__':

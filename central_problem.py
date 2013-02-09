@@ -1,4 +1,5 @@
 from imports import *
+import scipy.constants as const
 
 def V(r, l, j):
     """Simplest possible potential."""
@@ -11,7 +12,6 @@ class CentralProblem:
         self.name = name
         self.potential = V # Spherically symmetric potential
         self.mass = 1 # Mass in units of the problem
-        self.eV_factor = 27.3 # Scaling factor to get to eV
-    
-
-        
+        # Scaling factor to get to eV
+        self.eV_factor = const.physical_constants["atomic unit of energy"][0] \
+                         / const.eV # hartree

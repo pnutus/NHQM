@@ -8,5 +8,4 @@ def V(r, l, s):
 problem = CentralProblem("Hydrogen atom")
 problem.potential = V
 problem.mass = 1
-problem.eV_factor = 27.7
 problem.omega_interval = (0, 2)
