@@ -1,6 +1,7 @@
 from imports import *
 from scipy import integrate, linalg, special
 import config
+from scipy.special import sph_jn
 
 @sp.vectorize
 def fourier_integrand(r, p_0, V, l, j):
@@ -33,10 +34,10 @@ def H_element(n, n_prim, problem, l = 0, j = .5, step_size = 0.25):
                 args = (p, p_prim, V, l, j))
     return diagonal + p_prim**2 * step_size / sp.pi * integral
 
-# size = 20
-# H = sp.empty((size, size))
-# for i in xrange(size):
-#     print "rad", i + 1
-#     for j in xrange(size):
-#         H[i, j] = H_element(i, j, V, l = 0, j = .5)
+def gen_basis_function(problem, step_size = .25, l = 0, j = .5):
+    def basis_function(r, n):
+        p_n = (n + 1) * step_size
+        jn, _ = sph_jn(l, p_n*r)
+        return 4*sp.pi / (2*sp.pi)**1.5 * p_n**2 * step_size * jn[-1]
+    return basis_function
 
