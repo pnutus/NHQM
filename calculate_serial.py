@@ -15,7 +15,11 @@ def hamiltonian(element_function, args=None, order=20, hermitian=False):
 def energies(H, hermitian=False):
     """Given a hamiltonian matrix, calculates energies and sorts them."""
     if hermitian:
-        result = sp.linalg.eigh(H, eigvals_only=True)
+        eigvals, eigvecs = linalg.eigh(H)
     else:
-        result = sp.linalg.eigvals(H)
-    return sp.sort(sp.real_if_close(result))
+        eigvals, eigvecs = linalg.eig(H)
+        indexes = sp.real_if_close(eigvals).argsort()
+        eigvals = sp.real_if_close(eigvals[indexes])
+        eigvecs = eigvecs[:, indexes]
+    return eigvals, eigvecs
+
