@@ -3,6 +3,8 @@ from scipy import integrate, linalg, special
 import config
 from scipy.special import sph_jn
 
+name = "MomSpace"
+
 @sp.vectorize
 def fourier_integrand(r, p_0, V, l, j):
     if p_0 == 0:

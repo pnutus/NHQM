@@ -4,6 +4,8 @@ from scipy import integrate, optimize, linalg
 from sympy.physics.sho import R_nl
 import config
 
+name = "HarmOsc"
+
 def Kdelta(x, y):
     return x == y
 
