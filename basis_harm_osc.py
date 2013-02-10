@@ -1,10 +1,21 @@
 from __future__ import division
 from imports import *
-from scipy import integrate, optimize, linalg
-from sympy.physics.sho import R_nl
+from scipy import integrate, optimize
+from scipy.misc import factorial, factorial2
+from scipy.special import genlaguerre
 import config
 
 name = "HarmOsc"
+
+@sp.vectorize
+def R_nl(n, l, nu, r):
+    norm = sp.sqrt(\
+                sp.sqrt(2*nu**3/sp.pi)*\
+                2**(n + 2*l + 3)*factorial(n)*\
+                nu**l/factorial2(2*n + 2*l + 1)
+                )
+    lagge = genlaguerre(n, l + .5)(2*nu*r**2)
+    return norm * r**l * sp.e**(-nu * r**2) * lagge
 
 def Kdelta(x, y):
     return x == y
