@@ -21,7 +21,9 @@ def H_element(n, n_prim, problem, l = 0, j = .5, step_size = default_step_size):
                                 n = 20, args=(p, p_prim, V, l, j))
     return diagonal + 2 * p_prim**2 * step_size / sp.pi * integral
 
-def gen_basis_function(problem, step_size = default_step_size, l = 0, j = .5):
+def gen_basis_function(problem, step_size = default_step_size,\
+                            l = 0, j = .5):
+    # Felnormaliserad!
     def basis_function(r, n):
         p_n = (n + 1) * step_size
         jn, _ = sph_jn(l, p_n*r)
