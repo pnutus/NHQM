@@ -5,14 +5,13 @@ import problem_He5 as He5
 import problem_H_atom as H_atom
 import calculate_serial as calc
 from wavefunction import gen_wavefunction
-from scipy import linalg
 from normalize import normalize, norm
 
-problems = [H_atom.problem, He5.problem]
+problems = [He5.problem, H_atom.problem,]
 bases = [mom, osc]
-order = 10
-l = 0
-j = .5
+order = 20
+l = 1
+j = 0.5
 r = sp.linspace(0, 10, 200)
 
 def absq(x):
@@ -27,8 +26,8 @@ for (i, problem) in enumerate(problems):
     print problem.name
     plt.subplot(1, 2, i+1)
     plt.title(problem.name)
-    plt.ylabel('$r^2|\Psi|^2$')
-    plt.xlabel('$r$')
+    plt.ylabel(r'$r^2|\Psi|^2$')
+    plt.xlabel(r'$r$')
     plt.show(block=False)
     
     

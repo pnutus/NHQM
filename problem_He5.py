@@ -18,6 +18,12 @@ problem.mass = 0.019272
 problem.eV_factor = 1e6
 problem.omega_interval = (0, 50)
 
+
+
+
+
+
+
 def plotV():
     x = sp.linspace(0.1, 10, 100)
     plt.plot(x, V(x, 0, 0.5), 'k', x, V(x, 1, 1.5), 'r', x, V(x, 1, .5), 'b')
