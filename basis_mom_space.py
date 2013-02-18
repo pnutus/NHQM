@@ -1,6 +1,5 @@
 from imports import *
 from scipy import integrate, linalg, special
-import config
 from scipy.special import sph_jn
 
 name = "MomSpace"
