@@ -1,8 +1,7 @@
-__package__ = "NHQM.scripts.example"
-
-from ..bases import mom_space as mom, harm_osc as osc
-from ..problems import He5, H_atom
-from ..calculations import QM as calc
+from imports import *
+from nhqm.bases import mom_space as mom, harm_osc as osc
+from nhqm.problems import He5, H_atom
+from nhqm.calculations import QM as calc
 
 problems = [He5.problem, H_atom.problem,]
 bases = [mom, osc]

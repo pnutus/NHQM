@@ -1,9 +1,8 @@
+from __future__ import division
 from imports import *
-import basis_mom_space as mom
-import problem_He5 as He5
-import calculate_serial as calc
-from wavefunction import gen_wavefunction
-from normalize import normalize, norm
+import nhqm.bases.mom_space as mom
+from nhqm.problems import He5
+import nhqm.calculations.QM as calc
 
 problem = He5.problem
 steps = 50

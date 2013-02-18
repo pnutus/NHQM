@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:bases/mom_space.py
 from imports import *
 from scipy import integrate, linalg, special
 =======
 from scipy import integrate, linalg
 >>>>>>> Trying to fix structure.:nhqm/bases/mom_space.py
+=======
+from __future__ import division
+import scipy as sp
+from scipy.integrate import fixed_quad
+>>>>>>> Scripts now working.
 from scipy.special import sph_jn
 
 name = "MomSpace"
@@ -20,7 +26,7 @@ def H_element(n, n_prim, problem, l = 0, j = .5, step_size = default_step_size):
     p, p_prim = [(x + 1)*step_size for x in (n, n_prim)]
     diagonal = p**2 / (2 * problem.mass) * (n == n_prim)
     V = problem.potential
-    integral, _ = integrate.fixed_quad(integrand, 0, 10, \
+    integral, _ = fixed_quad(integrand, 0, 10, \
                                 n = 20, args=(p, p_prim, V, l, j))
     return diagonal + 2 * p_prim**2 * step_size / sp.pi * integral
 
