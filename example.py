@@ -10,7 +10,7 @@ from normalize import normalize, norm
 problems = [He5.problem, H_atom.problem,]
 bases = [mom, osc]
 order = 20
-l = 1
+l = 0
 j = 0.5
 r = sp.linspace(0, 10, 200)
 
