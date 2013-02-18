@@ -1,5 +1,9 @@
+<<<<<<< HEAD:bases/mom_space.py
 from imports import *
 from scipy import integrate, linalg, special
+=======
+from scipy import integrate, linalg
+>>>>>>> Trying to fix structure.:nhqm/bases/mom_space.py
 from scipy.special import sph_jn
 
 name = "MomSpace"

@@ -1,11 +1,8 @@
-from imports import *
-import basis_mom_space as mom
-import basis_harm_osc as osc
-import problem_He5 as He5
-import problem_H_atom as H_atom
-import calculate_serial as calc
-from wavefunction import gen_wavefunction
-from normalize import normalize, norm
+__package__ = "NHQM.scripts.example"
+
+from ..bases import mom_space as mom, harm_osc as osc
+from ..problems import He5, H_atom
+from ..calculations import QM as calc
 
 problems = [He5.problem, H_atom.problem,]
 bases = [mom, osc]
@@ -42,8 +39,8 @@ for (i, problem) in enumerate(problems):
         energy, eigvecs = calc.energies(H)
         lowest_energy = energy[0] * problem.eV_factor
         print basis.name, "lowest energy:", lowest_energy, "eV"
-        wavefunction = gen_wavefunction(eigvecs[:, 0], basis_function)
-        wavefunction = normalize(wavefunction, 0, 10, weight=lambda r: r**2)
+        wavefunction = calc.gen_wavefunction(eigvecs[:, 0], basis_function)
+        wavefunction = calc.normalize(wavefunction, 0, 10, weight=lambda r: r**2)
         
         plt.plot(r, r**2 * absq(wavefunction(r)), label = basis.name)
         plt.legend()

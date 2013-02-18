@@ -1,9 +1,7 @@
 from __future__ import division
-from imports import *
 from scipy import integrate, optimize
 from scipy.misc import factorial, factorial2
 from scipy.special import genlaguerre
-import config
 
 name = "HarmOsc"
 
