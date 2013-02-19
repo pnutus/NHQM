@@ -5,13 +5,13 @@ Library for calculating energies and wavefunctions for spherically symmetric qua
 
 Examples
 --------
- `example.py` contains examples.
+The `scripts` folder contains examples.
 
 
 Structure
 =========
 
-The library is divided into three parts, problems, methods and hamiltonian calculations. Each separated from the other so that you can choose a problem, which method to use and how to calculate the hamiltonian.
+The library is divided into three parts, problems, bases and calculations. Each separated from the other so that you can choose a problem, which method to use and how to calculate the hamiltonian.
 
 Problems
 --------
@@ -20,16 +20,16 @@ A problem is defined as potential, a characteristic mass and a factor that conve
  
 Two problems are included: the Hydrogen atom and the He5 core.
  
-Methods
--------
+Bases
+-----
 
-A method is a way of solving a problem, primarily basis expansion. The basis expansion methods are essentially a function that takes row and column and returns the corresponding matrix element in the hamiltonian.
+A basis module represents a basis to expand in. The basis expansion methods are essentially a function that takes row and column and returns the corresponding matrix element in the hamiltonian.
 
 Two bases expansion methods are included: The isotropic harmonic oscillator and discretized momentum space.
 
-Hamiltonian Calculations
-------------------------
+Calculations
+------------
 
-A hamiltonian calculation is a way to calculate the hamiltonian. The simplest one is serial -- one at a time.
+Calculations are ways to calculate the hamiltonian, wavefunctions, etc. The simplest one is serial -- one at a time.
 
 Will add ways to do this in parallel.
