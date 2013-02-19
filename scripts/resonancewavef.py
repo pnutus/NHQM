@@ -7,16 +7,18 @@ import nhqm.calculations.QM as calc
 
 problem = He5.problem
 problem.V0 = -52.3
+k_max = 4
 order = 20
+step_size = k_max / order
 l = 1
 j = 1.5
 
 def absq(x):
     return x*sp.conjugate(x)
 
-H = calc.hamiltonian(mom.H_element, args=(problem, l, j), order=order)
+H = calc.hamiltonian(mom.H_element, args=(problem, step_size, l, j), order=order)
 energy, eigvecs = calc.energies(H)
-basis_function = mom.gen_basis_function(problem, l=l, j=j)
+basis_function = mom.gen_basis_function(problem, step_size, l=l, j=j)
 wavefunction = calc.gen_wavefunction(eigvecs[:,0], basis_function)
 wavefunction = calc.normalize(wavefunction, 0, 10, weight= lambda r: r**2)
 

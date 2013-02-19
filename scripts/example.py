@@ -1,3 +1,4 @@
+from __future__ import division
 from imports import *
 from nhqm.bases import mom_space as mom, harm_osc as osc
 from nhqm.problems import He5, H_atom
@@ -5,7 +6,9 @@ from nhqm.calculations import QM as calc
 
 problems = [He5.problem, H_atom.problem,]
 bases = [mom, osc]
-order = 20
+order = 30
+k_max = 5
+step_size = k_max / order
 l = 0
 j = 0.5
 r = sp.linspace(0, 10, 200)
@@ -33,8 +36,8 @@ for (i, problem) in enumerate(problems):
             H = calc.hamiltonian(osc.H_element, args=(problem, omega, l, j), order=order)
             basis_function = basis.gen_basis_function(problem, omega, l=l, j=j)
         else:
-            H = calc.hamiltonian(basis.H_element, args=(problem, l, j), order=order)
-            basis_function = basis.gen_basis_function(problem, l=l, j=j)
+            H = calc.hamiltonian(basis.H_element, args=(problem, step_size, l, j), order=order)
+            basis_function = basis.gen_basis_function(problem, step_size, l=l, j=j)
         energy, eigvecs = calc.energies(H)
         lowest_energy = energy[0] * problem.eV_factor
         print basis.name, "lowest energy:", lowest_energy, "eV"
