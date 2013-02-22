@@ -19,8 +19,8 @@ def energies(H, hermitian=False):
         eigvals, eigvecs = linalg.eigh(H)
     else:
         eigvals, eigvecs = linalg.eig(H)
-        indexes = sp.real_if_close(eigvals).argsort()
-        eigvals = sp.real_if_close(eigvals[indexes])
+        indexes = eigvals.argsort()
+        eigvals = eigvals[indexes]
         eigvecs = eigvecs[:, indexes]
     return eigvals, eigvecs
 
