@@ -25,5 +25,5 @@ print lowest_energy[-1]
 plt.plot(orders, lowest_energy)
 plt.title(r"He5, $l = {0}$, $j = {1}$, $V_0 = {2}$MeV".format(l, j, problem.V0))
 plt.xlabel(r"Matrix dimension N ($N \times N$)")
-plt.ylabel(r"Ground state energy / MeV")
+plt.ylabel(r"Lowest energy / MeV")
 plt.show()

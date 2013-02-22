@@ -25,7 +25,8 @@ wavefunction = calc.normalize(wavefunction, 0, 10, weight= lambda r: r**2)
 
 r = sp.linspace(1e-1, 10, 200)
 
-plt.title("Potential, ground energy (and wavefunction, not to scale) \n $l = {0}, j = {1}, V_0 = {2}$MeV")
+plt.title("Potential, ground energy (and wavefunction, not to scale) \n\
+$l = {0}$, $j = {1}$ and $V_0 = {2}$ MeV".format(l, j, problem.V0))
 plt.plot(r, l*(l + 1)/ r**2 + problem.potential(r, l, j))
 plt.plot(r, .1*r**2 * absq(wavefunction(r)) + energy[0])
 plt.plot(r, sp.zeros(len(r)) + energy[0])
