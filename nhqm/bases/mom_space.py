@@ -6,26 +6,26 @@ from scipy.special import sph_jn
 name = "MomSpace"
     
 @sp.vectorize
-def integrand(r, p, p_prim, V, l, j):
-    j_l, _ = sph_jn(l, p*r)
-    j_l_prim, _ = sph_jn(l, p_prim*r)
+def integrand(r, k, k_prim, V, l, j):
+    j_l, _ = sph_jn(l, k*r)
+    j_l_prim, _ = sph_jn(l, k_prim*r)
     return r**2 * j_l[-1] * j_l_prim[-1] * V(r, l, j)
     
 
 def H_element(n, n_prim, problem, step_size, l = 0, j = .5):
-    p, p_prim = [(x + 1)*step_size for x in (n, n_prim)]
-    diagonal = p**2 / (2 * problem.mass) * (n == n_prim)
+    k, k_prim = [(x + 1)*step_size for x in (n, n_prim)]
+    diagonal = k**2 / (2 * problem.mass) * (n == n_prim)
     V = problem.potential
     integral, _ = fixed_quad(integrand, 0, 10, \
-                                n = 20, args=(p, p_prim, V, l, j))
-    return diagonal + 2 * p_prim**2 * step_size / sp.pi * integral
+                                n = 20, args=(k, k_prim, V, l, j))
+    return diagonal + 2 * k_prim**2 * step_size / sp.pi * integral
 
 def gen_basis_function(problem, step_size,\
                             l = 0, j = .5):
     # Felnormaliserad!
     def basis_function(r, n):
-        p_n = (n + 1) * step_size
-        jn, _ = sph_jn(l, p_n*r)
-        return 4*sp.pi / (2*sp.pi)**1.5 * p_n**2 * step_size * jn[-1]
+        k_n = (n + 1) * step_size
+        jn, _ = sph_jn(l, k_n*r)
+        return 4*sp.pi / (2*sp.pi)**1.5 * k_n**2 * step_size * jn[-1]
     return basis_function
 
