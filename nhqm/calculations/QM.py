@@ -2,13 +2,21 @@ from __future__ import division
 import scipy as sp
 from scipy import linalg, integrate
 
-def hamiltonian(element_function, args=None, order=20, hermitian=False):
+def hamiltonian(element_function, args=None, 
+                order=20, hermitian=False, 
+                contour=None):
     """Given an element_function(n, n_prim) calculates energies."""
     H = sp.empty((order, order))
     for n in xrange(order):
         limit = (n + 1) if hermitian else order
         for n_prim in xrange(limit):
-            H[n, n_prim] = element_function(n, n_prim, *args)
+            if contour:
+                k = contour[n]
+                k_prim = contour[n_prim]
+            else:
+                k = n
+                k_prim = n_prim
+            H[n, n_prim] = element_function(k, k_prim, *args)
             if hermitian:
                 H[n_prim, n] = H[n, n_prim]
     return H

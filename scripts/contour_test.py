@@ -1,6 +1,6 @@
 from __future__ import division
 from imports import *
-from nhqm.bases import mom_space as mom, harm_osc as osc, berggren_contour as berg
+from nhqm.bases import mom_space as mom, harm_osc as osc, berggren as berg
 from nhqm.problems import He5, H_atom
 from nhqm.calculations import QM as calc
 import time
@@ -25,18 +25,18 @@ def kontroll_samma_kontur(order, k_max, peak_pos, peak_amp, zero_point, l=0, j=0
     #j = 0.5
     r = sp.linspace(0, 10, 200)
 
-    kontur_a = berg.gen_berggren_contour( peak_pos, peak_amp, k_max, order, zero_point )
-    kontur_b = berg.gen_berggren_contour( peak_pos, peak_amp, k_max, order, zero_point )
+    kontur_a = berg.gen_contour( peak_pos, peak_amp, k_max, order, zero_point )
+    kontur_b = berg.gen_contour( peak_pos, peak_amp, k_max, order, zero_point )
 
     a = 0
     kont_hamilton = sp.empty( (order,order), complex ) # complex elements?
     for k in kontur_a:
         b = 0
         for k_prim in kontur_b:
-            kont_hamilton[a,b] = berg.H_complex_element(k, k_prim, He5.problem, step_size, l, j)
+            kont_hamilton[a,b] = berg.H_element(k, k_prim, He5.problem, step_size, l, j)
             b += 1
         a += 1
-        kontur_b = berg.gen_berggren_contour( peak_pos, peak_amp, k_max, order, zero_point )  
+        kontur_b = berg.gen_contour( peak_pos, peak_amp, k_max, order, zero_point )  
     
     
     H = calc.hamiltonian(basis.H_element, args=(problem, step_size, l, j), order=order)
@@ -47,7 +47,7 @@ def plott_kontur( peak_position, peak_neg_amplitude, k_max, points, first_zero_p
         return plot_contour( peak_position, peak_neg_amplitude, k_max, points, first_zero_position )
     
 def plot_contour( peak_position, peak_neg_amplitude, k_max, points, first_zero_position = -1 ):    
-    cont = berg.gen_berggren_contour( peak_position, peak_neg_amplitude, k_max, points, first_zero_position )
+    cont = berg.gen_contour( peak_position, peak_neg_amplitude, k_max, points, first_zero_position )
     res = []
     for i in cont:
          res.append(i)
