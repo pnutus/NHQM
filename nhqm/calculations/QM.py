@@ -6,7 +6,7 @@ def hamiltonian(element_function, args=None,
                 order=20, hermitian=False, 
                 contour=None):
     """Given an element_function(n, n_prim) calculates energies."""
-    H = sp.empty((order, order))
+    H = sp.empty((order, order), complex)
     for n in xrange(order):
         limit = (n + 1) if hermitian else order
         for n_prim in xrange(limit):
