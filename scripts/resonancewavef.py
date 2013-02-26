@@ -13,22 +13,18 @@ step_size = k_max / order
 l = 1
 j = 1.5
 
-def absq(x):
-    return x*sp.conjugate(x)
-
-H = calc.hamiltonian(mom.H_element, args=(problem, step_size, l, j), order=order)
+H = calc.hamiltonian(mom.H_element, args=(step_size, problem, l, j), order=order)
 energy, eigvecs = calc.energies(H)
-basis_function = mom.gen_basis_function(problem, step_size, l=l, j=j)
+basis_function = mom.gen_basis_function(step_size, problem, l=l, j=j)
 wavefunction = calc.gen_wavefunction(eigvecs[:,0], basis_function)
 wavefunction = calc.normalize(wavefunction, 0, 10, weight= lambda r: r**2)
-
 
 r = sp.linspace(1e-1, 10, 200)
 
 plt.title("Potential, ground energy (and wavefunction, not to scale) \n\
 $l = {0}$, $j = {1}$ and $V_0 = {2}$ MeV".format(l, j, problem.V0))
 plt.plot(r, l*(l + 1)/ r**2 + problem.potential(r, l, j))
-plt.plot(r, .1*r**2 * absq(wavefunction(r)) + energy[0])
+plt.plot(r, .1*r**2 * calc.absq(wavefunction(r)) + energy[0])
 plt.plot(r, sp.zeros(len(r)) + energy[0])
 plt.axis([0, 10, -0.01, 0.04])
 plt.ylabel(r'$r^2|\Psi(r)|^2$')

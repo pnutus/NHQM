@@ -7,7 +7,7 @@ import nhqm.calculations.QM as calc
 problem = He5.problem
 problem.V0 = -52.3
 k_max = 4
-steps = 40
+steps = 20
 lowest_energy = sp.empty(steps)
 orders = sp.arange(steps) + 1
 l = 1
@@ -16,7 +16,7 @@ j = 1.5
 for (i, order) in enumerate(orders):
     step_size = k_max / order
     H = calc.hamiltonian(mom.H_element, \
-                args=(problem, step_size, l, j), order=order)
+                args=(step_size, problem, l, j), order=order)
     energy, eigvecs = calc.energies(H)
     lowest_energy[i] = energy[0] # MeV
     print order

@@ -36,8 +36,8 @@ for (i, problem) in enumerate(problems):
             H = calc.hamiltonian(osc.H_element, args=(problem, omega, l, j), order=order)
             basis_function = basis.gen_basis_function(problem, omega, l=l, j=j)
         else:
-            H = calc.hamiltonian(basis.H_element, args=(problem, step_size, l, j), order=order)
-            basis_function = basis.gen_basis_function(problem, step_size, l=l, j=j)
+            H = calc.hamiltonian(basis.H_element, args=(step_size, problem, l, j), order=order)
+            basis_function = basis.gen_basis_function(step_size, problem, l=l, j=j)
         energy, eigvecs = calc.energies(H)
         lowest_energy = energy[0] * problem.eV_factor
         print basis.name, "lowest energy:", lowest_energy, "eV"

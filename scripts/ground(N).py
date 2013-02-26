@@ -14,9 +14,9 @@ l = 0
 j = .5
 
 for (i, order) in enumerate(orders):
-    step_size = k_max / order
+    step = k_max / order
     H = calc.hamiltonian(mom.H_element, \
-                args=(problem, step_size, l, j), order=order)
+                args=(step, problem, l, j), order=order)
     energy, eigvecs = calc.energies(H)
     lowest_energy[i] = energy[0] # MeV
     print order

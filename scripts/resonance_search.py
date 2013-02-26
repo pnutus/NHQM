@@ -20,7 +20,7 @@ plt.ylabel(r"Ground state energy E / MeV")
 
 for (i, V0) in enumerate(V0s):
     problem.V0 = V0
-    H = calc.hamiltonian(mom.H_element, args=(problem, step_size, l, j), order=order)
+    H = calc.hamiltonian(mom.H_element, args=(step_size, problem, l, j), order=order)
     energy, eigvecs = calc.energies(H)
     lowest_energy[i] = energy[0]
     print V0

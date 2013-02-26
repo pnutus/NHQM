@@ -16,7 +16,7 @@ def imag_integrand(*args):
     return sp.imag( mom.integrand(*args) )
     
 
-def H_element(k, k_prim, problem, step_size, l = 0, j = .5):
+def H_element(k, k_prim, step, problem, l = 0, j = .5):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
     V = problem.potential
     
@@ -26,18 +26,20 @@ def H_element(k, k_prim, problem, step_size, l = 0, j = .5):
     imag_integral, _ = fixed_quad(imag_integrand, 0, 10, \
                                 n = 20, args=(k, k_prim, V, l, j)) 
                                                     
-    return diagonal + 2 * k_prim**2 * step_size / sp.pi * (real_integral + 1j * imag_integral)
-    
-def real_berggren_wrapper(k_max, points):
-    return gen_berggren_contour(0, 0, k_max, points, 0 )
-    
-# def get_step_length( peak_re, peak_im, k_max, points, first_zero_position = -1 ):
-#     segment1 = sp.sqrt( peak_re ** 2 + peak_im ** 2)
-#     segment2 = sp.sqrt( peak_im ** 2 + (first_zero_position - peak_re) ** 2)
-#     
-#     length = segment1 + segment2 + (k_max - first_zero_position)
-#     
-#     return length / points    
+    return diagonal + 2 * k_prim**2 * step / sp.pi \
+                        * (real_integral + 1j * imag_integral)
+
+@sp.vectorize
+def triangle(x, peak_x, peak_y, k_max):
+    if x < 2*peak_x:
+        return peak_y * (abs(x/peak_x - 1) - 1)
+    else:
+        return 0
+
+def gen_simple_contour(peak_x, peak_y, k_max, points):
+    xs = sp.linspace(0, k_max, points + 1)[1:]
+    ys = triangle(xs, peak_x, peak_y, k_max)
+    return xs + 1j * ys
 
 def gen_contour(peak_re, peak_im, k_max, points, 
                         first_zero_position = None ):
