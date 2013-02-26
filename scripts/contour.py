@@ -23,5 +23,5 @@ print "Berggren lowest energy:", eigvals[0]
 plt.figure(1)
 plot_poles(eigvals, problem.mass)
 plt.figure(2)
-plot_wavef(contour, eigvecs)
+plot_wavefunctions(contour, eigvecs)
 plt.show()
