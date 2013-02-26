@@ -1,16 +1,20 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from scipy.special import sph_jn
+from scipy.special.specfun import csphjy
 import numpy as np
 
 name = "MomSpace"
-    
+
+def j_l(l, k):
+    """Spherical bessel."""
+    _, j_l, _, _, _ = csphjy(l, k) 
+    return j_l[l]
+
 @sp.vectorize
 def integrand(r, k, k_prim, V, l, j):
-    j_l, _ = sph_jn(l, sp.conj(k)*r) 
-    j_l_prim, _ = sph_jn(l, k_prim*r)
-    return sp.real(r**2 * j_l[-1] * j_l_prim[-1] * V(r, l, j))
+    return r**2 * j_l(l, sp.conj(k)*r) \
+            * j_l(l, k_prim*r) * V(r, l, j)
     
 def H_element_contour(k, k_prim, step, problem, l = 0, j = .5):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
@@ -32,3 +36,18 @@ def gen_basis_function(step, problem, l = 0, j = .5):
         jn, _ = sph_jn(l, k_n*r)
         return 4*sp.pi / (2*sp.pi)**1.5 * k_n**2 * step * jn[-1]
     return basis_function
+
+
+# Berggren contour:    
+
+@sp.vectorize
+def triangle(x, peak_x, peak_y, k_max):
+    if x < 2*peak_x:
+        return peak_y * (abs(x/peak_x - 1) - 1)
+    else:
+        return 0
+
+def gen_simple_contour(peak_x, peak_y, k_max, points):
+    xs = sp.linspace(0, k_max, points + 1)[1:]
+    ys = triangle(xs, peak_x, peak_y, k_max)
+    return xs + 1j * ys
