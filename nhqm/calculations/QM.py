@@ -44,14 +44,25 @@ def energies(H, hermitian=False):
         eigvecs = eigvecs[:, indexes]
     return eigvals, eigvecs
 
-def gen_wavefunction(eigvec, basis_function):
+def gen_wavefunction(eigvec, basis_function, contour=None):
     length = len(eigvec)
-    @sp.vectorize
-    def wavefunction(r):
-        result = sp.empty(length, complex)
-        for (n, weight) in enumerate(eigvec):
-            result[n] = weight * basis_function(r, n)
-        return sp.sum(result)
+    if contour == None:
+        @sp.vectorize
+        def wavefunction(r):
+            result = sp.empty(length, complex)
+            for (n, weight) in enumerate(eigvec):
+                result[n] = weight * basis_function(r, n)
+            return sp.sum(result)
+    else:
+        steps = calculate_steps(contour)
+        @sp.vectorize
+        def wavefunction(r):
+            result = sp.empty(length, complex)
+            for (n, weight) in enumerate(eigvec):
+                k = contour[n]
+                step = steps[n]
+                result[n] = weight * basis_function(r, k, step)
+            return sp.sum(result)
     return wavefunction
 
 def absq(x):

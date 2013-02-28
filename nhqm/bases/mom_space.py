@@ -8,7 +8,11 @@ name = "MomSpace"
 
 def j_l(l, k):
     """Spherical bessel."""
-    _, j_l, _, _, _ = csphjy(l, k) 
+    if l == 0:
+        l1 = 1
+    else:
+        l1 = l
+    _, j_l, _, _, _ = csphjy(l1, k) 
     return j_l[l]
 
 @sp.vectorize
@@ -27,14 +31,12 @@ def H_element(n, n_prim, step, *args, **kwargs):
     k, k_prim = [(x + 1)*step for x in (n, n_prim)]
     return H_element_contour(k, k_prim, step, *args, **kwargs)
 
-def gen_basis_function(step, problem, l = 0, j = .5):
+def gen_basis_function(problem, l = 0, j = .5):
     # TODO
     # contour/complex
     # Not normalized!
-    def basis_function(r, n):
-        k_n = (n + 1) * step
-        jn, _ = sph_jn(l, k_n*r)
-        return 4*sp.pi / (2*sp.pi)**1.5 * k_n**2 * step * jn[-1]
+    def basis_function(r, k, step):
+        return 4*sp.pi / (2*sp.pi)**1.5 * k**2 * step * j_l(l, k*r)
     return basis_function
 
 
