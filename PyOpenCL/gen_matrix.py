@@ -1,3 +1,11 @@
+####################################################
+# Now this is working and the code is significantly faster.
+# I haven't tried on the CPU, but this code generates a
+# 1000x1000 matrix and integrals in each element in ~0.55
+# on my computer. Should be able to produce matrices we can
+# use in a few seconds. The current technique is a 10th order
+# Gauss-Lagendre integration.
+####################################################
 import pyopencl as cl
 import pyopencl.array as cl_array
 import numpy
