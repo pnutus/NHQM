@@ -1,6 +1,7 @@
 from __future__ import division
 import scipy as sp
 from scipy import linalg, integrate
+from scipy.special.orthogonal import p_roots
 
 def hamiltonian(element_function, args=None, 
                 order=20, hermitian=False):
@@ -15,26 +16,21 @@ def hamiltonian(element_function, args=None,
     return H
 
 def contour_hamiltonian(element_function, contour, args=None):
-    if contour[0] == 0:
-        contour = contour[1:]
-    order = len(contour)
+    zip_contour = zip(*contour)
+    order = len(zip_contour)
     H = sp.empty((order, order), complex)
-    
-    steps = calculate_steps(contour)
-    
-    for (n, k) in enumerate(contour):
-        for (n_prim, k_prim) in enumerate(contour):
-            H[n, n_prim] = element_function(k, k_prim, 
-                                            steps[n_prim], *args)
+    for (n, (k, _)) in enumerate(zip_contour):
+        for (n_prim, (k_prim, w)) in enumerate(zip_contour):
+            H[n, n_prim] = element_function(k, k_prim, w, *args)
     return H
 
-def calculate_steps(contour):
-    shifted = sp.roll(contour, 1)
-    shifted[0] = 0
-    return contour - shifted
+
 
 def energies(H, hermitian=False):
-    """Given a hamiltonian matrix, calculates energies and sorts them."""
+    """
+    Given a hamiltonian matrix, calculates energies and 
+    sorts them by their real part.
+    """
     if hermitian:
         eigvals, eigvecs = linalg.eigh(H)
     else:
@@ -49,21 +45,60 @@ def gen_wavefunction(eigvec, basis_function, contour=None):
     if contour == None:
         @sp.vectorize
         def wavefunction(r):
-            result = sp.empty(length, complex)
-            for (n, weight) in enumerate(eigvec):
-                result[n] = weight * basis_function(r, n)
-            return sp.sum(result)
+            iterable = (basis_function(r, n) 
+                        for n in range(length))
+            basis_vec = sp.fromiter(iterable, complex, count=length)
+            return sp.dot(basis_vec, eigvec)
     else:
-        steps = calculate_steps(contour)
         @sp.vectorize
         def wavefunction(r):
-            result = sp.empty(length, complex)
-            for (n, weight) in enumerate(eigvec):
-                k = contour[n]
-                step = steps[n]
-                result[n] = weight * basis_function(r, k, step)
-            return sp.sum(result)
+            iterable = (basis_function(r, k, w)
+                            for (k, w) in zip(*contour))
+            basis_vec = sp.fromiter(iterable, complex, count=length)
+            return sp.dot(basis_vec, eigvec)
     return wavefunction
+    
+
+# Berggren contour:    
+
+@sp.vectorize
+def triangle(x, peak_x, peak_y, k_max):
+    if x < 2*peak_x:
+        return peak_y * (abs(x/peak_x - 1) - 1)
+    else:
+        return 0
+
+def naive_triangle_contour(peak_x, peak_y, k_max, points):
+    xs = sp.linspace(0, k_max, points + 1)[1:]
+    ys = triangle(xs, peak_x, peak_y, k_max)
+    points = xs + 1j * ys
+    weights = calculate_steps(points)
+    return (points, weights)
+    
+def calculate_steps(contour):
+    shifted = sp.roll(contour, 1)
+    shifted[0] = 0
+    return contour - shifted
+    
+def gauss_contour(vertices, order):
+    """
+    Generates a contour using Gauss-Legendre quadrature.
+    """
+    (x, w) = p_roots(order)
+    num_segments = len(vertices) - 1
+    points = weights = sp.empty(0, complex)
+    for i in range(num_segments):
+        a = vertices[i]
+        b = vertices[i + 1]
+        scaled_x = (x * (b - a) + (a + b))/2
+        scaled_w = w * (b - a)/2
+        points = sp.hstack((points, scaled_x))
+        weights = sp.hstack((weights, scaled_w))
+    return (points, weights)
+    
+def triangle_contour(peak_x, peak_y, k_max, order):
+    vertices = [0, peak_x - 1j*peak_y, 2*peak_x, k_max]
+    return gauss_contour(vertices, order)
 
 def absq(x):
     return sp.real(x * sp.conj(x))
