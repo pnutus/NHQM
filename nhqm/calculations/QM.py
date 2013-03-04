@@ -101,7 +101,7 @@ def triangle_contour(peak_x, peak_y, k_max, order):
     return gauss_contour(vertices, order)
 
 def absq(x):
-    return sp.real(x * sp.conj(x))
+    return sp.real(x)**2 + sp.imag(x)**2
 
 def norm(f, start, stop, weight = lambda x: 1):
     def integrand(x):
