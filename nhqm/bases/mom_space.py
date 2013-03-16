@@ -2,7 +2,6 @@ from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
 from scipy.special.specfun import csphjy
-import numpy as np
 
 name = "MomSpace"
 
