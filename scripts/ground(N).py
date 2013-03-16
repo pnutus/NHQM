@@ -3,6 +3,7 @@ from imports import *
 import nhqm.bases.mom_space as mom
 from nhqm.problems import He5
 import nhqm.calculations.QM as calc
+from helpers import update_progress
 
 problem = He5.problem
 problem.V0 = -70
@@ -19,9 +20,9 @@ for (i, order) in enumerate(orders):
                 args=(step, problem, l, j), order=order)
     energy, eigvecs = calc.energies(H)
     lowest_energy[i] = energy[0] # MeV
-    print order
+    update_progress( ((i+1)/steps)**2 )
     
-print lowest_energy[-1]
+print "Ground state energy:", lowest_energy[-1]
 plt.plot(orders, lowest_energy)
 plt.title(r"He5, $l = {0}$, $j = {1}$, $V_0 = {2}$MeV".format(l, j, problem.V0))
 plt.xlabel(r"Matrix dimension N ($N \times N$)")
