@@ -1,25 +1,14 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from itertools import combinations, permutations
+from itertools import combinations
 
 # THIS IS FOR FERMIONS
 
 def gen_states(num_sp_states, num_particles=1):
     if num_sp_states < num_particles:
-        raise ValueError(
-        "There cannot be more particles than states"
-        )
+        raise ValueError("There cannot be more particles than states")
     return map(set, combinations(range(num_sp_states), num_particles))
-    
-def gen_state_mask(num_sp_states, num_particles =1):
-    
-    states = gen_states(num_sp_states, num_particles)
-    res =  sp.zeros( (len(states),num_sp_states) )
-    for i, state in enumerate(states):
-        for j in state:
-            res[i,j]=1
-    return res               
 
 def hamiltonian(mb_states, sp_H, eigvecs):
     order = len(mb_states)
@@ -28,7 +17,7 @@ def hamiltonian(mb_states, sp_H, eigvecs):
         for j, ket in enumerate( mb_states ):
             H[i,j] = H_elem(bra, ket, sp_H, eigvecs)
             
-    return H            
+    return H  
 
 def H_elem(bra, ket, sp_H, eigvecs):
     one_body = sum(sp_H[a, b] 
@@ -109,12 +98,3 @@ def get_two_particle_combinations(num_states, num_particles=2):
     return result             
             
 # Write (regression) tests! Also verify!
-
-if __name__ == '__main__':
-    mask = gen_state_mask(5,2)
-    a = mask[0,:]
-    b = mask[1,:]
-#     states = set([0,1,3]), set([0,1,5])
-#     print one_body_indexes(*states)
-#     print two_body_indexes(*states)
-#     print gen_states(30, 2)
