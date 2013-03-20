@@ -4,11 +4,10 @@ from nhqm.bases import naive_many_mody as nmb
 from scipy.sparse import lil_matrix
 import scipy as sp
 from scipy import linalg
-from plotting import *
 from nhqm.bases import mom_space as mom
 from nhqm.problems import He5
 from nhqm.calculations import QM as calc
-
+import itertools
 
 problem = He5.problem   
 order = 1*3
@@ -18,7 +17,7 @@ problem.V0 = -47.
 peak_x = 0.17
 peak_y = 0.07
 k_max = 2.5
-num_states = 10
+num_states = 5
 num_particles = 2
 
 contour = calc.triangle_contour(peak_x, peak_y, k_max, order/3)
@@ -35,17 +34,23 @@ mb_H = mb.hamiltonian(states, H, eigvecs)
 
 ###
 
-naivecomb = nmb.get_naive_combinations(num_states, num_particles)
-comb = mb.get_combinations(num_states, num_particles)
+naivecomb = nmb.get_naive_combinations_single_particle(num_states, num_particles)
+comb = mb.get_single_combinations(num_states, num_particles)
 
-#print naivecomb
-print len(naivecomb) - len(comb)
+num_d = 10
+p_d = 3        
 
-for i in xrange( min ( len(naivecomb), len(comb) ) ):
-    if naivecomb[i] != comb[i]:
-        print naivecomb[i], comb[i]
+naivedoublecomb = nmb.get_naive_combinations_two_particle_interaction(num_d, p_d)  
 
+doublecomb=mb.get_two_particle_combinations(num_d, p_d)
 
+b = len(naivedoublecomb) 
+a = len(doublecomb)
+print b - a
+
+for i in xrange( min( len(naivedoublecomb), len(doublecomb) ) ):
+    if naivedoublecomb[i] != doublecomb[i]:
+        print naivedoublecomb[i], doublecomb[i]
 
 
 

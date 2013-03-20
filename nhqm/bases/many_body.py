@@ -52,13 +52,13 @@ def one_body_indexes(bra, ket):
                 result.append( (a, b) )
     return result
 
-def one_body_comb(bra, ket):
+def one_body_combs(bra, ket):
     result = []
     for b in ket:
         for a in bra:
             new_ket = ket - set([b]) | set([a])
             if new_ket == bra:
-                result.append( (bra, ket) )
+                result.append( (bra, ket, set([a]), set([b]) ) )
     return result
 
 def two_body_indexes(bra, ket):
@@ -72,17 +72,41 @@ def two_body_indexes(bra, ket):
                 result.append( created + annihilated )
     return result
 
-def get_combinations(num_states, num_particles = 1):
+def two_body_combs(bra, ket):
+    result = []
+    for annihilated in combinations(ket, 2):
+        for created in combinations(bra, 2):
+            new_ket = (ket
+                        .difference(annihilated)
+                        .union(created))
+            if new_ket == bra:
+                result.append( (bra, ket, set(created), set(annihilated) ) )
+    return result
+
+def get_single_combinations(num_states, num_particles = 1):
     mb_states = gen_states(num_states, num_particles)
     result = []
     for i, bra in enumerate( mb_states ):
         for j, ket in enumerate( mb_states ):
-            temp =  one_body_comb(bra,ket) 
+            temp =  one_body_combs(bra,ket) 
             
             if temp != []:
                 for k, tup in enumerate(temp):
                  result.append( tup )
     return result        
+            
+def get_two_particle_combinations(num_states, num_particles=2):
+    mb_states = gen_states(num_states, num_particles)
+    result = []
+    for i, bra in enumerate(mb_states):
+        for j, ket in enumerate(mb_states):
+            temp = two_body_combs(bra,ket)
+            
+            if temp != []:
+                for k, tup in enumerate(temp):
+                 result.append( tup )
+    
+    return result             
             
 # Write (regression) tests! Also verify!
 
