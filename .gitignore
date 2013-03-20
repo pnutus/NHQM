@@ -36,3 +36,6 @@ nosetests.xml
 
 # OS X
 .DS_Store
+
+# Test-code
+test/
