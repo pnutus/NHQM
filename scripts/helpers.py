@@ -2,15 +2,19 @@ from __future__ import division
 import sys, time
 from datetime import timedelta
 
+# TODO
+# timing should maybe be done in first function
+# timing should weigh first iterations less than subsequent
+
 def update_progress(done_ratio, 
                     time_passed = None, time_left = None):
     """Takes a number in the range [0,1]"""
     bar = '#' * int(done_ratio * 20)
-    string = "\r[{0:20s}] {1:.1f}%". \
-                format(bar, done_ratio * 100)
+    string = "\r[{0:20s}] {1:.1%}". \
+                format(bar, done_ratio)
     if time_passed is not None:
         time_str = str(timedelta(seconds=time_passed))
-        string += " Time passed: {}".format(time_str)
+        string += " Time elapsed: {}".format(time_str)
     if time_left is not None:
         time_str = str(timedelta(seconds=time_left))
         string += " Time left: {}".format(time_str)
