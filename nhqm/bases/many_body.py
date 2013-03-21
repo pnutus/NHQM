@@ -25,7 +25,7 @@ def gen_states(num_sp_states, num_particles=2):
 def H_elem(bra, ket, sp_H, sep_M):
     V0 = 1
     def n_n_interaction(a, b, c, d):
-        return V0*(sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c])
+        return sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c]
     one_body = sum(sp_H[a, b] 
                     for (a, b) in one_body_indexes(bra, ket))
     two_body = sum(n_n_interaction(a, b, c, d)
@@ -37,7 +37,7 @@ def gen_separable_matrix(eigvecs, contour):
     M = sp.empty( (order, order), complex )
     for i, bra in enumerate(eigvecs):
         for j, ket in enumerate(eigvecs):
-            M[i, j] = V_0*separable_elem(bra, ket, contour)
+            M[i, j] = separable_elem(bra, ket, contour)
     return M
 
 def separable_elem(bra, ket, contour, l=0, j=0.5):
@@ -56,7 +56,8 @@ def V_sep(k, k_prim, l, j):
     
 def potential(r, l, j):
     beta = 1
-    return sp.exp(- beta * r**2)
+    sqrtV0 = 1
+    return sqrtV0*sp.exp(- beta * r**2)
     
 def one_body_indexes(bra, ket, verbose=False):
     result = []
