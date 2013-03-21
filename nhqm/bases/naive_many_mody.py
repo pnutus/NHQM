@@ -12,7 +12,7 @@ def gen_states(num_sp_states, num_particles=1):
         )
     return map(set, combinations(range(num_sp_states), num_particles))
 
-def get_naive_combinations_single_particle(num_states, num_particles=1):
+def get_single_particle_combinations(num_states, num_particles=1):
 
     states=gen_states(num_states, num_particles)
     states2=gen_states(num_states, num_particles)
@@ -31,7 +31,7 @@ def get_naive_combinations_single_particle(num_states, num_particles=1):
                         
     return combs                       
             
-def get_naive_combinations_two_particle_interaction(num_states, num_particles=2):
+def get_two_particle_combinations(num_states, num_particles=2):
 
     states=gen_states(num_states, num_particles)
     states2=gen_states(num_states, num_particles)
