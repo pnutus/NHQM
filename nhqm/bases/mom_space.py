@@ -13,9 +13,7 @@ def j_l(l, k):
 
 @sp.vectorize
 def integrand(r, k, k_prim, V, l, j):
-    # k = sp.conj(k) WHAT
-    return r**2 * j_l(l, k*r) \
-            * j_l(l, k_prim*r) * V(r, l, j)
+    return r**2 * j_l(l, k*r) * j_l(l, k_prim*r) * V(r, l, j)
     
 def H_element_contour(k, k_prim, weight, problem, l = 0, j = .5):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
