@@ -86,9 +86,3 @@ def get_two_particle_combinations(num_states, num_particles=2):
     return result    
     
 
-            
-# Write (regression) tests! Also verify!
-<<<<<<< HEAD
-=======
- 
->>>>>>> implemented tests for fock-space operators on many-body
