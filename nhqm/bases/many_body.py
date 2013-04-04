@@ -59,31 +59,38 @@ def potential(r, l, j):
     sqrtV0 = 1
     return sqrtV0*sp.exp(- beta * r**2)
     
-def one_body_indexes(bra, ket, verbose=False):
+def one_body_indexes(bra, ket, verbose = False):
     result = []
-    for b in ket:
-        for a in bra:
-            new_ket = ket - set([b]) | set([a])
-            if new_ket == bra:
-                if verbose:
-                    result.append( (bra, ket, set([a]), set([b]) ) )
-                else:    
-                    result.append( (a, b) )
+    diff = bra - ket
+    
+    
+    if not len(diff) > 1:
+        for b in ket:
+            for a in bra:
+                new_ket = ket - set([b]) | set([a])
+                if new_ket == bra:
+                    if verbose:
+                        result.append( (bra, ket, set([a]), set([b]) ) )
+                    else:    
+                        result.append( (a, b) )
     return result
 
-def two_body_indexes(bra, ket,verbose = False):
+def two_body_indexes(bra, ket, verbose = False):
     result = []
-    for annihilated in combinations(ket, 2):
-        for created in combinations(bra, 2):
-            new_ket = (ket
-                        .difference(annihilated)
-                        .union(created))
-            if new_ket == bra:
-                if verbose:
-                    result.append( 
-                            (bra, ket, set(created), set(annihilated) ) )
-                else:
-                    result.append( created + annihilated )
+    diff = bra - ket
+    
+    if not len(diff) > 2:
+        for annihilated in combinations(ket, 2):
+            for created in combinations(bra, 2):
+                new_ket = (ket
+                            .difference(annihilated)
+                            .union(created))
+                if new_ket == bra:
+                    if verbose:
+                        result.append( 
+                                (bra, ket, set(created), set(annihilated) ) )
+                    else:
+                        result.append( created + annihilated )
     return result
     
 
@@ -112,4 +119,37 @@ def get_two_particle_combinations(num_states, num_particles=2):
     
     return result    
     
+def get_sp_smart(num_states, num_particles):
+        mb_states= gen_states(num_states, num_particles)
+        sp_states= gen_states(num_states, num_particles=1)
+        result = []
+        
+        for i, bra in enumerate(mb_states):
+            for alfa in bra:
+                alpha=set([alfa])
+                for beta in (sp_states): 
+                    if ((bra - alpha) - beta) == (bra - alpha):
+                        #can't add existing ferm 
+                        newket = (bra - alpha) | beta
+                        res = (bra, newket, alpha, beta )
+                        result.append(res)
+        return result    
+    
+if __name__ == '__main__':
 
+
+    
+    np = 2
+    ns = 3
+    res = get_sp_smart(ns,np)
+
+
+    L = [ (set([0,5]), set([0,5])), (set([0,1]), set([0,2])), (set([0,3]), set([0,2]))]
+    L.sort()
+    print L 
+
+    
+    
+    
+    #print get_single_particle_combinations(ns,1)
+    #print get_two_particle_combinations(ns,2)

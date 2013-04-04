@@ -54,36 +54,52 @@ import unittest
 class RedTests(unittest.TestCase):
     
     def setUp(self):
+        print "starting set up"
         self.num_s = 10
-        self.num_p = 3
-        self.naive_sp = mb.get_single_particle_combinations(
+        self.num_p = 2
+        self.naive_sp = nmb.get_single_particle_combinations(
                         self.num_s, self.num_p)
-        self.smart_sp = nmb.get_single_particle_combinations(
-                        self.num_s, self.num_p)
+        #self.smart_sp = mb.get_single_particle_combinations(
+                        #self.num_s, self.num_p)
+        self.smart_sp = mb.get_sp_smart(self.num_s, self.num_p)
 
-        self.naive_2p = mb.get_two_particle_combinations(
+        self.naive_2p = nmb.get_two_particle_combinations(
                         self.num_s, self.num_p)
-        self.smart_2p = nmb.get_two_particle_combinations(
+        self.smart_2p = mb.get_two_particle_combinations(
                         self.num_s, self.num_p)
     
     def testSPLength(self):
+        print "testing single particle length"
         N = len(self.naive_sp) - len(self.smart_sp)
+        print "n",len(self.naive_sp)
+        print "s", len(self.smart_sp)
         self.assertEquals(N, 0 )
 
-    def testSPLength(self):
+    def test2PLength(self):
+        print "testing two particle length"
         N = len(self.naive_2p) - len(self.smart_2p)
         self.assertEquals(N, 0 )
     
     def testSPElements(self):
+        print "correlating single particle sorting order"
         length = min( len(self.naive_sp), len( self.smart_sp ) )
-        num_errors = 0
+        check = 0
+        
+        self.smart_sp.sort()
+        self.naive_sp.sort()
         
         for i in xrange(length):
-            if not ( self.smart_sp[i] == self.naive_sp[i] ):
-                num_errors = num_errors +1
-        self.assertEquals(num_errors, 0)
+            for j in xrange(length):
+                if self.smart_sp[i] == self.naive_sp[j]:
+                    check = check + 1
+        
+        #for i in xrange(length):
+        #    if not ( self.smart_sp[i] == self.naive_sp[i] ):
+        #        num_errors = num_errors +1
+        self.assertEquals(length, check)
 
     def test2PElements(self):
+        print "correlating two particle sorting order"
         length = min(len(self.naive_2p), len( self.smart_2p ) )
         res, ref = sp.zeros(length), sp.zeros(length)
         num_errors = 0
@@ -161,5 +177,4 @@ for i in xrange( min( len(naivedoublecomb), len(doublecomb) ) ):
         print naivedoublecomb[i], doublecomb[i]
         
 """
-
 
