@@ -6,12 +6,12 @@ import scipy as sp
 from pyopencl.elementwise import ElementwiseKernel
 from gen_matrix import GenMatrix
 
-size=2000
+size=1000
 
 gm=GenMatrix()
 gm.load_potential("woods-saxon.cl")
-gm.set_method("mom_space_real")
-gm.allocate_space(size)
+gm.set_method("mom_space_real.cl")
+gm.allocate_space(size,numpy.float32)
 gm.combine_kernel("1.0")
 gm.execute_kernel(0,6.0)
 print gm.get_results().reshape((size,size))

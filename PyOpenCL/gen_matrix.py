@@ -20,13 +20,13 @@ class GenMatrix:
     def load_potential(self, filename="simple.cl"):
         self.potential="".join(open(filename,'r').readlines())
     # Choose which calculation method to use.
-    def set_method(self,method="mom_space_real"):
-        self.method="".join(open(method+".cl",'r').readlines())
-    def allocate_space(self,size):
+    def set_method(self,method="mom_space_real.cl"):
+        self.method="".join(open(method,'r').readlines())
+    def allocate_space(self,size,type):
         self.size=size
         host_matrix=(numpy.array([i for i in range(size**2)])).astype(numpy.int32)
         self.gpu_matrix=cl_array.to_device(self.ctx,self.queue,host_matrix)
-        self.gpu_result=cl_array.empty(self.queue,(size**2,1,),numpy.float32)
+        self.gpu_result=cl_array.empty(self.queue,(size**2,1,),type)
     def combine_kernel(self,arg=""):
         includes="".join(open("includes.cl",'r').readlines())
         defines="".join(open("defines.cl",'r').readlines())
