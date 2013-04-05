@@ -128,6 +128,7 @@ def get_sp_smart(num_states, num_particles):
             for alfa in bra:
                 alpha=set([alfa])
                 for beta in (sp_states): 
+                    """we'd like to generate beta from the set of possible sp_states minus the set of states already present in the bra -alpha, can this be done through clever set manipulations?"""
                     if ((bra - alpha) - beta) == (bra - alpha):
                         #can't add existing fermion 
                         ket = (bra - alpha) | beta
@@ -143,7 +144,8 @@ def get_2p_smart(num_states, num_particles):
     for i, bra in enumerate(mb_states):
         for alphabeta_interim in combinations(bra, 2):
             alphabeta = set(alphabeta_interim)
-            for gammadelta in twop_states:
+            for gammadelta in twop_states: 
+                """ we'd like t generate gammadelta from all twop states minus any two particle state formed from two of the particles already present in the bra -alpha, can this be done through clever set manipulations?"""
                 ket = (bra - alphabeta)
                 if ket - gammadelta == ket:
                     #can't add existing fermions   
