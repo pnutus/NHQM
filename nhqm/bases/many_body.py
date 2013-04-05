@@ -129,25 +129,37 @@ def get_sp_smart(num_states, num_particles):
                 alpha=set([alfa])
                 for beta in (sp_states): 
                     if ((bra - alpha) - beta) == (bra - alpha):
-                        #can't add existing ferm 
-                        newket = (bra - alpha) | beta
-                        res = (bra, newket, alpha, beta )
+                        #can't add existing fermion 
+                        ket = (bra - alpha) | beta
+                        res = (bra, ket, alpha, beta )
                         result.append(res)
         return result    
+        
+def get_2p_smart(num_states, num_particles):
+    mb_states = gen_states(num_states, num_particles)
+    twop_states = gen_states(num_states, num_particles = 2)
+    result = []
+    
+    for i, bra in enumerate(mb_states):
+        for alphabeta_interim in combinations(bra, 2):
+            alphabeta = set(alphabeta_interim)
+            for gammadelta in twop_states:
+                ket = (bra - alphabeta)
+                if ket - gammadelta == ket:
+                    #can't add existing fermions   
+                    ket = ket | gammadelta
+                    res =(bra, ket, alphabeta, gammadelta)
+                    result.append(res) 
+    return result                
     
 if __name__ == '__main__':
 
 
     
-    np = 2
+    np = 3
     ns = 3
-    res = get_sp_smart(ns,np)
-
-
-    L = [ (set([0,5]), set([0,5])), (set([0,1]), set([0,2])), (set([0,3]), set([0,2]))]
-    L.sort()
-    print L 
-
+    res = get_2p_smart(ns,np)
+    print res
     
     
     
