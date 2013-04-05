@@ -153,13 +153,13 @@ def get_2p_smart(num_states, num_particles):
     return result                
     
 if __name__ == '__main__':
-
-
-    
+        
     np = 3
-    ns = 3
+    ns = 4
     res = get_2p_smart(ns,np)
-    print res
+    ref = nmb.get_naive_combinations_two_particle_interaction(ns,np)
+    for i,ket  in enumerate(res):
+        print ket, ref[i]
     
     
     

@@ -55,8 +55,8 @@ class RedTests(unittest.TestCase):
     
     def setUp(self):
         print "starting set up"
-        self.num_s = 10
-        self.num_p = 2
+        self.num_s = 7
+        self.num_p = 3
         self.naive_sp = nmb.get_single_particle_combinations(
                         self.num_s, self.num_p)
         #self.smart_sp = mb.get_single_particle_combinations(
@@ -65,9 +65,10 @@ class RedTests(unittest.TestCase):
 
         self.naive_2p = nmb.get_two_particle_combinations(
                         self.num_s, self.num_p)
-        self.smart_2p = mb.get_two_particle_combinations(
-                        self.num_s, self.num_p)
-    
+        #self.smart_2p = mb.get_two_particle_combinations(
+        #                self.num_s, self.num_p)
+        self.smart_2p = mb.get_2p_smart(self.num_s, self.num_p)
+        
     def testSPLength(self):
         print "testing single particle length"
         N = len(self.naive_sp) - len(self.smart_sp)
@@ -78,12 +79,14 @@ class RedTests(unittest.TestCase):
     def test2PLength(self):
         print "testing two particle length"
         N = len(self.naive_2p) - len(self.smart_2p)
+        print "s2", len(self.smart_2p)
+        print "n2", len(self.naive_2p)
         self.assertEquals(N, 0 )
     
     def testSPElements(self):
         print "correlating single particle sorting order"
         length = min( len(self.naive_sp), len( self.smart_sp ) )
-        check = 0
+        check_2 = 0
         
         self.smart_sp.sort()
         self.naive_sp.sort()
@@ -91,23 +94,24 @@ class RedTests(unittest.TestCase):
         for i in xrange(length):
             for j in xrange(length):
                 if self.smart_sp[i] == self.naive_sp[j]:
-                    check = check + 1
+                    check_2 = check_2 + 1
         
         #for i in xrange(length):
         #    if not ( self.smart_sp[i] == self.naive_sp[i] ):
         #        num_errors = num_errors +1
-        self.assertEquals(length, check)
+        self.assertEquals(length, check_2)
 
     def test2PElements(self):
         print "correlating two particle sorting order"
         length = min(len(self.naive_2p), len( self.smart_2p ) )
         res, ref = sp.zeros(length), sp.zeros(length)
-        num_errors = 0
+        check = 0
         
         for i in xrange(length):
-            if not( self.smart_2p[i] == self.naive_2p[i] ):
-                num_errors = num_errors +1
-        self.assertEquals(num_errors, 0)
+            for j in xrange(length):
+                if self.naive_2p[i] == self.smart_2p[j]:
+                    check = check +1
+        self.assertEquals(check, length)
 
         
 class ComplexTests(unittest.TestCase):
@@ -118,8 +122,6 @@ class WeightTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    
-    
     
     
     
