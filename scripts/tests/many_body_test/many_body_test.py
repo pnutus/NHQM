@@ -8,46 +8,6 @@ from nhqm.bases import mom_space as mom
 from nhqm.problems import He5
 from nhqm.calculations import QM as calc
 import itertools
-
-def get_naive_combinations_single_particle(num_states, num_particles=1):
-
-    states=gen_states(num_states, num_particles)
-    states2=gen_states(num_states, num_particles)
-    single_state=gen_states(num_states, num_particles=1)
-        
-    combs = []        
-
-    for i, a in enumerate(states):
-        for j, b in enumerate(states2):
-                #testa alfa och beta och se om det blir nagot
-                for beta in b:
-                    for alpha in single_state:
-                        if (a == (b - set([beta]) | alpha )):
-                            combs.append( \
-                            (a, b, alpha, set([beta])) )
-                        
-    return combs                       
-            
-def get_naive_combinations_two_particle_interaction(num_states, num_particles=2):
-
-    states=gen_states(num_states, num_particles)
-    states2=gen_states(num_states, num_particles)
-    double_state=gen_states(num_states, num_particles=2)
-        
-    combs = []        
-
-    for i, a in enumerate(states):
-        for j, b in enumerate(states2):
-                #testa alfa1,2 och beta1,2 och se om det blir nagot
-                gamma_delta_permut = combinations(b,2)
-                for gamma_delta in gamma_delta_permut:
-                    for alpha_beta in double_state:
-                        if (a == (b - set(gamma_delta) | alpha_beta )):
-                            combs.append( \
-                            (a, b, alpha_beta, set(gamma_delta) ) )
-                        
-    return combs                        
-            
             
 import unittest
    

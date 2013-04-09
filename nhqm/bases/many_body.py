@@ -59,6 +59,8 @@ def potential(r, l, j):
     sqrtV0 = 1
     return sqrtV0*sp.exp(- beta * r**2)
     
+
+    
 def one_body_indexes(bra, ket, verbose = False):
     result = []
     diff = bra - ket
@@ -124,32 +126,37 @@ def get_sp_smart(num_states, num_particles):
         sp_states= gen_states(num_states, num_particles=1)
         result = []
         
-        for i, bra in enumerate(mb_states):
+        for bra_index, bra in enumerate(mb_states):
             for alfa in bra:
                 alpha=set([alfa])
                 for beta in (sp_states): 
-                    """we'd like to generate beta from the set of possible sp_states minus the set of states already present in the bra -alpha, can this be done through clever set manipulations?"""
+                    """we'd like to generate beta from the set of possible sp_states minus the set of states already present in the (bra -alpha), can this be done through clever set manipulations?"""
                     if ((bra - alpha) - beta) == (bra - alpha):
                         #can't add existing fermion 
                         ket = (bra - alpha) | beta
+                        #ket_index = mb_states.index(ket)
                         res = (bra, ket, alpha, beta )
                         result.append(res)
         return result    
+        
+"""def translate_ket_to_index( state_vector, ket):
+    return state_vector.index(ket)        """
         
 def get_2p_smart(num_states, num_particles):
     mb_states = gen_states(num_states, num_particles)
     twop_states = gen_states(num_states, num_particles = 2)
     result = []
     
-    for i, bra in enumerate(mb_states):
+    for bra_index, bra in enumerate(mb_states):
         for alphabeta_interim in combinations(bra, 2):
             alphabeta = set(alphabeta_interim)
             for gammadelta in twop_states: 
-                """ we'd like t generate gammadelta from all twop states minus any two particle state formed from two of the particles already present in the bra -alpha, can this be done through clever set manipulations?"""
+                """ we'd like t generate gammadelta from all twop states minus any two-particle-state formed from two of the particles already present in the (bra -alphabeta), can this be done through clever set manipulations?"""
                 ket = (bra - alphabeta)
                 if ket - gammadelta == ket:
                     #can't add existing fermions   
                     ket = ket | gammadelta
+                    #ket_index = mb_states.index(ket)
                     res =(bra, ket, alphabeta, gammadelta)
                     result.append(res) 
     return result                
