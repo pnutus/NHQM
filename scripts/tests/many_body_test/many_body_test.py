@@ -20,14 +20,14 @@ class RedTests(unittest.TestCase):
         self.num_p = 3
         self.naive_sp = nmb.get_single_particle_combinations(
                         self.num_s, self.num_p)
-        #self.smart_sp = mb.get_single_particle_combinations(
-                        #self.num_s, self.num_p)
+        self.medium_sp = mb.get_single_particle_combinations(
+                        self.num_s, self.num_p)
         self.smart_sp = mbs.get_sp_dict(self.num_s, self.num_p)
 
         self.naive_2p = nmb.get_two_particle_combinations(
                         self.num_s, self.num_p)
-        #self.smart_2p = mb.get_two_particle_combinations(
-        #                self.num_s, self.num_p)
+        self.medium_2p = mb.get_two_particle_combinations(
+                        self.num_s, self.num_p)
         self.smart_2p = mbs.get_2p_dict(self.num_s, self.num_p)
         
         self.mb_s = mb.gen_states(self.num_s, self.num_p)
@@ -46,6 +46,32 @@ class RedTests(unittest.TestCase):
         
         N = len(self.naive_sp) - lens
         self.assertEquals(N, 0 )
+        
+    def testMediumSPLength(self):
+        N = len(self.naive_sp) - len(self.medium_sp)
+        self.assertEquals(N, 0 ) 
+        
+    def testMedium2PLength(self):
+        N = len(self.naive_2p) - len(self.medium_2p)
+        self.assertEquals(N, 0 )  
+        
+    def testMediumSPElements(self):
+        check =0
+        length = len(self.medium_sp)
+        for i in xrange(length):
+            if self.medium_sp[i] == self.naive_sp[i]:
+                check +=1 
+                   
+        self.assertEquals(length, check)
+        
+    def testMedium2PElements(self):
+        check =0
+        length = len(self.medium_2p)
+        for i in xrange(length):
+            if self.medium_2p[i] == self.naive_2p[i]:
+                check +=1 
+                   
+        self.assertEquals(length, check)                   
 
     def test2PLength(self):
         print "testing two particle length"
