@@ -1,6 +1,7 @@
 from imports import *
 from nhqm.bases import many_body as mb
-from nhqm.bases import naive_many_mody as nmb
+from nhqm.bases import naive_many_body as nmb
+from nhqm.bases import many_body_spill as mbs
 from scipy.sparse import lil_matrix
 import scipy as sp
 from scipy import linalg
@@ -21,56 +22,85 @@ class RedTests(unittest.TestCase):
                         self.num_s, self.num_p)
         #self.smart_sp = mb.get_single_particle_combinations(
                         #self.num_s, self.num_p)
-        self.smart_sp = mb.get_sp_smart(self.num_s, self.num_p)
+        self.smart_sp = mbs.get_sp_dict(self.num_s, self.num_p)
 
         self.naive_2p = nmb.get_two_particle_combinations(
                         self.num_s, self.num_p)
         #self.smart_2p = mb.get_two_particle_combinations(
         #                self.num_s, self.num_p)
-        self.smart_2p = mb.get_2p_smart(self.num_s, self.num_p)
+        self.smart_2p = mbs.get_2p_dict(self.num_s, self.num_p)
+        
+        self.mb_s = mb.gen_states(self.num_s, self.num_p)
         
     def testSPLength(self):
         print "testing single particle length"
-        N = len(self.naive_sp) - len(self.smart_sp)
-        print "n",len(self.naive_sp)
-        print "s", len(self.smart_sp)
+        
+        #print "n", len(self.naive_sp)
+        lens = 0
+        for key in self.smart_sp.keys():
+            for element in self.smart_sp[key]:
+                for child in element:
+                    if len(child) > 0:
+                        lens += 1
+        #print "s",lens
+        
+        N = len(self.naive_sp) - lens
         self.assertEquals(N, 0 )
 
     def test2PLength(self):
         print "testing two particle length"
-        N = len(self.naive_2p) - len(self.smart_2p)
-        print "s2", len(self.smart_2p)
-        print "n2", len(self.naive_2p)
+
+        #print "n2", len(self.naive_2p)
+        
+        len2 = 0
+        for key in self.smart_2p.keys():
+            for element in self.smart_2p[key]:
+                for child in element:
+                    if len(child) > 0:
+                        len2 += 1
+                        
+        #print "s2", len2
+                        
+        N = len(self.naive_2p) - len2
         self.assertEquals(N, 0 )
     
     def testSPElements(self):
         print "correlating single particle sorting order"
-        length = min( len(self.naive_sp), len( self.smart_sp ) )
-        check_2 = 0
-        
-        self.smart_sp.sort()
-        self.naive_sp.sort()
-        
-        for i in xrange(length):
-            for j in xrange(length):
-                if self.smart_sp[i] == self.naive_sp[j]:
-                    check_2 = check_2 + 1
-        
-        #for i in xrange(length):
-        #    if not ( self.smart_sp[i] == self.naive_sp[i] ):
-        #        num_errors = num_errors +1
-        self.assertEquals(length, check_2)
-
-    def test2PElements(self):
-        print "correlating two particle sorting order"
-        length = min(len(self.naive_2p), len( self.smart_2p ) )
-        res, ref = sp.zeros(length), sp.zeros(length)
+        length = len(self.naive_sp)
         check = 0
         
         for i in xrange(length):
-            for j in xrange(length):
-                if self.naive_2p[i] == self.smart_2p[j]:
-                    check = check +1
+            for key in self.smart_sp.keys():
+                for element in self.smart_sp[key]:
+                    for child in element:
+                        ab_tup = (self.naive_sp[i][2], self.naive_sp[i][3])
+                        key_tup = (self.naive_sp[i][0], self.naive_sp[i][1])
+                        
+                        if ab_tup == child and \
+                         key_tup == ( self.mb_s[key[0]], self.mb_s[key[1]]):
+                            check += 1
+                            
+        #for i in xrange(length):
+        #    if not ( self.smart_sp[i] == self.naive_sp[i] ):
+        #        num_errors = num_errors +1
+        self.assertEquals(length, check)
+
+    def test2PElements(self):
+        print "correlating two particle sorting order"
+        length = len(self.naive_2p)
+        check = 0
+        
+        for i in xrange(length):
+            for key in self.smart_2p.keys():
+                for element in self.smart_2p[key]:
+                    for child in element:
+                        ab_tup = (self.naive_2p[i][2], self.naive_2p[i][3])
+                        key_tup = (self.naive_2p[i][0], self.naive_2p[i][1])
+                        
+                        if ab_tup == child and \
+                         key_tup == ( self.mb_s[key[0]], self.mb_s[key[1]]):
+                            check += 1
+
         self.assertEquals(check, length)
 
         
