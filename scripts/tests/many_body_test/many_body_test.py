@@ -2,7 +2,6 @@ from imports import *
 from nhqm.bases import many_body as mb
 from nhqm.bases import naive_many_body as nmb
 from nhqm.bases import many_body_spill as mbs
-from scipy.sparse import lil_matrix
 import scipy as sp
 from scipy import linalg
 from nhqm.bases import mom_space as mom
