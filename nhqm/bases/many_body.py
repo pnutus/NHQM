@@ -47,6 +47,7 @@ def separable_elem(bra, ket, contour, l=0, j=0.5):
     #no weight in the contour array?
     for n, (k, w) in enumerate(contour):
         inner_sum = 0
+        #Complex conjugate the bra? Or NHQM trickery?
         for n_prim, (k_prim, w_prim) in enumerate(contour):
             inner_sum += w_prim * ket[n_prim] * V_sep(k, k_prim, l, j)
         result += w * bra[n] * inner_sum 
