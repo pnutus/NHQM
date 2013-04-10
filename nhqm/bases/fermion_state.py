@@ -49,6 +49,12 @@ class FermionState:
     
     def __repr__(self):
         return str(self)
+        
+    def __cmp__(self,other):
+        return self.sign == other.sign and self.states == other.states
+
+    def __eq__(self,other):
+        return self.sign == other.sign and self.states == other.states
     
 def state_index(states, new_state):
     for i, state in enumerate(states):
@@ -62,3 +68,11 @@ def state_index(states, new_state):
 
 if __name__ == '__main__':
     print "bonjour bonjour baguette"
+    
+    lista = [1,2,3]
+    a = FermionState(lista)
+    b= FermionState(lista)
+    print a == b
+    print a == FermionState(set(lista))
+    print a == FermionState(list(set(lista)))
+    print lista == list(set(lista))

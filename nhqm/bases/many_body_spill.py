@@ -5,7 +5,7 @@ from itertools import combinations
 import mom_space as mom
 from collections import defaultdict
 import many_body as mb
-import fermion_state as fs
+from fermion_state import FermionState
 
 
 def gen_states(s, num_particles):
@@ -18,7 +18,7 @@ def n_n_interaction(sep_M, a, b, c, d):
     return sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c]         
 
 
-def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
+def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
     num_sp_states = len(eigvecs)
     mb_states = gen_states(num_sp_states, num_particles)
     order = len(mb_states)
@@ -27,13 +27,7 @@ def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
     hamilton_dict = get_hamilton_dict(num_sp_states, num_particles)
     
     for key, values in hamilton_dict.iteritems():
-        sp_interactions, twop_interactions = values
-        "single particle energy:"
-        for alpha, beta in sp_interactions:
-            for a in alpha: #one element set -> int
-                for b in beta: #eon element set -> int:
-                    #H[key] += sp_H[a,b]
-                    H[key] += 0
+        twop_interactions = values
         "two body; n-n interaction:"  
         for alphabeta, gammadelta in twop_interactions:
             ab = list(alphabeta)
@@ -59,19 +53,17 @@ def get_2p_smart(num_states, num_particles, res_dict):
                 from two of the particles already present in 
                 the (bra -alphabeta), can this be done through 
                 clever set manipulations?"""
-                ket = (bra - alphabeta)
-                if ket - gammadelta == ket:
+                ket = (set(bra) - alphabeta)
+                if ket - set(gammadelta) == ket:
                     #can't add existing fermions   
-                    ket = ket | gammadelta
-                    ket_index = mb_states.index(ket)
+                    ket = ket | set(gammadelta)
+                    ket_index = mb_states.index(FermionState(ket))
                     res = (alphabeta, gammadelta) 
-                    res_dict[(bra_index,ket_index)][1].append( res )
+                    res_dict[(bra_index,ket_index)].append( res )
     return
 
 def get_hamilton_dict(num_states, num_particles):
-    def default_factory():
-        return ([],[])
-    
+
     """h_dict contains the value [] between two bra 
     and ket indices that do not permitt a fock space 
     contribution, idealy the key shouldn't even be 
@@ -79,17 +71,11 @@ def get_hamilton_dict(num_states, num_particles):
     permitts a contribution. and if only one does so 
     then no [] value from the other shold be saved"""    
         
-    h_dict = defaultdict( default_factory )
+    h_dict = defaultdict( list )
     get_2p_smart(num_states, num_particles, h_dict)
     return h_dict
 
-
-    def get_2p_dict(ns,np):
-    def default_factory():
-        return ([],[])
-    h_dict = defaultdict( default_factory )
-    get_2p_smart(ns,np,h_dict)
-    return h_dict                   
+            
     
 if __name__ == '__main__':
     print "poor grammar makes me [sic]"
