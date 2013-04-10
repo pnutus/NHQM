@@ -41,3 +41,4 @@ idx = res_index(eigvecs)
 res_E = eigvals[idx]
 
 Ham = mbs.hamiltonian(eigvals, eigvecs, contour, num_particles=2)
+print Ham
