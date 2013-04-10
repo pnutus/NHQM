@@ -1,12 +1,13 @@
 from itertools import combinations
 
 class FermionState:
-    """Represents a many body state"""    
+    """Represents a fermionic many-body state."""    
     def __init__(self, states = [], sign = 1):
         self.states = states
         self.sign = sign
     
     def create(self, new_states):
+        """Acts with creation operator on the fermionic state."""
         result_states = self.states
         result_sign = self.sign
         if isinstance(new_states, int):
@@ -21,6 +22,7 @@ class FermionState:
         return FermionState(result_states, result_sign)
     
     def annihilate(self, kill_states):
+        """Acts with annihilation operator on the fermionic state."""
         result_states = self.states
         result_sign = self.sign
         if isinstance(kill_states, int):
