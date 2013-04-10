@@ -40,6 +40,9 @@ class FermionState:
         sign = "-" if self.sign < 0 else "" 
         return sign + "| {} >".format(", ".join(str(x) for x in self.states))
     
+    def __repr__(self):
+        return str(self)
+    
 def state_index(states, new_state):
     for i, state in enumerate(states):
         if new_state == state:
@@ -47,6 +50,5 @@ def state_index(states, new_state):
         if new_state < state:
             return i
     return len(states)
-    
-if __name__ == '__main__':
-    print FermionState([0,1,3,4]).annihilate(0).create(5)
+
+# TESTS?
