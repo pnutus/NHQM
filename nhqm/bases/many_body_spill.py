@@ -25,16 +25,15 @@ def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
     H = sp.empty( (order,order), complex )
     hamilton_dict = get_hamilton_dict(num_sp_states, num_particles)
     
-    for key in hamilton_dict.keys():
+    for key, values in hamilton_dict.iteritems():
+        sp_interactions, twop_interactions = values
         "single particle energy:"
-        for alfa_beta_tup in hamilton_dict[key][0]:
-            alpha = alfa_beta_tup[0]
-            beta = alfa_beta_tup[1]
+        for alpha, beta in sp_interactions:
             for a in alpha: #one element set -> int
                 for b in beta: #eon element set -> int:
                     H[key] += sp_H[a,b]
         "two body; n-n interaction:"  
-        for alphabeta_gammadelta_tup in hamilton_dict[key][1]:
+        for alphabeta, gammadelta in twop_interactions:
             ab = list(alphabeta_gammadelta_tup[0])
             gd = list(alphabeta_gammadelta_tup[1])
             
@@ -85,7 +84,11 @@ def get_2p_smart(num_states, num_particles, res_dict):
         for alphabeta_interim in combinations(bra, 2):
             alphabeta = set(alphabeta_interim)
             for gammadelta in twop_states: 
-                """ we'd like t generate gammadelta from all twop states minus any two-particle-state formed from two of the particles already present in the (bra -alphabeta), can this be done through clever set manipulations?"""
+                """ we'd like t generate gammadelta from all 
+                twop states minus any two-particle-state formed 
+                from two of the particles already present in 
+                the (bra -alphabeta), can this be done through 
+                clever set manipulations?"""
                 ket = (bra - alphabeta)
                 if ket - gammadelta == ket:
                     #can't add existing fermions   
@@ -95,15 +98,20 @@ def get_2p_smart(num_states, num_particles, res_dict):
                     res_dict[(bra_index,ket_index)][1].append( res )
     return
 
-def get_hamilton_dict(ns,np):
+def get_hamilton_dict(num_states, num_particles):
     def default_factory():
         return ([],[])
     
-    """h_dict contains the value [] between two bra and ket indices that do not permitt a fock space contribution, idealy the key shouldn't even be represented in the dict if neither sp nor 2p permitts a contribution. and if only one does so then no [] value from the other shold be saved"""    
+    """h_dict contains the value [] between two bra 
+    and ket indices that do not permitt a fock space 
+    contribution, idealy the key shouldn't even be 
+    represented in the dict if neither sp nor 2p 
+    permitts a contribution. and if only one does so 
+    then no [] value from the other shold be saved"""    
         
     h_dict = defaultdict( default_factory )
-    get_2p_smart(ns,np,h_dict)
-    get_sp_smart(ns,np,h_dict)
+    get_2p_smart(num_states, num_particles, h_dict)
+    get_sp_smart(num_states, num_particles, h_dict)
     return h_dict
 
 def get_sp_dict(ns,np):
