@@ -3,6 +3,8 @@ import scipy as sp
 from scipy.integrate import fixed_quad
 from itertools import combinations
 import mom_space as mom
+from fermion_state import FermionState
+
 
 # THIS IS FOR FERMIONS
 
@@ -20,9 +22,9 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
 def gen_states(num_sp_states, num_particles=2):
     if num_sp_states < num_particles:
         raise ValueError("There cannot be more particles than states")
-    return map(set, combinations(range(num_sp_states), num_particles))  
+    return map(FermionState, combinations(range(num_sp_states), num_particles))  
 
-def H_elem(bra, ket, sp_H, sep_M):
+def H_elem(bra, ket, eigvals, sep_M):
     V0 = 1
     if bra == ket:
         a, b = bra
@@ -31,8 +33,8 @@ def H_elem(bra, ket, sp_H, sep_M):
         one_body = 0
     def n_n_interaction(a, b, c, d):
         return sep_M[a, c]*sep_M[b, d] - sep_M[a, d]*sep_M[b, c]
-    two_body = sum(n_n_interaction(a, b, c, d)
-                    for (a, b, c, d) in two_body_indexes(bra, ket))               
+    two_body = sum(sign * n_n_interaction(a, b, c, d)
+                    for (a, b, c, d, sign) in two_body_indexes(bra, ket))               
     return one_body + two_body
 
 def gen_separable_matrix(eigvecs, contour):
@@ -44,12 +46,13 @@ def gen_separable_matrix(eigvecs, contour):
     return M
 
 def separable_elem(bra, ket, contour, l=0, j=0.5):
+    zip_contour = zip(*contour)
     result = 0
     #no weight in the contour array?
-    for n, (k, w) in enumerate(contour):
+    for n, (k, w) in enumerate(zip_contour):
         inner_sum = 0
         #Complex conjugate the bra? Or NHQM trickery?
-        for n_prim, (k_prim, w_prim) in enumerate(contour):
+        for n_prim, (k_prim, w_prim) in enumerate(zip_contour):
             inner_sum += w_prim * ket[n_prim] * V_sep(k, k_prim, l, j)
         result += w * bra[n] * inner_sum 
     return result
@@ -66,16 +69,16 @@ def potential(r, l, j):
 
 def two_body_indexes(bra, ket, verbose = False):
     result = []
-    diff = bra - ket
-    if len(diff) > 2:
+    if len(set(bra) - set(ket)) > 2:
         return []
     for annihilated in combinations(ket, 2):
         for created in combinations(bra, 2):
-            new_ket = (ket
+            new_ket = (set(ket)
                         .difference(annihilated)
                         .union(created))
             if new_ket == bra:
-                result.append(created + annihilated)
+                sign = ket.create(created).annihilate(annihilated).sign
+                result.append(created + annihilated + sign)
     return result
     
 if __name__ == '__main__':

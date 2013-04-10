@@ -6,7 +6,6 @@ class FermionState:
         self.states = sorted(states)
         #if an unordered list is presented, 
         #should the sign be calculated or not?
-        
         self.sign = sign
     
     def create(self, new_states):
