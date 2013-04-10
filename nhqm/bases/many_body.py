@@ -6,7 +6,7 @@ import mom_space as mom
 
 # THIS IS FOR FERMIONS
 
-def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
+def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
     num_sp_states = len(eigvecs)
     mb_states = gen_states(num_sp_states, num_particles)
     order = len(mb_states)
@@ -14,7 +14,7 @@ def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
     H = sp.empty( (order,order), complex )
     for i, bra in enumerate( mb_states ):
         for j, ket in enumerate( mb_states ):
-            H[i,j] = H_elem(bra, ket, sp_H, sep_M)
+            H[i,j] = H_elem(bra, ket, eigvals, sep_M)
     return H  
     
 def gen_states(num_sp_states, num_particles=2):
@@ -24,15 +24,16 @@ def gen_states(num_sp_states, num_particles=2):
 
 def H_elem(bra, ket, sp_H, sep_M):
     V0 = 1
+    if bra == ket:
+        a, b = bra
+        one_body = eigvals[a] + eigvals[b]
+    else:
+        one_body = 0
     def n_n_interaction(a, b, c, d):
-        return sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c]    
-    one_body = sum(sp_H[a, b] 
-                    for (a, b) in one_body_indexes(bra, ket))
+        return sep_M[a, c]*sep_M[b, d] - sep_M[a, d]*sep_M[b, c]
     two_body = sum(n_n_interaction(a, b, c, d)
-                    for (a, b, c, d) in two_body_indexes(bra, ket))
-                    
-    #print n_n_interaction(0,4,1,4)                
-    return two_body
+                    for (a, b, c, d) in two_body_indexes(bra, ket))               
+    return one_body + two_body
 
 def gen_separable_matrix(eigvecs, contour):
     order = len(eigvecs)
@@ -62,73 +63,20 @@ def potential(r, l, j):
     beta = 1
     sqrtV0 = 1
     return sqrtV0*sp.exp(- beta * r**2)
-    
-
-    
-def one_body_indexes(bra, ket, verbose = False):
-    result = []
-    diff = bra - ket
-    
-    
-    if not len(diff) > 1:
-        for b in ket:
-            for a in bra:
-                new_ket = ket - set([b]) | set([a])
-                if new_ket == bra:
-                    if verbose:
-                        result.append( (bra, ket, set([a]), set([b]) ) )
-                    else:    
-                        result.append( (a, b) )
-    return result
 
 def two_body_indexes(bra, ket, verbose = False):
     result = []
     diff = bra - ket
-    
-    if not len(diff) > 2:
-        for annihilated in combinations(ket, 2):
-            for created in combinations(bra, 2):
-                new_ket = (ket
-                            .difference(annihilated)
-                            .union(created))
-                if new_ket == bra:
-                    if verbose:
-                        result.append( 
-                                (bra, ket, set(created), set(annihilated) ) )
-                    else:
-                        #print bra, ket, ( created + annihilated )
-                        result.append( created + annihilated )
+    if len(diff) > 2:
+        return []
+    for annihilated in combinations(ket, 2):
+        for created in combinations(bra, 2):
+            new_ket = (ket
+                        .difference(annihilated)
+                        .union(created))
+            if new_ket == bra:
+                result.append(created + annihilated)
     return result
     
-
-def get_single_particle_combinations(num_states, num_particles = 1):
-    mb_states = gen_states(num_states, num_particles)
-    result = []
-    for i, bra in enumerate( mb_states ):
-        for j, ket in enumerate( mb_states ):
-            temp =  one_body_indexes(bra,ket,verbose=True) 
-            
-            if temp != []:
-                for k, tup in enumerate(temp):
-                 result.append( tup )
-    return result        
-            
-def get_two_particle_combinations(num_states, num_particles=2):
-    mb_states = gen_states(num_states, num_particles)
-    result = []
-    for i, bra in enumerate(mb_states):
-        for j, ket in enumerate(mb_states):
-            temp = two_body_indexes(bra,ket,verbose=True)
-            
-            if temp != []:
-                for k, tup in enumerate(temp):
-                 result.append( tup )
-    
-    return result    
-    
-
-    
-    
 if __name__ == '__main__':
-    
     print "kaptenkvant 4 lyfe"

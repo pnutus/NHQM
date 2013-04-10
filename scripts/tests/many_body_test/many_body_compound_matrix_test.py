@@ -44,7 +44,7 @@ class RedTests(unittest.TestCase):
         res_E = eigvals[idx]
         
         t = time()
-        self.mb_H = mb.hamiltonian(H, eigvecs, zip_contour, num_particles=2)
+        self.mb_H = mb.hamiltonian(eigvals, eigvecs, zip_contour, num_particles=2)
         print "pontus"
         print time() -t
         

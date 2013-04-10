@@ -27,7 +27,7 @@ class FermionState:
         result_sign = self.sign
         if isinstance(kill_states, int):
             kill_states = [kill_states]
-        for kill_state in list(kill_states):
+        for kill_state in kill_states:
             try:
                 i = result_states.index(kill_state)
                 result_states.pop(i)
@@ -35,6 +35,9 @@ class FermionState:
             except ValueError:
                 return FermionState(sign = 0)
         return FermionState(result_states, result_sign)
+    
+    def __iter__(self):
+        return iter(self.states)
         
     def __str__(self):
         if self.sign == 0:
