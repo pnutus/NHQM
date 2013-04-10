@@ -3,7 +3,10 @@ from itertools import combinations
 class FermionState:
     """Represents a fermionic many-body state."""    
     def __init__(self, states = [], sign = 1):
-        self.states = states
+        self.states = sorted(states)
+        #if an unordered list is presented, 
+        #should the sign be calculated or not?
+        
         self.sign = sign
     
     def create(self, new_states):
@@ -57,3 +60,6 @@ def state_index(states, new_state):
     return len(states)
 
 # TESTS?
+
+if __name__ == '__main__':
+    print "bonjour bonjour baguette"
