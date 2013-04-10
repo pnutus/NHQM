@@ -20,7 +20,7 @@ def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
 def gen_states(num_sp_states, num_particles=2):
     if num_sp_states < num_particles:
         raise ValueError("There cannot be more particles than states")
-    return map(set, combinations(range(num_sp_states), num_particles))
+    return map(set, combinations(range(num_sp_states), num_particles))  
 
 def H_elem(bra, ket, sp_H, sep_M):
     V0 = 1
@@ -42,6 +42,7 @@ def gen_separable_matrix(eigvecs, contour):
 
 def separable_elem(bra, ket, contour, l=0, j=0.5):
     result = 0
+    #no weight in the contour array?
     for n, (k, w) in enumerate(contour):
         inner_sum = 0
         for n_prim, (k_prim, w_prim) in enumerate(contour):
@@ -51,7 +52,7 @@ def separable_elem(bra, ket, contour, l=0, j=0.5):
 
 def V_sep(k, k_prim, l, j):
     args = (k, k_prim, potential, l, j)
-    integral, _ = fixed.quad(mom.integrand, 0, 10, n = 20, args=args)
+    integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20, args=args)
     return 2 / sp.pi * k_prim**2 * integral
     
 def potential(r, l, j):

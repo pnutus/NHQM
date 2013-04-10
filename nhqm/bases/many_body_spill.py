@@ -11,7 +11,10 @@ def gen_states(s, num_particles):
     return mb.gen_states(s,num_particles)
     
 def gen_separable_matrix(eigvecs, contour):
-    return mb.gen_separable_matrix(eigvecs, contour)    
+    return mb.gen_separable_matrix(eigvecs, contour) 
+    
+def n_n_interaction(sep_M, a, b, c, d):
+    return sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c]         
 
 
 def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
@@ -27,14 +30,17 @@ def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
         for alfa_beta_tup in hamilton_dict[key][0]:
             alpha = alfa_beta_tup[0]
             beta = alfa_beta_tup[1]
-            
-            H[key] += sp_H[int(alfa),int(beta)]
+            for a in alpha: #one element set -> int
+                for b in beta: #eon element set -> int:
+                    H[key] += sp_H[a,b]
         "two body; n-n interaction:"  
         for alphabeta_gammadelta_tup in hamilton_dict[key][1]:
-            ab = alphabeta_gammadelta_tup[0]
-            gd= alphabeta_gammadelta_tup[1]
+            ab = list(alphabeta_gammadelta_tup[0])
+            gd = list(alphabeta_gammadelta_tup[1])
             
-            H[key] += mb.n_n_interaction( int(ab[0]), int(ab[1]),\
+            
+            
+            H[key] += n_n_interaction(sep_M, int(ab[0]), int(ab[1]),\
              int(gd[0]), int(gd[1]) )
     
     return H
