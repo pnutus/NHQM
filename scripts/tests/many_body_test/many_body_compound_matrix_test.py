@@ -12,6 +12,7 @@ import itertools
 from nhqm.bases import mom_space as mom
 from nhqm.problems import He5
 from nhqm.calculations import QM as calc
+from time import time
             
 import unittest
 
@@ -25,7 +26,7 @@ class RedTests(unittest.TestCase):
         print "starting set up"
 
         problem = He5.problem   
-        order = 5
+        order = 10
         l = 1
         j = 1.5
         problem.V0 = -47.
@@ -42,16 +43,23 @@ class RedTests(unittest.TestCase):
         idx = res_index(eigvecs)
         res_E = eigvals[idx]
         
-        self.mb_H, self.sep  = mb.hamiltonian(H, eigvecs, zip_contour, num_particles=2)
-        self.mbs_H, self.seps = mbs.hamiltonian(H, eigvecs, zip_contour, num_particles=2)
+        t = time()
+        self.mb_H = mb.hamiltonian(H, eigvecs, zip_contour, num_particles=2)
+        print "pontus"
+        print time() -t
+        
+        t=time()
+        self.mbs_H = mbs.hamiltonian(H, eigvecs, zip_contour, num_particles=2)
+        print "spill"
+        print time() -t
+        
         
         self.matrix_row = self.mb_H.shape[0]
         self.matrix_col = self.mb_H.shape[1]
         
         num_sp_states = len(eigvecs)
         self.mb_s = mb.gen_states(num_sp_states,2)
-        
-        print self.sep == self.seps
+
         
     def testMatrixEquiv(self):
         print "matrix elements"
@@ -59,14 +67,14 @@ class RedTests(unittest.TestCase):
         
         for i in xrange(self.matrix_row):
             for j in xrange(self.matrix_col):
-                if abs(self.mb_H[i,j] - self.mbs_H[i,j]) < 0.1:
+                if abs(self.mb_H[i,j] - self.mbs_H[i,j]) < 0.0001:
                     N+=1
                 else:
                     
                     print self.mb_s[i], self.mb_s[j], ":::"
                     print "mb: ", self.mb_H[i,j]
                     print "mbs:", self.mbs_H[i,j]  
-                    print "" 
+                    print ""
         self.assertEquals(N, self.matrix_row*self.matrix_col )
         
 

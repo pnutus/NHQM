@@ -25,12 +25,14 @@ def gen_states(num_sp_states, num_particles=2):
 def H_elem(bra, ket, sp_H, sep_M):
     V0 = 1
     def n_n_interaction(a, b, c, d):
-        return sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c]
+        return sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c]    
     one_body = sum(sp_H[a, b] 
                     for (a, b) in one_body_indexes(bra, ket))
     two_body = sum(n_n_interaction(a, b, c, d)
                     for (a, b, c, d) in two_body_indexes(bra, ket))
-    return one_body + two_body
+                    
+    #print n_n_interaction(0,4,1,4)                
+    return two_body
 
 def gen_separable_matrix(eigvecs, contour):
     order = len(eigvecs)
@@ -93,6 +95,7 @@ def two_body_indexes(bra, ket, verbose = False):
                         result.append( 
                                 (bra, ket, set(created), set(annihilated) ) )
                     else:
+                        #print bra, ket, ( created + annihilated )
                         result.append( created + annihilated )
     return result
     

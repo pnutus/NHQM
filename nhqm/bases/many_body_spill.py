@@ -22,7 +22,7 @@ def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
     mb_states = gen_states(num_sp_states, num_particles)
     order = len(mb_states)
     sep_M = gen_separable_matrix(eigvecs, contour)
-    H = sp.empty( (order,order), complex )
+    H = sp.zeros( (order,order), complex )
     hamilton_dict = get_hamilton_dict(num_sp_states, num_particles)
     
     for key, values in hamilton_dict.iteritems():
@@ -31,17 +31,17 @@ def hamiltonian(sp_H, eigvecs, contour, num_particles=2):
         for alpha, beta in sp_interactions:
             for a in alpha: #one element set -> int
                 for b in beta: #eon element set -> int:
-                    H[key] += sp_H[a,b]
+                    #H[key] += sp_H[a,b]
+                    H[key] += 0
         "two body; n-n interaction:"  
         for alphabeta, gammadelta in twop_interactions:
-            ab = list(alphabeta_gammadelta_tup[0])
-            gd = list(alphabeta_gammadelta_tup[1])
+            ab = list(alphabeta)
+            gd = list(gammadelta)
             
-            
-            
-            H[key] += n_n_interaction(sep_M, int(ab[0]), int(ab[1]),\
+            #print mb_states[key[0]], mb_states[key[1]], ab, gd
+            temp = n_n_interaction(sep_M, int(ab[0]), int(ab[1]),\
              int(gd[0]), int(gd[1]) )
-    
+            H[key] += temp
     return H
 
 
