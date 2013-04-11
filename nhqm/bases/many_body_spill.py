@@ -26,9 +26,14 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
     H = sp.zeros( (order,order), complex )
     hamilton_dict = get_hamilton_dict(num_sp_states, num_particles)
     
-    for key, values in hamilton_dict.iteritems():
-        twop_interactions = values
-        "two body; n-n interaction:"  
+    print len (eigvals),len(mb_states)
+    
+    for key, twop_interactions in hamilton_dict.iteritems():
+        #one body energy:
+        for i in xrange(len(mb_states)):
+            H[i,i] = 2 * eigvals[i]
+        
+        #two body; n-n interaction:
         for alphabeta, gammadelta in twop_interactions:
             ab = list(alphabeta)
             gd = list(gammadelta)

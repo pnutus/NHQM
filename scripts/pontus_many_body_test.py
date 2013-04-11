@@ -19,9 +19,7 @@ k_max = 4
 def res_index(eigvecs):
     maxes = map(max, abs(eigvecs.T))
     return maxes.index(min(maxes))
-        
-# Old for comparison:
-#contour = calc.naive_triangle_contour(0, 0, k_max, order)
+
 contour = calc.triangle_contour(peak_x, peak_y, k_max, order/3)
 points, _ = contour
 args = (problem, l, j)
