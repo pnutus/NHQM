@@ -7,6 +7,8 @@ from nhqm.calculations import QM as calc
 from nhqm.bases import many_body as mb
 from nhqm.bases.fermion_state import FermionState
 
+mb.sqrtV0 = sp.sqrt(-2139) #sqrt(MeV)
+
 problem = He5.problem   
 order = 5*3
 l = 1
