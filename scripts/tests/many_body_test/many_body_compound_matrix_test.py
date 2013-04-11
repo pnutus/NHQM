@@ -26,7 +26,7 @@ class RedTests(unittest.TestCase):
         print "starting set up"
 
         problem = He5.problem   
-        order = 10
+        order = 5
         l = 1
         j = 1.5
         problem.V0 = -47.
@@ -44,12 +44,12 @@ class RedTests(unittest.TestCase):
         res_E = eigvals[idx]
         
         t = time()
-        self.mb_H = mb.hamiltonian(eigvals, eigvecs, zip_contour, num_particles=2)
+        self.mb_H = mb.hamiltonian(eigvals, eigvecs, contour, num_particles=2)
         print "pontus"
         print time() -t
         
         t=time()
-        self.mbs_H = mbs.hamiltonian(H, eigvecs, zip_contour, num_particles=2)
+        self.mbs_H = mbs.hamiltonian(eigvals, eigvecs, contour, num_particles=2)
         print "spill"
         print time() -t
         
