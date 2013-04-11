@@ -28,7 +28,7 @@ args = (problem, l, j)
 H = calc.contour_hamiltonian(mom.H_element_contour, contour, args)
 eigvals, eigvecs = calc.energies(H)
 
-H = mb.hamiltonian(eigvals, eigvecs, contour, num_particles = 2, verbose=True)
+H, sep_M = mb.hamiltonian(eigvals, eigvecs, contour, num_particles = 2, verbose=True)
 eigvals, eigvecs = calc.energies(H)
 print "lowest energy:", eigvals[0]
 

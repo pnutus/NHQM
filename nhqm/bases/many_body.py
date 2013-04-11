@@ -5,7 +5,7 @@ from itertools import combinations
 import mom_space as mom
 from fermion_state import FermionState
 
-sqrtV0 = 2 #sqrt(MeV)
+sqrtV0 = sp.sqrt(-2250) #sqrt(MeV)
 beta = 1 # fm^-2
 # THIS IS FOR FERMIONS
 
@@ -21,7 +21,7 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2, verbose=False):
     for i, bra in enumerate(mb_states):
         for j, ket in enumerate(mb_states):
             H[i,j] = H_elem(bra, ket, eigvals, sep_M)
-    return H
+    return H, sep_M
     
 def gen_states(num_sp_states, num_particles=2):
     if num_sp_states < num_particles:
