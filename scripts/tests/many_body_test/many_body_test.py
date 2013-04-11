@@ -2,6 +2,8 @@ from imports import *
 from nhqm.bases import many_body as mb
 from nhqm.bases import naive_many_body as nmb
 from nhqm.bases import many_body_spill as mbs
+from nhqm.bases.fermion_state import FermionState
+
 import scipy as sp
 from scipy import linalg
 from nhqm.bases import mom_space as mom
@@ -10,124 +12,49 @@ from nhqm.calculations import QM as calc
 import itertools
             
 import unittest
+
+def mb_get_interactions(num_state, num_part):
+    result = []
+    mb_states = mb.gen_states(num_state, num_part)
+    for bra in mb_states:
+        for ket in mb_states:
+            for res in mb.two_body_indexes(bra, ket):
+                print res
+                result.append((bra, ket, res))
+    return result            
    
 class RedTests(unittest.TestCase):
     
     def setUp(self):
         print "starting set up"
-        self.num_s = 7
-        self.num_p = 3
-        self.naive_sp = nmb.get_single_particle_combinations(
-                        self.num_s, self.num_p)
-        self.medium_sp = mb.get_single_particle_combinations(
-                        self.num_s, self.num_p)
-        self.smart_sp = mbs.get_sp_dict(self.num_s, self.num_p)
+        self.num_s = 3
+        self.num_p = 2
 
-        self.naive_2p = nmb.get_two_particle_combinations(
+        self.naive = nmb.get_two_particle_combinations(
+                        self.num_s, self.num_p)               
+                        
+        self.medium = mb_get_interactions(
                         self.num_s, self.num_p)
-        self.medium_2p = mb.get_two_particle_combinations(
-                        self.num_s, self.num_p)
-        self.smart_2p = mbs.get_2p_dict(self.num_s, self.num_p)
+                        
+        self.smart = mbs.get_hamilton_dict(self.num_s, self.num_p)
         
         self.mb_s = mb.gen_states(self.num_s, self.num_p)
         
-    def testSPLength(self):
-        print "testing single particle length"
-        
-        #print "n", len(self.naive_sp)
-        lens = 0
-        for key in self.smart_sp.keys():
-            for element in self.smart_sp[key]:
-                for child in element:
-                    if len(child) > 0:
-                        lens += 1
-        #print "s",lens
-        
-        N = len(self.naive_sp) - lens
-        self.assertEquals(N, 0 )
-        
-    def testMediumSPLength(self):
-        N = len(self.naive_sp) - len(self.medium_sp)
-        self.assertEquals(N, 0 ) 
-        
-    def testMedium2PLength(self):
-        N = len(self.naive_2p) - len(self.medium_2p)
+    """def testMedium2PLength(self):
+        N = len(self.naive) - len(self.medium)
         self.assertEquals(N, 0 )  
         
-    def testMediumSPElements(self):
-        check =0
-        length = len(self.medium_sp)
-        for i in xrange(length):
-            if self.medium_sp[i] == self.naive_sp[i]:
-                check +=1 
-                   
-        self.assertEquals(length, check)
         
     def testMedium2PElements(self):
         check =0
-        length = len(self.medium_2p)
+        length = len(self.medium)
         for i in xrange(length):
-            if self.medium_2p[i] == self.naive_2p[i]:
+            if self.medium[i] == self.naive[i]:
                 check +=1 
                    
-        self.assertEquals(length, check)                   
-
-    def test2PLength(self):
-        print "testing two particle length"
-
-        #print "n2", len(self.naive_2p)
+        self.assertEquals(length, check)"""                   
         
-        len2 = 0
-        for key in self.smart_2p.keys():
-            for element in self.smart_2p[key]:
-                for child in element:
-                    if len(child) > 0:
-                        len2 += 1
-                        
-        #print "s2", len2
-                        
-        N = len(self.naive_2p) - len2
-        self.assertEquals(N, 0 )
-    
-    def testSPElements(self):
-        print "correlating single particle sorting order"
-        length = len(self.naive_sp)
-        check = 0
         
-        for i in xrange(length):
-            for key in self.smart_sp.keys():
-                for element in self.smart_sp[key]:
-                    for child in element:
-                        ab_tup = (self.naive_sp[i][2], self.naive_sp[i][3])
-                        key_tup = (self.naive_sp[i][0], self.naive_sp[i][1])
-                        
-                        if ab_tup == child and \
-                         key_tup == ( self.mb_s[key[0]], self.mb_s[key[1]]):
-                            check += 1
-                            
-        #for i in xrange(length):
-        #    if not ( self.smart_sp[i] == self.naive_sp[i] ):
-        #        num_errors = num_errors +1
-        self.assertEquals(length, check)
-
-    def test2PElements(self):
-        print "correlating two particle sorting order"
-        length = len(self.naive_2p)
-        check = 0
-        
-        for i in xrange(length):
-            for key in self.smart_2p.keys():
-                for element in self.smart_2p[key]:
-                    for child in element:
-                        ab_tup = (self.naive_2p[i][2], self.naive_2p[i][3])
-                        key_tup = (self.naive_2p[i][0], self.naive_2p[i][1])
-                        
-                        if ab_tup == child and \
-                         key_tup == ( self.mb_s[key[0]], self.mb_s[key[1]]):
-                            check += 1
-
-        self.assertEquals(check, length)
-
         
 class ComplexTests(unittest.TestCase):
     pass

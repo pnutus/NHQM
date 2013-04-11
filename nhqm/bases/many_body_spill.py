@@ -39,7 +39,7 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
             H[key] += temp
     return H
         
-def get_2p_smart(num_states, num_particles, res_dict):
+def find_n_n_interactions(num_states, num_particles, res_dict):
     mb_states = gen_states(num_states, num_particles)
     twop_states = gen_states(num_states, num_particles = 2)
     
@@ -58,7 +58,7 @@ def get_2p_smart(num_states, num_particles, res_dict):
                     #can't add existing fermions   
                     ket = ket | set(gammadelta)
                     ket_index = mb_states.index(FermionState(ket))
-                    res = (alphabeta, gammadelta) 
+                    res = (FermionState(alphabeta), gammadelta) 
                     res_dict[(bra_index,ket_index)].append( res )
     return
 
@@ -72,7 +72,7 @@ def get_hamilton_dict(num_states, num_particles):
     then no [] value from the other shold be saved"""    
         
     h_dict = defaultdict( list )
-    get_2p_smart(num_states, num_particles, h_dict)
+    find_n_n_interactions(num_states, num_particles, h_dict)
     return h_dict
 
             

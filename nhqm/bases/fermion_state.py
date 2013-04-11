@@ -56,7 +56,7 @@ class FermionState:
     def __str__(self):
         if self.sign == 0:
             return "0"
-        sign = "-" if self.sign < 0 else "" 
+        sign = "-" if self.sign < 0 else "+" 
         return sign + "| {} >".format(", ".join(str(x) for x in self.states))
     
     def __repr__(self):
@@ -65,7 +65,8 @@ class FermionState:
     def __eq__(self,other):
         return self.sign == other.sign and self.states == other.states
         
-    
+    def __len__(self):
+        return len(self.states)
     
 def state_index(states, new_state):
     for i, state in enumerate(states):

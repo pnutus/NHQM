@@ -72,7 +72,7 @@ def potential(r, l, j):
     sqrtV0 = 1
     return sqrtV0*sp.exp(- beta * r**2)
 
-def two_body_indexes(bra, ket, verbose = False):
+def two_body_indexes(bra, ket):
     result = []
     if len(set(bra) - set(ket)) > 2:
         return []
