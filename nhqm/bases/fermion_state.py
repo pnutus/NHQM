@@ -2,41 +2,53 @@ from itertools import combinations
 
 class FermionState:
     """Represents a fermionic many-body state."""    
-    def __init__(self, states = [], sign = 1):
-        self.states = sorted(states)
-        #if an unordered list is presented, 
-        #should the sign be calculated or not?
-        self.sign = sign
+    def __init__(self, states = []):
+        self.states = []
+        self.sign = 1
+        for state in states:
+            self._create(state)
+            
+    def _create(self, new_state):
+        try:
+            i = state_index(self.states, new_state)
+            self.states.insert(i, new_state)
+            self.sign *= (-1)**i
+        except IndexError:
+            self.states = []
+            self.sign = 0
+    
+    def _annihilate(self, kill_state):
+        try:
+            i = self.states.index(kill_state)
+            self.states.pop(i)
+            self.sign *= (-1)**i
+        except ValueError:
+            self.states = []
+            self.sign = 0
+            
+    def copy(self):
+        new_fermion = FermionState()
+        new_fermion.states = self.states[:]
+        new_fermion.sign = self.sign
+        return new_fermion
     
     def create(self, new_states):
         """Acts with creation operator on the fermionic state."""
-        result_states = self.states
-        result_sign = self.sign
         if isinstance(new_states, int):
             new_states = [new_states]
-        for new_state in new_states:
-            try:
-                i = state_index(result_states, new_state)
-                result_states.insert(i, new_state)
-                result_sign *= (-1)**i            # 
-            except IndexError:
-                return FermionState(sign = 0)
-        return FermionState(result_states, result_sign)
+        new_fermion = self.copy()
+        for state in new_states:
+            new_fermion._create(state)
+        return new_fermion
     
     def annihilate(self, kill_states):
         """Acts with annihilation operator on the fermionic state."""
-        result_states = self.states
-        result_sign = self.sign
         if isinstance(kill_states, int):
             kill_states = [kill_states]
-        for kill_state in kill_states:
-            try:
-                i = result_states.index(kill_state)
-                result_states.pop(i)
-                result_sign *= (-1)**i
-            except ValueError:
-                return FermionState(sign = 0)
-        return FermionState(result_states, result_sign)
+        new_fermion = self.copy()
+        for state in kill_states:
+            new_fermion._annihilate(state)
+        return new_fermion
     
     def __iter__(self):
         return iter(self.states)
@@ -49,12 +61,11 @@ class FermionState:
     
     def __repr__(self):
         return str(self)
-        
-    def __cmp__(self,other):
-        return self.sign == other.sign and self.states == other.states
 
     def __eq__(self,other):
         return self.sign == other.sign and self.states == other.states
+        
+    
     
 def state_index(states, new_state):
     for i, state in enumerate(states):
@@ -65,14 +76,3 @@ def state_index(states, new_state):
     return len(states)
 
 # TESTS?
-
-if __name__ == '__main__':
-    print "bonjour bonjour baguette"
-    
-    lista = [1,2,3]
-    a = FermionState(lista)
-    b= FermionState(lista)
-    print a == b
-    print a == FermionState(set(lista))
-    print a == FermionState(list(set(lista)))
-    print lista == list(set(lista))
