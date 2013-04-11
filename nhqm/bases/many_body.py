@@ -20,7 +20,7 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2, verbose=False):
     for i, bra in enumerate(mb_states):
         for j, ket in enumerate(mb_states):
             H[i,j] = H_elem(bra, ket, eigvals, sep_M)
-    return H  
+    return H
     
 def gen_states(num_sp_states, num_particles=2):
     if num_sp_states < num_particles:
@@ -69,7 +69,7 @@ def V_sep(k, k_prim, l, j):
     
 def potential(r, l, j):
     beta = 1
-    sqrtV0 = 1
+    sqrtV0 = 5
     return sqrtV0*sp.exp(- beta * r**2)
 
 def two_body_indexes(bra, ket):
@@ -78,13 +78,14 @@ def two_body_indexes(bra, ket):
         return []
     for annihilated in combinations(ket, 2):
         for created in combinations(bra, 2):
-            new_ket = (set(ket)
-                        .difference(annihilated)
-                        .union(created))
-            if new_ket == bra:
-                sign = ket.create(created).annihilate(annihilated).sign
-                result.append(created + annihilated + sign)
+            new_ket = (ket
+                        .annihilate(annihilated)
+                        .create(created))
+            if new_ket.states == bra.states:
+                sign = new_ket.sign
+                result.append(created + annihilated + (sign,))
     return result
     
 if __name__ == '__main__':
     print "kaptenkvant 4 lyfe"
+    print two_body_indexes(FermionState([1,2,3]), FermionState([1,3,4]))
