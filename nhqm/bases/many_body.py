@@ -5,7 +5,8 @@ from itertools import combinations
 import mom_space as mom
 from fermion_state import FermionState
 
-
+sqrtV0 = 2 #sqrt(MeV)
+beta = 1 # fm^-2
 # THIS IS FOR FERMIONS
 
 def hamiltonian(eigvals, eigvecs, contour, num_particles=2, verbose=False):
@@ -28,7 +29,6 @@ def gen_states(num_sp_states, num_particles=2):
     return map(FermionState, combinations(range(num_sp_states), num_particles))  
 
 def H_elem(bra, ket, eigvals, sep_M):
-    V0 = 1
     if bra == ket:
         a, b = bra
         one_body = eigvals[a] + eigvals[b]
@@ -68,8 +68,6 @@ def V_sep(k, k_prim, l, j):
     return 2 / sp.pi * k_prim**2 * integral
     
 def potential(r, l, j):
-    beta = 1
-    sqrtV0 = 5
     return sqrtV0*sp.exp(- beta * r**2)
 
 def two_body_indexes(bra, ket):

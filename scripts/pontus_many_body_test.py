@@ -30,4 +30,8 @@ eigvals, eigvecs = calc.energies(H)
 
 H = mb.hamiltonian(eigvals, eigvecs, contour, num_particles = 2, verbose=True)
 eigvals, eigvecs = calc.energies(H)
-print eigvals
+print "lowest energy:", eigvals[0]
+
+# plt.pcolor(H)
+# plt.gca().invert_yaxis()
+# plt.show()
