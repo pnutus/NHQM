@@ -5,9 +5,10 @@ from nhqm.bases import mom_space as mom
 from nhqm.problems import He5
 from nhqm.calculations import QM as calc
 from nhqm.bases import many_body as mb
+from nhqm.bases.fermion_state import FermionState
 
 problem = He5.problem   
-order = 10*3
+order = 5*3
 l = 1
 j = 1.5
 problem.V0 = -47.
@@ -27,6 +28,6 @@ args = (problem, l, j)
 H = calc.contour_hamiltonian(mom.H_element_contour, contour, args)
 eigvals, eigvecs = calc.energies(H)
 
-H = mb.hamiltonian(eigvals, eigvecs, contour)
+H = mb.hamiltonian(eigvals, eigvecs, contour, num_particles = 2, verbose=True)
 eigvals, eigvecs = calc.energies(H)
 print eigvals

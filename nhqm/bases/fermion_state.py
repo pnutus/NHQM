@@ -13,7 +13,7 @@ class FermionState:
             i = state_index(self.states, new_state)
             self.states.insert(i, new_state)
             self.sign *= (-1)**i
-        except IndexError:
+        except ValueError:
             self.states = []
             self.sign = 0
     
@@ -70,7 +70,7 @@ class FermionState:
 def state_index(states, new_state):
     for i, state in enumerate(states):
         if new_state == state:
-            raise IndexError
+            raise ValueError
         if new_state < state:
             return i
     return len(states)

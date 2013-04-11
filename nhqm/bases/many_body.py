@@ -8,14 +8,17 @@ from fermion_state import FermionState
 
 # THIS IS FOR FERMIONS
 
-def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
+def hamiltonian(eigvals, eigvecs, contour, num_particles=2, verbose=False):
+    if verbose: print "Generating many-body states"
     num_sp_states = len(eigvecs)
     mb_states = gen_states(num_sp_states, num_particles)
     order = len(mb_states)
+    if verbose: print "Generating matrix of separable interactions"
     sep_M = gen_separable_matrix(eigvecs, contour)
-    H = sp.empty( (order,order), complex )
-    for i, bra in enumerate( mb_states ):
-        for j, ket in enumerate( mb_states ):
+    if verbose: print "Generating many-body H"
+    H = sp.empty((order, order), complex)
+    for i, bra in enumerate(mb_states):
+        for j, ket in enumerate(mb_states):
             H[i,j] = H_elem(bra, ket, eigvals, sep_M)
     return H  
     
@@ -31,10 +34,12 @@ def H_elem(bra, ket, eigvals, sep_M):
         one_body = eigvals[a] + eigvals[b]
     else:
         one_body = 0
+        
     def n_n_interaction(a, b, c, d):
         return sep_M[a, c]*sep_M[b, d] - sep_M[a, d]*sep_M[b, c]
     two_body = sum(sign * n_n_interaction(a, b, c, d)
-                    for (a, b, c, d, sign) in two_body_indexes(bra, ket))               
+                    for (a, b, c, d, sign) in two_body_indexes(bra, ket)) 
+                                  
     return one_body + two_body
 
 def gen_separable_matrix(eigvecs, contour):
