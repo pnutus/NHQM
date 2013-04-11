@@ -21,7 +21,8 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2, verbose=False):
     for i, bra in enumerate(mb_states):
         for j, ket in enumerate(mb_states):
             H[i,j] = H_elem(bra, ket, eigvals, sep_M)
-    return H, sep_M
+            
+    return H
     
 def gen_states(num_sp_states, num_particles=2):
     if num_sp_states < num_particles:
@@ -40,7 +41,7 @@ def H_elem(bra, ket, eigvals, sep_M):
     two_body = sum(sign * n_n_interaction(a, b, c, d)
                     for (a, b, c, d, sign) in two_body_indexes(bra, ket)) 
                                   
-    return one_body + two_body
+    return one_body +two_body
 
 def gen_separable_matrix(eigvecs, contour):
     order = len(eigvecs)

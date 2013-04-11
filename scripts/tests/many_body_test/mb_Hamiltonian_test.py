@@ -54,8 +54,8 @@ class RedTests(unittest.TestCase):
         print time() -t
         
         
-        self.matrix_row = self.mb_H.shape[0]
-        self.matrix_col = self.mb_H.shape[1]
+        self.matrix_row = list(self.mb_H.shape)[0]
+        self.matrix_col = list(self.mb_H.shape)[1]
         
         num_sp_states = len(eigvecs)
         self.mb_s = mb.gen_states(num_sp_states,2)

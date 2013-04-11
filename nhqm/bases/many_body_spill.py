@@ -15,8 +15,7 @@ def gen_separable_matrix(eigvecs, contour):
     return mb.gen_separable_matrix(eigvecs, contour) 
     
 def n_n_interaction(sep_M, a, b, c, d):
-    return sep_M[a, c]*sep_M[a, d] - sep_M[a, b]*sep_M[d, c]         
-
+    return sep_M[a, c]*sep_M[b, d] - sep_M[a, d]*sep_M[b, c]
 
 def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
     num_sp_states = len(eigvecs)
@@ -26,22 +25,25 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
     H = sp.zeros( (order,order), complex )
     hamilton_dict = get_hamilton_dict(num_sp_states, num_particles)
     
-    print len (eigvals),len(mb_states)
     
-    for key, twop_interactions in hamilton_dict.iteritems():
-        #one body energy:
-        for i in xrange(len(mb_states)):
-            H[i,i] = 2 * eigvals[i]
+    
+    #one body energy:    
+    for i, value in enumerate(mb_states):
+        a, b = value
         
-        #two body; n-n interaction:
-        for alphabeta, gammadelta in twop_interactions:
+        H[i,i] = eigvals[a] + eigvals[b]
+    
+    
+    #two body; n-n interaction:
+    for key, twop_interactions in hamilton_dict.iteritems():
+        for alphabeta, gammadelta, sign in twop_interactions:
             ab = list(alphabeta)
             gd = list(gammadelta)
             
             #print mb_states[key[0]], mb_states[key[1]], ab, gd
-            temp = n_n_interaction(sep_M, int(ab[0]), int(ab[1]),\
+            res = n_n_interaction(sep_M, int(ab[0]), int(ab[1]),\
              int(gd[0]), int(gd[1]) )
-            H[key] += temp
+            H[key] += res
     return H
         
 def find_n_n_interactions(num_states, num_particles, res_dict):
