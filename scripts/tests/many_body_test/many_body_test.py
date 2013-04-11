@@ -19,42 +19,66 @@ def mb_get_interactions(num_state, num_part):
     for bra in mb_states:
         for ket in mb_states:
             for res in mb.two_body_indexes(bra, ket):
-                print res
-                result.append((bra, ket, res))
+                result.append((mb_states.index(bra), mb_states.index(ket), res))
     return result            
    
 class RedTests(unittest.TestCase):
-    
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         print "starting set up"
-        self.num_s = 3
-        self.num_p = 2
+        cls.num_s = 10
+        cls.num_p = 4
 
-        self.naive = nmb.get_two_particle_combinations(
-                        self.num_s, self.num_p)               
+        #cls.naive = nmb.get_two_particle_combinations(
+        #                cls.num_s, cls.num_p)               
                         
-        self.medium = mb_get_interactions(
-                        self.num_s, self.num_p)
+        cls.medium = mb_get_interactions(
+                        cls.num_s, cls.num_p)
                         
-        self.smart = mbs.get_hamilton_dict(self.num_s, self.num_p)
+        cls.smart = mbs.get_hamilton_dict(cls.num_s, cls.num_p)
         
-        self.mb_s = mb.gen_states(self.num_s, self.num_p)
+        cls.mb_s = mb.gen_states(cls.num_s, cls.num_p)
         
-    """def testMedium2PLength(self):
-        N = len(self.naive) - len(self.medium)
-        self.assertEquals(N, 0 )  
+        #print "medium:", cls.medium
+        #print " smart:", cls.smart               
+        
+    def testLength(self):
+        
+        len_smart = 0
+        for key,values in RedTests.smart.iteritems():
+            for element in values:
+                len_smart += 1
+    
+        
+        print "medium length:", len(RedTests.medium)
+        print " smart length:", len_smart
+        print ""
         
         
-    def testMedium2PElements(self):
-        check =0
-        length = len(self.medium)
-        for i in xrange(length):
-            if self.medium[i] == self.naive[i]:
-                check +=1 
-                   
-        self.assertEquals(length, check)"""                   
         
+        self.assertEquals(len(RedTests.medium), len_smart)
+         
+    def testElements(self):
+        check = 0
         
+        for i in xrange(len(RedTests.medium)):
+            
+            medium_key = (RedTests.medium[i][0], RedTests.medium[i][1])
+            #print cls.medium[i]
+            medium_ab = RedTests.medium[i][2][0:2]
+            medium_cd = RedTests.medium[i][2][2:4]
+            #print medium_key, medium_abcd_list
+            
+            for key,values in RedTests.smart.iteritems():
+                for element in values:
+                    if key == medium_key: 
+                        smart_abcd_list = element[0].states + element[1].states
+                        smart_abcd_list.append(element[2])
+                        if smart_abcd_list == list(RedTests.medium[i][2]):
+                            check += 1
+                        
+                        
+        self.assertEquals(check, len(RedTests.medium))                
         
 class ComplexTests(unittest.TestCase):
     pass

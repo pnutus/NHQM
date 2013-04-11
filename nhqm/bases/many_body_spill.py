@@ -45,20 +45,20 @@ def find_n_n_interactions(num_states, num_particles, res_dict):
     
     
     for bra_index, bra in enumerate(mb_states):
-        for alphabeta_interim in combinations(bra, 2):
-            alphabeta = set(alphabeta_interim)
+        for alphabeta in combinations(bra, 2):
+            
+            
             for gammadelta in twop_states: 
                 """ we'd like t generate gammadelta from all 
                 twop states minus any two-particle-state formed 
                 from two of the particles already present in 
                 the (bra -alphabeta), can this be done through 
                 clever set manipulations?"""
-                ket = (set(bra) - alphabeta)
-                if ket - set(gammadelta) == ket:
-                    #can't add existing fermions   
-                    ket = ket | set(gammadelta)
+                ket = bra.annihilate(alphabeta).create(gammadelta)
+                if ket.sign != 0:
+                    #can't add existing fermions 
                     ket_index = mb_states.index(FermionState(ket))
-                    res = (FermionState(alphabeta), gammadelta) 
+                    res = (FermionState(alphabeta), gammadelta, ket.sign) 
                     res_dict[(bra_index,ket_index)].append( res )
     return
 
