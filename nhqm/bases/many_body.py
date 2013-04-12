@@ -51,7 +51,7 @@ def gen_separable_matrix(eigvecs, contour):
             M[i, j] = separable_elem(bra, ket, contour)
     return M
 
-def separable_elem(bra, ket, contour, l=0, j=0.5):
+def separable_elem(bra, ket, contour, l=1, j=1.5):
     zip_contour = zip(*contour)
     result = 0
     #no weight in the contour array?
@@ -67,7 +67,8 @@ def V_sep(k, k_prim, l, j):
     args = (k, k_prim, potential, l, j)
     integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20, args=args)
     return 2 / sp.pi * k_prim**2 * integral
-    
+
+@sp.vectorize
 def potential(r, l, j):
     return sqrtV0*sp.exp(- beta * r**2)
 
