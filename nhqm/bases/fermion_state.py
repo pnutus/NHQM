@@ -42,7 +42,7 @@ class FermionState:
         """Acts with annihilation operator on the fermionic state."""
         new_fermion = self.copy()
         for state in states:
-            new_fermion._state(state)
+            new_fermion._annihilate(state)
         return new_fermion
             
     def copy(self):
