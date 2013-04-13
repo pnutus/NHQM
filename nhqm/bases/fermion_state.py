@@ -5,7 +5,7 @@ class FermionState:
     """
     Represents a fermionic many-body state as a list of
     tuples, each tuple containing the quantum numbers for a
-    single particle. For example: (k-index, j, m) = (3, 1.5, -.5)
+    single particle. For example: sp(k=3, j=1.5, m=-0.5)
     """
     def __init__(self, states = []):
         self.states = []
@@ -102,9 +102,9 @@ if __name__ == '__main__':
     q_nums = [('m', [-1.5, -0.5, 0.5, 1.5]),
               ('k', range(order))]
     mb_states = gen_mb_states(q_nums, 2)
-    print len(mb_states)
     for mb_state in mb_states:
         print mb_state
+    print "Number of many-body states:", len(mb_states)
 
 
 # TESTS?
