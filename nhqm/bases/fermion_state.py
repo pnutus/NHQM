@@ -30,21 +30,20 @@ class FermionState:
         except ValueError: # The state didn't exist
             self.states = []
             self.sign = 0
-            
-    def _operator(self, operator, states):
-        new_fermion = self.copy()
-        for state in states:
-            new_fermion.operator(state)
-        return new_fermion
-
     
     def create(self, states):
         """Acts with creation operator on the fermionic state."""
-        return self._operator(_create, states)
+        new_fermion = self.copy()
+        for state in states:
+            new_fermion._create(state)
+        return new_fermion
     
     def annihilate(self, states):
         """Acts with annihilation operator on the fermionic state."""
-        return self._operator(_annihilate, states)
+        new_fermion = self.copy()
+        for state in states:
+            new_fermion._state(state)
+        return new_fermion
             
     def copy(self):
         new_fermion = FermionState()
@@ -78,9 +77,9 @@ class FermionState:
     
 def state_index(states, new_state):
     for i, state in enumerate(states):
-        if new_state == state:
+        if state == new_state:
             raise ValueError
-        if new_state < state:
+        if state < new_state:
             return i
     return len(states)
 
