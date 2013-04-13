@@ -40,9 +40,9 @@ def n_n_interaction(sep_M, a, b, c, d):
 def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
     
 
-    num_particles = len(contour)
     q_nums = [('m', [-1.5, -0.5, 0.5, 1.5]),
-              ('k', range(num_particles))]
+              ('k', range( len(contour) ))]
+              
     mb_states = gen_mb_states(q_nums, 2)
     
     num_sp_states = len(eigvecs)
@@ -77,23 +77,26 @@ def find_n_n_interactions(num_states, num_particles, res_dict):
     
     q_nums = [('m', [-1.5, -0.5, 0.5, 1.5]),
               ('k', range(num_particles))]
-    mb_states = gen_mb_states(q_nums, 2)
+    mb_states = gen_mb_states(q_nums, 2)   #already calculated in hamiltonian...
     
     q2_nums = [('m', [-1.5, -0.5, 0.5, 1.5]),
               ('k', range(2))]
     twop_states = gen_mb_states(q2_nums, 2)
+    print mb_states
     
     for bra_index, bra in enumerate(mb_states):
         for alphabeta in combinations(bra, 2):
             
             
             for gammadelta in twop_states: 
-                """ we'd like t generate gammadelta from all 
-                twop states minus any two-particle-state formed 
-                from two of the particles already present in 
-                the (bra -alphabeta), can this be done through 
-                clever set manipulations?"""
+                print bra
+                print alphabeta
+                print gammadelta
+                
                 ket = bra.annihilate(alphabeta).create(gammadelta)
+                
+                print ket
+                
                 if ket.sign != 0:
                     #can't add existing fermions 
                     ket_index = mb_states.index(FermionState(ket))

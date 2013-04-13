@@ -23,7 +23,7 @@ def res_index(eigvecs):
 
 
 problem = He5.problem   
-order = 3*3
+order = 3*1
 l = 1
 j = 1.5
 problem.V0 = -47.
@@ -40,5 +40,5 @@ eigvals, eigvecs = calc.energies(H)
 idx = res_index(eigvecs)
 res_E = eigvals[idx]
 
-Ham = mb.hamiltonian(eigvals, eigvecs, contour, num_particles=2)
+Ham = mbs.hamiltonian(eigvals, eigvecs, contour, num_particles=2)
 print Ham
