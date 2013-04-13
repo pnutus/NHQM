@@ -10,7 +10,7 @@ class FermionState:
     def __init__(self, states = []):
         self.states = []
         self.sign = 1
-        for state in reversed(states):
+        for state in states:
             self._create(state)
             
     def _create(self, new_state):
@@ -67,7 +67,7 @@ class FermionState:
         return str(self)
 
     def __eq__(self,other):
-        return self.sign == other.sign and self.states == other.states
+        return self.states == other.states
         
     def __len__(self):
         return len(self.states)
@@ -91,8 +91,8 @@ def gen_mb_states(quantum_numbers, num_particles=2):
              ('k', [0, 1, 2, 3, 4, 5, 6])]
     """
     names, values = zip(*quantum_numbers)
-    sp = namedtuple('sp', names)
-    sp_states = [sp(*tup) for tup in product(*values)]
+    SP = namedtuple('sp', names)
+    sp_states = [SP(*tup) for tup in product(*values)]
     return map(FermionState, combinations(sp_states, num_particles))
 
 if __name__ == '__main__':
