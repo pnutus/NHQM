@@ -58,7 +58,7 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
     for i, value in enumerate(mb_states):
         a, b = value
         
-        H[i,i] = eigvals[a] + eigvals[b]
+        H[i,i] = eigvals[a.k] + eigvals[b.k]
     
     
     #two body; n-n interaction:
@@ -67,7 +67,6 @@ def hamiltonian(eigvals, eigvecs, contour, num_particles=2):
             ab = list(alphabeta)
             gd = list(gammadelta)
             
-            #print mb_states[key[0]], mb_states[key[1]], ab, gd
             res = n_n_interaction(sep_M, int(ab[0]), int(ab[1]),\
              int(gd[0]), int(gd[1]) )
             H[key] += res
@@ -82,20 +81,13 @@ def find_n_n_interactions(num_states, num_particles, res_dict):
     q2_nums = [('m', [-1.5, -0.5, 0.5, 1.5]),
               ('k', range(2))]
     twop_states = gen_mb_states(q2_nums, 2)
-    print mb_states
     
     for bra_index, bra in enumerate(mb_states):
         for alphabeta in combinations(bra, 2):
             
             
             for gammadelta in twop_states: 
-                print bra
-                print alphabeta
-                print gammadelta
-                
                 ket = bra.annihilate(alphabeta).create(gammadelta)
-                
-                print ket
                 
                 if ket.sign != 0:
                     #can't add existing fermions 
