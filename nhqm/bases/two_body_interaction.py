@@ -17,6 +17,7 @@ def gen_matrix(eigvecs, contour, Q):
         for j, ket in enumerate(eigvecs):
             
             ### is this were we want to calculate one element per gpu kernel?
+            # -Yes
             sep_M[i, j] = separable_elem(bra, ket, contour, Q)
     sep_M *= sp.sqrt(V0)
     return sep_M
