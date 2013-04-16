@@ -69,10 +69,10 @@ class GenMatrix:
             self.potential+"\n"+\
             self.method
 
-        self.kernel=ElementwiseKernel(self.ctx, "float start, float end, float2 *step, float2 *k, float2 *k_prim, float2 *res","res[i]=get_element_berggren(start,end,step[i],k[i],k_prim[i])", preamble=program_string)
+        self.kernel=ElementwiseKernel(self.ctx, "float start, float end, float2 *weights, float2 *k, float2 *k_prim, float2 *res","res[i]=get_element_berggren(start,end,weights[i],k[i],k_prim[i])", preamble=program_string)
     # Run kernel.
     def execute_kernel(self):
-        self.kernel(0.0,self.k_max,self.gpu_step,  self.gpu_k,  self.gpu_k_prim,  self.gpu_result)
+        self.kernel(0.0,self.k_max,self.gpu_weights,  self.gpu_k,  self.gpu_k_prim,  self.gpu_result)
     def execute_kernel_old(self):
         self.kernel(self.gpu_matrix,0.0,7.0,self.size,self.gpu_result)
     # Receive results from executed kernel.
