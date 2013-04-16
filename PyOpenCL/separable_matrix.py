@@ -1,11 +1,3 @@
-// The function who's being integrated over.
-float2 integrand(float2 r, float2 k, float2 k_prime)
-{
-    int l=1;
-    float j=1.5;
-    return c_mul(c_multiplication(r, r, j_l(l, c_mul(k,r)), j_l(l, c_mul(k_prime,r))) , V(r, j));
-}
-// Calculates one matrix element in berggren-methodology.
 float2 get_element(float2 start, float2 end, float2 weight, float2 xx, float2 yy)
 {
 

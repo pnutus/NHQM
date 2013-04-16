@@ -15,6 +15,8 @@ def gen_matrix(eigvecs, contour, Q):
     sep_M = sp.empty((order, order), complex)
     for i, bra in enumerate(eigvecs):
         for j, ket in enumerate(eigvecs):
+            
+            ### is this were we want to calculate one element per gpu kernel?
             sep_M[i, j] = separable_elem(bra, ket, contour, Q)
     sep_M *= sp.sqrt(V0)
     return sep_M
@@ -26,6 +28,8 @@ def separable_elem(bra, ket, contour, Q):
     for n, (k, w) in enumerate(zip_contour):
         inner_sum = 0
         #Complex conjugate the bra? Or NHQM trickery?
+        
+        ### should this innerproduct sum be evaluated on only one kernel or would it significantly improve performance if this ~50 element dot/inner product was in itself parallelized?
         for n_prim, (k_prim, w_prim) in enumerate(zip_contour):
             inner_sum += w_prim * ket[n_prim] * V_sep(k, k_prim, Q.l, Q.j)   
         result += w * bra[n] * inner_sum 
