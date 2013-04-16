@@ -8,15 +8,18 @@ float2 integrand(float2 r, float2 k, float2 k_prime)
 // Calculates one matrix element in berggren-methodology.
 float2 get_element_berggren(float2 start, float2 end, float2 weight, float2 xx, float2 yy)
 {
+
     start=c_real(0.0f); // Needed
-    end=c_real(7.0f);     // Needed
+    end=c_real(7.0f); // Needed
     float mass=0.019272f;
     float2 sum=to_r(0.0f);
     for (int i=0;i<25;i++)
         sum = sum + c_mul(to_r(get_gauss_legendre_w_25(i)) , (integrand(((end-start)/2.0f*get_gauss_legendre_x_25(i) + (start+end)/2.0f), (xx), (yy))));
     float2 integral=c_mul((end-start),sum)/2.0f;
     // return integral;
-    float2 diagonal=c_mul(xx,xx)/(2*mass)*(eps(xx-yy));
+	
+
+    float2 diagonal=c_div(c_mult(xx,xx,(eps(xx-yy))),to_r(2*mass));
     // return diagonal;
-    return diagonal+c_mult(2.0f*c_mul(yy,yy),weight,integral/PI);
+    return diagonal+c_mult(2.0f*c_mul(yy,yy),weight,c_div(integral , to_r(PI) ) );
 }

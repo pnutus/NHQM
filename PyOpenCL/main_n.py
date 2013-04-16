@@ -1,12 +1,19 @@
+import scipy as sp
 import pyopencl as cl
 import pyopencl.array as cl_array
 import numpy
 import numpy.linalg as la
-import scipy as sp
+
 from pyopencl.elementwise import ElementwiseKernel
-from gen_matrix_n import GenMatrix
 import sys,os.path
-sys.path.append(os.path.join(os.path.dirname(__file__),'../..'))
+
+
+sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
+from gen_matrix_n import GenMatrix
+
+
+
+
 from nhqm.calculations import QM as calc
 
 # numpy.set_printoptions(threshold=numpy.nan)
