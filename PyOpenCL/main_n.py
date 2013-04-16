@@ -3,23 +3,14 @@ import pyopencl as cl
 import pyopencl.array as cl_array
 import numpy
 import numpy.linalg as la
-
 from pyopencl.elementwise import ElementwiseKernel
 import sys,os.path
-
-
 sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
 from gen_matrix_n import GenMatrix
-
-
-
-
 from nhqm.calculations import QM as calc
 
 # numpy.set_printoptions(threshold=numpy.nan)
-
 # size=20
-
 # I think (hope) most things here speaks for itself.
 
 peak_x=0.2

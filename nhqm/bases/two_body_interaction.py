@@ -27,7 +27,7 @@ def separable_elem(bra, ket, contour, Q):
         inner_sum = 0
         #Complex conjugate the bra? Or NHQM trickery?
         for n_prim, (k_prim, w_prim) in enumerate(zip_contour):
-            inner_sum += w_prim * ket[n_prim] * V_sep(k, k_prim, Q.l, Q.j)
+            inner_sum += w_prim * ket[n_prim] * V_sep(k, k_prim, Q.l, Q.j)   
         result += w * bra[n] * inner_sum 
     return result
 

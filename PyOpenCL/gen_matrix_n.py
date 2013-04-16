@@ -39,13 +39,13 @@ class GenMatrix:
         # Generate k_prim-matrix.
         host_k_prim=(numpy.array([points[(int)(i/size)] for i in range(size**2)])).astype(type) 
         # Generate step-matrix.
-        host_step=(numpy.array([weights[(int)(i/size)] for i in range(size**2)])).astype(type)
+        host_weights=(numpy.array([weights[(int)(i/size)] for i in range(size**2)])).astype(type)
         # Flush k to gpu
         self.gpu_k=cl_array.to_device(self.ctx,self.queue,host_k) 
         # Flush k_prim to gpu.
         self.gpu_k_prim=cl_array.to_device(self.ctx,self.queue,host_k_prim)
         # Flush steps to gpu.
-        self.gpu_step=cl_array.to_device(self.ctx,self.queue,host_step) 
+        self.gpu_weights=cl_array.to_device(self.ctx,self.queue,host_weights) 
         # Allocate space for results.
         self.gpu_result=cl_array.empty(self.queue,(size**2,1,),type) 
     def allocate_space_old(self,size,type):
