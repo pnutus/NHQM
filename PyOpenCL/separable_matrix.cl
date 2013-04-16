@@ -21,6 +21,8 @@ float2 V(float2 r)
 {
 	float2 beta = to_r(1.0f);
 	float2 res = pow(EULER , c_mult(-beta, r));
+	// Det finns en funktion c_exp som gör detta.
+	// Har du inte skrivit pow själv fixar den tyvärr inte komplexa tal.
 	return res;	
 }
 
