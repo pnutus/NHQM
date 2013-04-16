@@ -37,6 +37,8 @@ def separable_elem(bra, ket, contour, Q):
 
 def V_sep(k, k_prim, l, j):
     args = (k, k_prim, potential, l, j)
+    
+    ### should this integral be the run on one kernel (albeit in paralell with other integrals like this one) or split up between many kernels? seeing as it' only about 30 points would there be much performance to gain or is it of lower importance?
     integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20, args=args)
     return 2 / sp.pi * k_prim**2 * integral
 
@@ -44,3 +46,5 @@ def V_sep(k, k_prim, l, j):
 def potential(r, l, j):
     return sp.exp(- beta * r**2)
     
+# def mom.integrand(r, k, k_prim, V, l, j):
+#     return r**2 * j_l(l, k*r) * j_l(l, k_prim*r) * V(r, l, j)

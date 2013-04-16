@@ -30,7 +30,7 @@ class GenMatrix:
     def set_method(self,method="mom_space_complex.cl"):
         self.method="".join(open(method,'r').readlines())
     # Generate contour and allocate space on gpu for contour and result.
-    def allocate_space(self,x_peak,y_peak,k_max,order,type):
+    def allocate_space(self,x_peak,y_peak,k_max,order,type,eigvecs=NULL):
         [points,weights]=calc.triangle_contour(x_peak,y_peak,k_max,order) # Generate weights.
         self.k_max=k_max
         size=self.size=len(points)
@@ -41,6 +41,11 @@ class GenMatrix:
         # Generate step-matrix.
         host_weights=(numpy.array([weights[(int)(i/size)] for i in range(size**2)])).astype(type)
         # Flush k to gpu
+        
+        ###pass eigvecs to gpu to calculate dot products for sep_M
+        
+        ###pass function to integrate.
+        
         self.gpu_k=cl_array.to_device(self.ctx,self.queue,host_k) 
         # Flush k_prim to gpu.
         self.gpu_k_prim=cl_array.to_device(self.ctx,self.queue,host_k_prim)
