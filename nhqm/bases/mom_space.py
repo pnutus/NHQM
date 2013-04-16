@@ -35,18 +35,3 @@ def gen_basis_function(problem, l = 0, j = .5):
     def basis_function(r, k, weight):
         return 4*sp.pi/(2*sp.pi)**1.5 * k**2 * weight*j_l(l, k*r)
     return basis_function
-
-
-# Berggren contour:    
-
-@sp.vectorize
-def triangle(x, peak_x, peak_y, k_max):
-    if x < 2*peak_x:
-        return peak_y * (abs(x/peak_x - 1) - 1)
-    else:
-        return 0
-
-def gen_simple_contour(peak_x, peak_y, k_max, points):
-    xs = sp.linspace(0, k_max, points + 1)[1:]
-    ys = triangle(xs, peak_x, peak_y, k_max)
-    return xs + 1j * ys
