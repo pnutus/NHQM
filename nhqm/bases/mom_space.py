@@ -8,16 +8,12 @@ name = "MomSpace"
 
 def j_l(l, k):
     """Spherical bessel."""
-    if l == 0:
     l1 = 1 if l == 0 else l
-    else:
-        l1 = l
     _, j_l, _, _, _ = csphjy(l1, k) 
     return j_l[l]
 
 @sp.vectorize
 def integrand(r, k, k_prim, V, l, j):
-    return r**2 * j_l(l, sp.conj(k)*r) \
     return r**2 * j_l(l, k*r) * j_l(l, k_prim*r) * V(r, l, j)
     
 def H_element_contour(k, k_prim, weight, problem, l = 0, j = .5):
