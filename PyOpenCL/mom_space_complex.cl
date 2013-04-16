@@ -18,5 +18,6 @@ float2 get_element_berggren(float2 start, float2 end, float2 weight, float2 xx, 
     // return integral;
     float2 diagonal=c_mul(xx,xx)/(2*mass)*(eps(xx-yy));
     // return diagonal;
-    return diagonal+c_mult(2.0f*c_mul(yy,yy),weight,integral/PI);
+    return diagonal+c_mult(\
+		2.0f*c_mul(yy,yy),weight,c_div(integral , to_r(PI) ) );
 }
