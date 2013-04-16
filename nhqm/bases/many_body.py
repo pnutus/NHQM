@@ -1,76 +1,68 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from itertools import combinations
-import mom_space as mom
+from itertools import combinations, combinations_with_replacement
+from collections import namedtuple
+from scipy.misc import factorial
 from fermion_state import FermionState
+from memoize import memoize
+import two_body_interaction as n_n
 
-sqrtV0 = sp.sqrt(-2250) #sqrt(MeV)
-beta = 1 # fm^-2
 # THIS IS FOR FERMIONS
 
-def hamiltonian(eigvals, eigvecs, contour, num_particles=2, verbose=False):
-    if verbose: print "Generating many-body states"
-    num_sp_states = len(eigvecs)
-    mb_states = gen_states(num_sp_states, num_particles)
-    order = len(mb_states)
-    if verbose: print "Generating matrix of separable interactions"
-    sep_M = gen_separable_matrix(eigvecs, contour)
-    if verbose: print "Generating many-body H"
-    H = sp.empty((order, order), complex)
-    for i, bra in enumerate(mb_states):
-        for j, ket in enumerate(mb_states):
-            H[i,j] = H_elem(bra, ket, eigvals, sep_M)
-            
-    return H
+QNums = namedtuple('qnums', 'l J M j m k')
+SP = namedtuple('sp', ['m', 'k'])
+
+def hamiltonian(quantum_numbers, 
+                eigvals, eigvecs, contour, 
+                num_particles=2, verbose=False):
     
-def gen_states(num_sp_states, num_particles=2):
-    if num_sp_states < num_particles:
-        raise ValueError("There cannot be more particles than states")
-    return map(FermionState, combinations(range(num_sp_states), num_particles))  
+    # if verbose: print "Generating matrix of separable interactions"
+    # n_n.gen_matrix(eigvecs, contour, quantum_numbers)
+    
+    # tuples of k-indexes: (3, 6), (4, 4)
+    mb_k = list(combinations_with_replacement(quantum_numbers.k, 
+                                              num_particles))
+    order = len(mb_k)
+    
+    if verbose: print "Generating many-body H"
+    H = sp.zeros((order, order), complex)
+    for i, k_bra in enumerate(mb_k):
+        for j, k_ket in enumerate(mb_k):
+            H[i,j] = coupled_H_elem(k_bra, k_ket, eigvals, quantum_numbers)
+    return H
 
-def H_elem(bra, ket, eigvals, sep_M):
-    if bra == ket:
-        a, b = bra
-        one_body = eigvals[a] + eigvals[b]
-    else:
-        one_body = 0
-        
-    def n_n_interaction(a, b, c, d):
-        return sep_M[a, c]*sep_M[b, d] - sep_M[a, d]*sep_M[b, c]
-    two_body = sum(sign * n_n_interaction(a, b, c, d)
-                    for (a, b, c, d, sign) in two_body_indexes(bra, ket)) 
-                                  
-    return one_body +two_body
-
-def gen_separable_matrix(eigvecs, contour):
-    order = len(eigvecs)
-    M = sp.empty( (order, order), complex )
-    for i, bra in enumerate(eigvecs):
-        for j, ket in enumerate(eigvecs):
-            M[i, j] = separable_elem(bra, ket, contour)
-    return M
-
-def separable_elem(bra, ket, contour, l=1, j=1.5):
-    zip_contour = zip(*contour)
+def coupled_H_elem(k_bra, k_ket, eigvals, Q):
+    k1, k2 = k_bra
+    k1_prim, k2_prim = k_ket
+    
     result = 0
-    #no weight in the contour array?
-    for n, (k, w) in enumerate(zip_contour):
-        inner_sum = 0
-        #Complex conjugate the bra? Or NHQM trickery?
-        for n_prim, (k_prim, w_prim) in enumerate(zip_contour):
-            inner_sum += w_prim * ket[n_prim] * V_sep(k, k_prim, l, j)
-        result += w * bra[n] * inner_sum 
+    for m in Q.m:
+        bra = FermionState([SP(m, k1), SP(Q.M - m, k2)])
+        if bra.sign == 0: continue
+        
+        for m_prim in Q.m:
+            ket = FermionState([SP(m_prim, k1_prim), 
+                                SP(Q.M - m_prim, k2_prim)])
+            if ket.sign == 0: continue
+            temp = sp.conj(clebsch_gordan(Q.j, Q.j, m, Q.M - m, Q.J, Q.M))
+            temp *= clebsch_gordan(Q.j, Q.j, m_prim, Q.M - m_prim, Q.J, Q.M)
+            temp *= H_elem(bra, ket, eigvals)
+            result += temp
     return result
+            
+def H_elem(bra, ket, eigvals):
+    one_body = 0
+    if bra == ket:
+        for sp_state in bra:
+            one_body += eigvals[sp_state.k]
+        
+    two_body = sum(sign * n_n.interaction(a.k, b.k, c.k, d.k)
+                    for (a, b, c, d, sign) in two_body_indexes(bra, ket)) 
+    import pdb; pdb.set_trace()           
+    return one_body + two_body
 
-def V_sep(k, k_prim, l, j):
-    args = (k, k_prim, potential, l, j)
-    integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20, args=args)
-    return 2 / sp.pi * k_prim**2 * integral
 
-@sp.vectorize
-def potential(r, l, j):
-    return sqrtV0*sp.exp(- beta * r**2)
 
 def two_body_indexes(bra, ket):
     result = []
@@ -85,6 +77,41 @@ def two_body_indexes(bra, ket):
                 sign = new_ket.sign
                 result.append(created + annihilated + (sign,))
     return result
+
+# Limit on number of iterations for computing C-G coefficients
+CG_LIMIT = 50
+
+@memoize
+def clebsch_gordan(j1, j2, m1, m2, J, M):
+    """Computes the Clebsch-Gordan coefficient
+    <j1 j2; m1 m2|j1 j2; J M>.
+
+    For reference see
+    http://en.wikipedia.org/wiki/Table_of_Clebsch-Gordan_coefficients."""
+    if M != m1 + m2 or not abs(j1 - j2) <= J <= j1 + j2:
+        return 0
+    c1 = sp.sqrt((2*J+1) * factorial(J+j1-j2) * factorial(J-j1+j2) * \
+              factorial(j1+j2-J)/factorial(j1+j2+J+1))
+    c2 = sp.sqrt(factorial(J+M) * factorial(J-M) * factorial(j1-m1) * \
+              factorial(j1+m1) * factorial(j2-m2) * factorial(j2+m2))
+    c3 = 0.
+    for k in range(CG_LIMIT):
+        use = True
+        d = [0, 0, 0, 0, 0]
+        d[0] = j1 + j2 - J - k
+        d[1] = j1 - m1 - k
+        d[2] = j2 + m2 - k
+        d[3] = J - j2 + m1 + k
+        d[4] = J - j1 -m2 + k
+        prod = factorial(k)
+        for arg in d:
+            if arg < 0:
+                use = False
+                break
+            prod *= factorial(arg)
+        if use:
+            c3 += (-1)**k/prod
+    return c1*c2*c3
     
 if __name__ == '__main__':
     print "kaptenkvant 4 lyfe"

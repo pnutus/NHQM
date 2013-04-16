@@ -82,7 +82,8 @@ def calculate_steps(contour):
     
 def gauss_contour(vertices, order):
     """
-    Generates a contour using Gauss-Legendre quadrature.
+    Generates a contour along the line segments between
+    vertices using Gauss-Legendre quadrature.
     """
     (x, w) = p_roots(order)
     num_segments = len(vertices) - 1
