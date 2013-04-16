@@ -3,7 +3,7 @@ import scipy as sp
 from scipy import linalg, integrate
 from scipy.special.orthogonal import p_roots
 
-def hamiltonian(element_function, args=None, 
+def hamiltonian(element_function, args=None,
                 order=20, hermitian=False):
     """Given an element_function(n, n_prim) calculates energies."""
     H = sp.empty((order, order), complex)
@@ -145,4 +145,3 @@ class WeightTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    

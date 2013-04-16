@@ -1,19 +1,21 @@
-float j_l(int l, float r)
+// Spherical bessel-functions.
+float2 j_l(int l, float2 r)
 {
     switch (l)
     {
         case 0:
-            if (fabs(r)<0.0001) return 1.0;
-            else return sin(r)/r;
+            r=epsify(r);
+            return c_div(c_sin(r),r);
         case 1:
-            if (fabs(r)<0.0001) return 0.0;
-            else return (sin(r)/(r*r)-cos(r)/r);
-        case 2:
-            return ((3/(r*r)-1)*sin(r)/r-3*cos(r)/(r*r));
-        case 3:
-            return (-(15/(r*r*r)+6/r)*sin(r)/r-(15/(r*r)-1)*cos(r)/r);
+            r=epsify(r);
+            return (c_div(c_sin(r),c_mul(r,r))-c_div(c_cos(r),r));
+        // case 2:
+            // return ((3/(r*r)-1)*sin(r)/r-3*cos(r)/(r*r));
+        // case 3:
+            // return (-(15/(r*r*r)+6/r)*sin(r)/r-(15/(r*r)-1)*cos(r)/r);
     }
 }
+// The x-coords for a 25-degree Gauss-Legendre integration.
 float get_gauss_legendre_x_25(int i)
 {
     float arr[]={0.0000000000000000,
@@ -44,6 +46,7 @@ float get_gauss_legendre_x_25(int i)
     float res=arr[i];
     return res;
 }
+// The weights for a 25-degree Gauss-Legendre integration.
 float get_gauss_legendre_w_25(int i)
 {
     float arr[]={0.1231760537267154,
@@ -74,3 +77,20 @@ float get_gauss_legendre_w_25(int i)
     float res=arr[i];
     return res;
 }
+
+// float j_l(int l, float r)
+// {
+    // switch (l)
+    // {
+        // case 0:
+            // if (fabs(r)<0.0000000001) return 1.0;
+            // else return sin(r)/r;
+        // case 1:
+            // if (fabs(r)<0.0000000001) return 0.0;
+            // else return (sin(r)/(r*r)-cos(r)/r);
+        // case 2:
+            // return ((3/(r*r)-1)*sin(r)/r-3*cos(r)/(r*r));
+        // case 3:
+            // return (-(15/(r*r*r)+6/r)*sin(r)/r-(15/(r*r)-1)*cos(r)/r);
+    // }
+// }

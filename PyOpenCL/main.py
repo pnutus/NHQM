@@ -17,7 +17,7 @@ gm.execute_kernel(0,6.0)
 print gm.get_results().reshape((size,size))
 
 
-[eigs,_]=la.eig(gm.get_results().reshape((size,size)))
-indexes = eigs.argsort()
-eigs = sp.real_if_close(eigs[indexes])
-print eigs[0]
+# [eigs,_]=la.eig(gm.get_results().reshape((size,size)))
+# indexes = eigs.argsort()
+# eigs = sp.real_if_close(eigs[indexes])
+# print eigs[0]

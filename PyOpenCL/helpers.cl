@@ -3,10 +3,10 @@ float j_l(int l, float r)
     switch (l)
     {
         case 0:
-            if (fabs(r)<0.0001) return 1.0;
+            if (fabs(r)<0.0000000001) return 1.0;
             else return sin(r)/r;
         case 1:
-            if (fabs(r)<0.0001) return 0.0;
+            if (fabs(r)<0.0000000001) return 0.0;
             else return (sin(r)/(r*r)-cos(r)/r);
         case 2:
             return ((3/(r*r)-1)*sin(r)/r-3*cos(r)/(r*r));
