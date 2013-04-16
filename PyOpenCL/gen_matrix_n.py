@@ -34,11 +34,11 @@ class GenMatrix:
         [points,weights]=calc.triangle_contour(x_peak,y_peak,k_max,order) # Generate weights.
         self.k_max=k_max
         size=self.size=len(points)
-         # Generate k-matrix.
+        # Generate k-matrix.
         host_k=(numpy.array([points[i%size] for i in range(size**2)])).astype(type)
         # Generate k_prim-matrix.
         host_k_prim=(numpy.array([points[(int)(i/size)] for i in range(size**2)])).astype(type) 
-         # Generate step-matrix.
+        # Generate step-matrix.
         host_step=(numpy.array([weights[(int)(i/size)] for i in range(size**2)])).astype(type)
         # Flush k to gpu
         self.gpu_k=cl_array.to_device(self.ctx,self.queue,host_k) 
@@ -68,24 +68,8 @@ class GenMatrix:
             helpers+"\n"+\
             self.potential+"\n"+\
             self.method
+
         self.kernel=ElementwiseKernel(self.ctx, "float start, float end, float2 *step, float2 *k, float2 *k_prim, float2 *res","res[i]=get_element_berggren(start,end,step[i],k[i],k_prim[i])", preamble=program_string)
-    def combine_kernel_old(self,arg=""):
-        includes="".join(open("includes.cl",'r').readlines())
-        defines="".join(open("defines.cl",'r').readlines())
-        complex_operations="".join(open("complex_operations.cl",'r').readlines())
-        helpers="".join(open("helpers_complex.cl",'r').readlines())
-        arguments="float ix(int i) {float arr[]={"+arg+"}; return arr[i];}"
-        program_string=\
-            includes+"\n"+\
-            defines+"\n"+\
-            complex_operations+"\n"+\
-            arguments+"\n"+\
-            helpers+"\n"+\
-            self.potential+"\n"+\
-            self.method
-        self.kernel=ElementwiseKernel(self.ctx, "int *x, float start, float end, int size, float2 *res", \
-        "int *x,c_float *k,c_float *k_prim,c_float *w, float start, float end, int size, c_float *res", \
-            "res[i]=get_element(x[i],start,end,size)", preamble=program_string)
     # Run kernel.
     def execute_kernel(self):
         self.kernel(0.0,self.k_max,self.gpu_step,  self.gpu_k,  self.gpu_k_prim,  self.gpu_result)
