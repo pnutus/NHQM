@@ -5,7 +5,7 @@ from itertools import combinations, combinations_with_replacement
 from collections import namedtuple
 from scipy.misc import factorial
 from fermion_state import FermionState
-from memoize import memoize
+from ..helpers import memoize
 import two_body_interaction as n_n
 
 # THIS IS FOR FERMIONS

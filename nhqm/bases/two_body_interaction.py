@@ -24,13 +24,6 @@ def gen_matrix(eigvecs, contour, Q, verbose=False):
     sep_M = 2 / sp.pi * matrix_from_function(sep_M_func, order)
     return sep_M
     
-def matrix_from_function(function, order, dtype=complex):
-    matrix = sp.empty((order, order), dtype)
-    for i in xrange(order):
-        for j in xrange(order):
-            matrix[i, j] = function(i, j)
-    return matrix
-    
 def V_sep(k, k_prim, Q):
     args = (k, k_prim, potential, Q.l, Q.j)
     integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20, args=args)

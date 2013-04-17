@@ -1,31 +1,21 @@
 from __future__ import division
 import scipy as sp
 from scipy import linalg, integrate
-from scipy.special.orthogonal import p_roots
 
-def hamiltonian(element_function, args=None,
-                order=20, hermitian=False):
-    """Given an element_function(n, n_prim) calculates energies."""
-    H = sp.empty((order, order), complex)
-    for n in xrange(order):
-        limit = (n + 1) if hermitian else order
-        for n_prim in xrange(limit):
-            H[n, n_prim] = element_function(n, n_prim, *args)
+
+def matrix_from_function(function, order, dtype=complex, 
+                         hermitian=False, symmetric=False):
+    matrix = sp.empty((order, order), dtype)
+    for i in xrange(order):
+        limit = (i + 1) if hermitian or symmetric else order
+        for j in xrange(limit):
+            matrix[i, j] = function(i, j)
             if hermitian:
-                H[n_prim, n] = H[n, n_prim]
-    return H
-
-def contour_hamiltonian(element_function, contour, args=None):
-    zip_contour = zip(*contour)
-    order = len(zip_contour)
-    H = sp.empty((order, order), complex)
-    for (n, (k, _)) in enumerate(zip_contour):
-        for (n_prim, (k_prim, w)) in enumerate(zip_contour):
-            H[n, n_prim] = element_function(k, k_prim, w, *args)
-    return H
-
-
-
+                matrix[j, i] = sp.conj(matrix[i, j])
+            elif symmetric:
+                matrix[j, i] = matrix[i, j]
+    return matrix
+    
 def energies(H, hermitian=False):
     """
     Given a hamiltonian matrix, calculates energies and 
@@ -58,49 +48,6 @@ def gen_wavefunction(eigvec, basis_function, contour=None):
             return sp.dot(basis_vec, eigvec)
     return wavefunction
     
-
-# Berggren contour:    
-
-@sp.vectorize
-def triangle(x, peak_x, peak_y, k_max):
-    if x < 2*peak_x:
-        return peak_y * (abs(x/peak_x - 1) - 1)
-    else:
-        return 0
-
-def naive_triangle_contour(peak_x, peak_y, k_max, points):
-    xs = sp.linspace(0, k_max, points + 1)[1:]
-    ys = triangle(xs, peak_x, peak_y, k_max)
-    points = xs + 1j * ys
-    weights = calculate_steps(points)
-    return (points, weights)
-    
-def calculate_steps(contour):
-    shifted = sp.roll(contour, 1)
-    shifted[0] = 0
-    return contour - shifted
-    
-def gauss_contour(vertices, order):
-    """
-    Generates a contour along the line segments between
-    vertices using Gauss-Legendre quadrature.
-    """
-    (x, w) = p_roots(order)
-    num_segments = len(vertices) - 1
-    points = weights = sp.empty(0, complex)
-    for i in range(num_segments):
-        a = vertices[i]
-        b = vertices[i + 1]
-        scaled_x = (x * (b - a) + (a + b))/2
-        scaled_w = w * (b - a)/2
-        points = sp.hstack((points, scaled_x))
-        weights = sp.hstack((weights, scaled_w))
-    return (points, weights)
-    
-def triangle_contour(peak_x, peak_y, k_max, order):
-    vertices = [0, peak_x - 1j*peak_y, 2*peak_x, k_max]
-    return gauss_contour(vertices, order)
-
 def absq(x):
     return sp.real(x)**2 + sp.imag(x)**2
 
@@ -116,7 +63,7 @@ def normalize(f, start, stop, weight = lambda x: 1):
     return lambda x: f(x) / sp.sqrt(N)
     
 #
-# Tests
+#   Tests
 #
    
 import unittest
@@ -145,3 +92,36 @@ class WeightTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+    
+#
+#   Decorators
+#
+    
+import collections
+import functools
+
+class memoize(object):
+   '''Decorator. Caches a function's return value each time it is called.
+   If called later with the same arguments, the cached value is returned
+   (not reevaluated).
+   '''
+   def __init__(self, func):
+      self.func = func
+      self.cache = {}
+   def __call__(self, *args):
+      if not isinstance(args, collections.Hashable):
+         # uncacheable. a list, for instance.
+         # better to not cache than blow up.
+         return self.func(*args)
+      if args in self.cache:
+         return self.cache[args]
+      else:
+         value = self.func(*args)
+         self.cache[args] = value
+         return value
+   def __repr__(self):
+      '''Return the function's docstring.'''
+      return self.func.__doc__
+   def __get__(self, obj, objtype):
+      '''Support instance methods.'''
+      return functools.partial(self.__call__, obj)
