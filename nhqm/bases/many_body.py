@@ -58,8 +58,7 @@ def H_elem(bra, ket, eigvals):
             one_body += eigvals[sp_state.k]
         
     two_body = sum(sign * n_n.interaction(a.k, b.k, c.k, d.k)
-                    for (a, b, c, d, sign) in two_body_indexes(bra, ket)) 
-    import pdb; pdb.set_trace()        
+                    for (a, b, c, d, sign) in two_body_indexes(bra, ket))       
     return one_body + two_body
 
 
