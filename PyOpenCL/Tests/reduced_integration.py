@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__),'../..'))
 
 from nhqm.calculations import QM as calc
 
-order = 5000
+order = 50
 l = 1
 j = 1.5
 peak_x = 0.17
@@ -29,8 +29,8 @@ gpu_points=cl_array.to_device(ctx,queue,points)
 gpu_weights=cl_array.to_device(ctx,queue,weights)
 
 krnl = ReductionKernel(ctx, numpy.float32, neutral="0.0f",
-        reduce_expr="a+b", map_expr="x[i]*func(y[i])",
-        arguments="__global float *x, __global float *y",
+        reduce_expr="a+b", map_expr="weights[i]*func(points[i])",
+        arguments="__global float *weights, __global float *points",
         preamble="""
         float func(float x)
             {
