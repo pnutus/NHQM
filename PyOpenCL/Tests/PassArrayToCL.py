@@ -15,11 +15,13 @@ arr=(numpy.array([i for i in range(size)])).astype(numpy.float32)
 gpu_arr=cl_array.to_device(ctx,queue,arr)
 gpu_res=cl_array.empty_like(gpu_arr)
 
-kernel=ElementwiseKernel(ctx,"float *num, float *array, float *res", "res[i]=func(num[i], array[1])",\
+kernel=ElementwiseKernel(ctx,"float *num, float *array, float *res", "res[i]=func(num[i], array)",\
                             preamble="""
-                            float func(float a, float b)
+                            float func(float a, __global float *b)
                             {
-                                return a+*(&b+(int)a);
+                                //float *c=&b;
+                                return a+b[(int)a];
+                                return a+*(b+(int)a);
                             }
                             """)
 kernel(gpu_arr,gpu_arr,gpu_res)
