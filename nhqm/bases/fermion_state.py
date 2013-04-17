@@ -10,7 +10,7 @@ class FermionState:
     def __init__(self, states = []):
         self.states = []
         self.sign = 1
-        for state in states:
+        for state in reversed(states):
             self._create(state)
             
     def _create(self, new_state):
@@ -79,7 +79,7 @@ def state_index(states, new_state):
     for i, state in enumerate(states):
         if state == new_state:
             raise ValueError
-        if state < new_state:
+        if state > new_state:
             return i
     return len(states)
 
