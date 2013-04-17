@@ -3,10 +3,10 @@ import scipy as sp
 from scipy.integrate import fixed_quad
 from itertools import combinations, product
 from collections import namedtuple
-import mom_space as mom
-from collections import defaultdict
-import many_body as mb
-from fermion_state import FermionState
+
+import nhqm.bases.mom_space as mom
+import nhqm.bases.many_body as mb
+from nhqm.bases.fermion_state import FermionState
 
 
 def state_index(states, new_state):

@@ -9,9 +9,6 @@ def res_index(eigvecs):
     maxes = map(max, abs(eigvecs.T))
     return maxes.index(min(maxes))
 
-def absq(x):
-    return x*sp.conjugate(x)
-
 problem = He5.problem   
 l = 1
 j = 1.5

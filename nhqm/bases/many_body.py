@@ -3,10 +3,9 @@ import scipy as sp
 from scipy.integrate import fixed_quad
 from itertools import combinations, combinations_with_replacement
 from collections import namedtuple
-from scipy.misc import factorial
-from fermion_state import FermionState
-from ..helpers import memoize
-import two_body_interaction as n_n
+from nhqm.bases.fermion_state import FermionState
+import nhqm.bases.two_body_interaction as n_n
+from nhqm.QM_helpers import clebsch_gordan
 
 # THIS IS FOR FERMIONS
 
@@ -17,8 +16,8 @@ def hamiltonian(quantum_numbers,
                 eigvals, eigvecs, contour, 
                 num_particles=2, verbose=False):
     
-    # if verbose: print "Generating matrix of separable interactions"
-    # n_n.gen_matrix(eigvecs, contour, quantum_numbers)
+    if verbose: print "Generating matrix of separable interactions"
+    n_n.gen_matrix(eigvecs, contour, quantum_numbers)
     
     # tuples of k-indexes: (3, 6), (4, 4)
     mb_k = list(combinations_with_replacement(quantum_numbers.k, 
@@ -52,11 +51,13 @@ def coupled_H_elem(k_bra, k_ket, eigvals, Q):
     return result
             
 def H_elem(bra, ket, eigvals):
+    # H_1, one-body interaction
     one_body = 0
     if bra == ket:
         for sp_state in bra:
             one_body += eigvals[sp_state.k]
-        
+    
+    # H_2, two-body interaction
     two_body = sum(sign * n_n.interaction(a.k, b.k, c.k, d.k)
                     for (a, b, c, d, sign) in two_body_indexes(bra, ket))       
     return one_body + two_body
@@ -76,41 +77,6 @@ def two_body_indexes(bra, ket):
                 sign = new_ket.sign
                 result.append(created + annihilated + (sign,))
     return result
-
-# Limit on number of iterations for computing C-G coefficients
-CG_LIMIT = 50
-
-@memoize
-def clebsch_gordan(j1, j2, m1, m2, J, M):
-    """Computes the Clebsch-Gordan coefficient
-    <j1 j2; m1 m2|j1 j2; J M>.
-
-    For reference see
-    http://en.wikipedia.org/wiki/Table_of_Clebsch-Gordan_coefficients."""
-    if M != m1 + m2 or not abs(j1 - j2) <= J <= j1 + j2:
-        return 0
-    c1 = sp.sqrt((2*J+1) * factorial(J+j1-j2) * factorial(J-j1+j2) * \
-              factorial(j1+j2-J)/factorial(j1+j2+J+1))
-    c2 = sp.sqrt(factorial(J+M) * factorial(J-M) * factorial(j1-m1) * \
-              factorial(j1+m1) * factorial(j2-m2) * factorial(j2+m2))
-    c3 = 0.
-    for k in range(CG_LIMIT):
-        use = True
-        d = [0, 0, 0, 0, 0]
-        d[0] = j1 + j2 - J - k
-        d[1] = j1 - m1 - k
-        d[2] = j2 + m2 - k
-        d[3] = J - j2 + m1 + k
-        d[4] = J - j1 -m2 + k
-        prod = factorial(k)
-        for arg in d:
-            if arg < 0:
-                use = False
-                break
-            prod *= factorial(arg)
-        if use:
-            c3 += (-1)**k/prod
-    return c1*c2*c3
     
 if __name__ == '__main__':
     print "kaptenkvant 4 lyfe"

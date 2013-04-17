@@ -1,31 +1,30 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from scipy.special.specfun import csphjy
-import numpy as np
+from nhqm.helpers import matrix_from_function
+from nhqm.QM_helpers import j_l
+from collections import namedtuple
 
 name = "MomSpace"
 
-def j_l(l, k):
-    """Spherical bessel."""
-    l1 = 1 if l == 0 else l
-    _, j_l, _, _, _ = csphjy(l1, k) 
-    return j_l[l]
+QNums = namedtuple('qnums', 'l j k')
 
-@sp.vectorize
-def integrand(r, k, k_prim, V, l, j):
-    return r**2 * j_l(l, k*r) * j_l(l, k_prim*r) * V(r, l, j)
+def hamiltonian(contour, problem, Q):
+    points, weights = contour
+    def H_func(i, j):
+        return H_element(points[i], points[j], weights[j], problem, Q)
+    return matrix_from_function(H_func, order=len(points))
     
-def H_element_contour(k, k_prim, weight, problem, l = 0, j = .5):
+def H_element(k, k_prim, weight, problem, Q):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
+    
     V = problem.potential
-    integral, _ = fixed_quad(integrand, 0, 10, \
-                                n = 20, args=(k, k_prim, V, l, j))
+    @sp.vectorize
+    def integrand(r):
+        return r**2 * j_l(Q.l, k*r) * j_l(Q.l, k_prim*r) * V(r, Q.l, Q.j)
+    integral, _ = fixed_quad(integrand, 0, 10, n = 20)
+    
     return diagonal + 2 * k_prim**2 * weight / sp.pi * integral
-
-def H_element(n, n_prim, step, *args, **kwargs):
-    k, k_prim = [(x + 1)*step for x in (n, n_prim)]
-    return H_element_contour(k, k_prim, step, *args, **kwargs)
 
 def gen_basis_function(problem, l = 0, j = .5):
     # TODO

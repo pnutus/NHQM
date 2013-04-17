@@ -1,3 +1,7 @@
+from __future__ import division
+import scipy as sp
+from scipy.special.orthogonal import p_roots
+
 def gauss_contour(vertices, order):
     """
     Generates a contour along the line segments between

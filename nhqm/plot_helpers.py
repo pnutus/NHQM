@@ -1,6 +1,7 @@
 from __future__ import division
-from imports import *
-import nhqm.calculations.QM as calc
+import scipy as sp
+import matplotlib.pyplot as plt
+from nhqm.QM_helpers import absq
 
 def plot_contour(contour):
     points, _ = contour
@@ -12,5 +13,5 @@ def plot_poles(energies, mass):
     
 def plot_wavefunctions(contour, eigvecs):
     points, _ = contour
-    plt.plot(sp.real(points), calc.absq(eigvecs))
+    plt.plot(sp.real(points), absq(eigvecs))
     
