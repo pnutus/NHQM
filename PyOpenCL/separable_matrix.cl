@@ -20,9 +20,7 @@ float2 get_element(float2 start, float2 end, float2 weight, float2 xx, float2 yy
 float2 V(float2 r)
 {
 	float2 beta = to_r(1.0f);
-	float2 res = pow(EULER , c_mult(-beta, r));
-	// Det finns en funktion c_exp som gör detta.
-	// Har du inte skrivit pow själv fixar den tyvärr inte komplexa tal.
+	float2 res = c_exp(EULER , c_mult(-beta, r));
 	return res;	
 }
 
