@@ -15,7 +15,7 @@ peak_x = 0.17
 peak_y = 0.07
 k_max = 4
 
-n_n.V0 = -100
+n_n.V0 = -1000
 
 def res_index(eigvecs):
     maxes = map(max, abs(eigvecs.T))
@@ -32,6 +32,6 @@ eigvals, eigvecs = energies(H)
 
 mb_H = mb.hamiltonian(Q, eigvals, eigvecs, contour, num_particles = 2, verbose=True)
 mb_eigvals, mb_eigvecs = energies(mb_H)
-print "lowest energy:", eigvals[0]
-plt.plot(sp.real(eigvals), sp.imag(eigvals), 'k')
+print "lowest energy:", mb_eigvals[0]
+plt.plot(sp.real(mb_eigvals), sp.imag(mb_eigvals), 'ko')
 plt.show()
