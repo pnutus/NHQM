@@ -11,30 +11,28 @@ def interaction(a, b, c, d):
 
 def gen_matrix(eigvecs, contour, Q, verbose=False):
     order = len(eigvecs)
+    points, weights = contour
+    
+    def V_func(i, j):
+        return V_sep(points[i], points[j], Q)
+    V_matrix = matrix_from_function(V_func, order)
+    
     global sep_M
-    sep_M = sp.empty((order, order), complex)
-    for i, bra in enumerate(eigvecs):
-        for j, ket in enumerate(eigvecs):
-            if verbose: print "{}%".format((i*order + j)/order*100)
-            sep_M[i, j] = separable_elem(bra, ket, contour, Q)
-    sep_M *= 2 / sp.pi
+    def sep_M_func(i, j):
+        return V_matrix.dot(eigvecs[i]*weights*points**2) \
+                       .dot(eigvecs[j]*weights*points**2)
+    sep_M = 2 / sp.pi * matrix_from_function(sep_M_func, order)
     return sep_M
-
-def separable_elem(bra, ket, contour, Q):
-    zip_contour = zip(*contour)
-    result = 0
-    #no weight in the contour array?
-    for n, (k, w) in enumerate(zip_contour):
-        inner_sum = 0
-        #Complex conjugate the bra? Or NHQM trickery?
-        for n_prim, (k_prim, w_prim) in enumerate(zip_contour):
-            inner_sum += w_prim * ket[n_prim] * k_prim**2 \
-                            * V_sep(k, k_prim, Q.l, Q.j)
-        result += w * bra[n] * inner_sum * k**2
-    return result
-
-def V_sep(k, k_prim, l, j):
-    args = (k, k_prim, potential, l, j)
+    
+def matrix_from_function(function, order, dtype=complex):
+    matrix = sp.empty((order, order), dtype)
+    for i in xrange(order):
+        for j in xrange(order):
+            matrix[i, j] = function(i, j)
+    return matrix
+    
+def V_sep(k, k_prim, Q):
+    args = (k, k_prim, potential, Q.l, Q.j)
     integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20, args=args)
     return integral
 
