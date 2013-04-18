@@ -36,13 +36,12 @@ def gen_wavefunction(eigvec, basis_function, contour=None):
             basis_vec = sp.fromiter(iterable, complex, count=length)
             return sp.dot(basis_vec, eigvec)
     return wavefunction
-    
-def j_l(l, k):
+
+def j_l(l, x):
     """Spherical bessel."""
-    l1 = 1 if l == 0 else l
-    _, j_l, _, _, _ = csphjy(l1, k) 
+    L = 1 if l == 0 else l
+    _, j_l, _, _, _ = csphjy(L, x)
     return j_l[l]
-    
 
 # Limit on number of iterations for computing C-G coefficients
 CG_LIMIT = 50

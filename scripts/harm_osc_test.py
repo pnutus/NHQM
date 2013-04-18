@@ -6,15 +6,17 @@ from nhqm.QM_helpers import energies
 from nhqm.bases.gen_contour import gauss_contour
 
 order = 50
-problem = H_atom.problem
+problems = H_atom, He5
 
 Q = osc.QNums(l=0, j=.5, n=range(order))
 
-H = osc.hamiltonian(order, problem, Q)
-eigvals, eigvecs = energies(H)
-print "Harmonic Oscillator", eigvals[0], problem.units
+for problem in problems:
+    print problem.name + ":"
+    H = osc.hamiltonian(order, problem, Q)
+    eigvals, eigvecs = energies(H)
+    print osc.name, eigvals[0], problem.units
 
-contour = gauss_contour([0, 5], order)
-H = mom.hamiltonian(contour, problem, Q)
-eigvals, eigvecs = energies(H)
-print "Mom Space", eigvals[0], problem.units
+    contour = gauss_contour([0, 5], order)
+    H = mom.hamiltonian(contour, problem, Q)
+    eigvals, eigvecs = energies(H)
+    print mom.name, eigvals[0], problem.units
