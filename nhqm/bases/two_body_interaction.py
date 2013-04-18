@@ -29,7 +29,6 @@ def gen_matrix(eigvecs, contour, Q, verbose=False):
     
 def V_sep(k, k_prim, Q):
     V = potential
-    @sp.vectorize
     def integrand(r):
         return r**2 * j_l(Q.l, k*r) * j_l(Q.l, k_prim*r) * V(r, Q.l, Q.j)
     integral, _ = fixed_quad(integrand, 0, 10, n = 20)
