@@ -1,8 +1,7 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from nhqm.helpers import matrix_from_function
-from nhqm.QM_helpers import j_l
+from nhqm.QM_helpers import matrix_from_function, j_l
 from collections import namedtuple
 
 name = "MomSpace"

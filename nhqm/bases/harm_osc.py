@@ -5,7 +5,7 @@ from scipy.optimize import minimize_scalar
 from scipy.misc import factorial, factorial2
 from scipy.special import genlaguerre
 from collections import namedtuple
-from nhqm.helpers import matrix_from_function
+from nhqm.QM_helpers import matrix_from_function
 
 name = "HarmOsc"
 

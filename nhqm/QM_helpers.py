@@ -5,6 +5,19 @@ from scipy.special.specfun import csphjy
 from scipy.misc import factorial
 from nhqm.helpers import memoize
 
+def matrix_from_function(function, order, dtype=complex, 
+                         hermitian=False, symmetric=False):
+    matrix = sp.empty((order, order), dtype)
+    for i in xrange(order):
+        limit = (i + 1) if hermitian or symmetric else order
+        for j in xrange(limit):
+            matrix[i, j] = function(i, j)
+            if hermitian:
+                matrix[j, i] = sp.conj(matrix[i, j])
+            elif symmetric:
+                matrix[j, i] = matrix[i, j]
+    return matrix
+
 def energies(H, hermitian=False):
     """
     Given a hamiltonian matrix, calculates energies and 

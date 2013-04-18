@@ -2,8 +2,7 @@ from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
 import mom_space as mom
-from nhqm.helpers import matrix_from_function
-from nhqm.QM_helpers import j_l
+from nhqm.QM_helpers import matrix_from_function, j_l
 
 V0 = -1e9 #MeV
 beta = 1 # fm^-2
@@ -29,9 +28,8 @@ def gen_matrix(eigvecs, contour, Q, verbose=False):
     
 def V_sep(k, k_prim, Q):
     V = potential
-    def integrand(r):
-        return r**2 * j_l(Q.l, k*r) * j_l(Q.l, k_prim*r) * V(r, Q.l, Q.j)
-    integral, _ = fixed_quad(integrand, 0, 10, n = 20)
+    integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20,
+                                args=(k, k_prim, V, Q.l, Q.j))
     return integral
 
 @sp.vectorize
