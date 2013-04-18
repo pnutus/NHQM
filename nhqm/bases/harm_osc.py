@@ -20,14 +20,18 @@ def hamiltonian(order, problem, Q):
 
 def H_element_mosh(n, n_prim, problem, eps, Q):
     l = Q.l
-    rsq = eps**2 / 2 * (
-        sp.sqrt(n * (n + l + .5)) * (n_prim == (n - 1))
-        + (2*n + l + 1.5) * (n_prim == n)
-        + sp.sqrt( (n + 1) * (n + l + 1.5) ) * (n_prim == (n + 1))
-        )
+    if n == n_prim:
+        result = (2*n + l + 1.5)
+    elif n_prim == (n - 1):
+        result = sp.sqrt( n*(n + l + .5) )
+    elif n_prim == (n + 1):
+        result = sp.sqrt( (n + 1)*(n + l + 1.5) )
+    else:
+        result = 0
+       
     integrand = gen_integrand(n, n_prim, .5, problem.potential, Q)
     (integral, _) = fixed_quad(integrand, 0, 10, n = 20)
-    return rsq + sp.sqrt(2) * eps * integral
+    return eps**2 / 2 * result + sp.sqrt(2) * eps * integral
 
 def H_element(n, n_prim, problem, omega, l = 0, j = .5):
     """Returns matrix element of the Hamiltonian"""
