@@ -19,6 +19,7 @@ def H_element(k, k_prim, weight, problem, Q):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
     
     V = problem.potential
+    @sp.vectorize
     def integrand(r):
         return r**2 * j_l(Q.l, k*r) * j_l(Q.l, k_prim*r) * V(r, Q.l, Q.j)
     integral, _ = fixed_quad(integrand, 0, 10, n = 20)
