@@ -11,64 +11,41 @@ name = "HarmOsc"
 
 QNums = namedtuple('qnums', 'l j n')
 
-
 def hamiltonian(order, problem, Q):
-    eps = 1.06384608107
-    def H_func(i, j):
-        return H_element_mosh(i, j, problem, eps, Q)
-    return matrix_from_function(H_func, order, hermitian=True)
-
-def H_element_mosh(n, n_prim, problem, eps, Q):
-    l = Q.l
-    if n == n_prim:
-        result = (2*n + l + 1.5)
-    elif n_prim == (n - 1):
-        result = sp.sqrt( n*(n + l + .5) )
-    elif n_prim == (n + 1):
-        result = sp.sqrt( (n + 1)*(n + l + 1.5) )
-    else:
-        result = 0
-       
-    integrand = gen_integrand(n, n_prim, .5, problem.potential, Q)
-    (integral, _) = fixed_quad(integrand, 0, 10, n = 20)
-    return eps**2 / 2 * result + sp.sqrt(2) * eps * integral
-
-def H_element(n, n_prim, problem, omega, l = 0, j = .5):
-    """Returns matrix element of the Hamiltonian"""
-    
-    if n == n_prim:
-        result = (2*n + l + 1.5)
-    elif n_prim == (n - 1):
-        result = sp.sqrt( n*(n + l + .5) )
-    elif n_prim == (n + 1):
-        result = sp.sqrt( (n + 1)*(n + l + 1.5) )
-    else:
-        result = 0
-
+    omega = problem.HO_omega
     nu = problem.mass * omega / 2
-    V = problem.potential
-    integrand = gen_integrand(n, n_prim, nu, V, Q)
-    (integral, _) = fixed_quad(integrand, 0, 10, n = 20)
+    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
+    def H_func(i, j):
+        return H_element(i, j, problem, omega, Q, R_nls)
+    return matrix_from_function(H_func, order, hermitian=True)
     
+def H_element(n, n_prim, problem, omega, Q, R_nls):
+    if n == n_prim:
+        result = (2*n + Q.l + 1.5)
+    elif n_prim == (n - 1):
+        result = sp.sqrt( n*(n + Q.l + .5) )
+    elif n_prim == (n + 1):
+        result = sp.sqrt( (n + 1)*(n + Q.l + 1.5) )
+    else:
+        result = 0
+
+    V = problem.potential
+    (integral, _) = fixed_quad(integrand, 0, 10, n = 20, 
+                                args=(n, n_prim, V, Q, R_nls))
     return omega / 2 * result + float(integral)
-
-def gen_integrand(n, n_prim, nu, V, Q):
-    R_nl = gen_R_nl(n, Q.l, nu)
-    R_nl_prim = gen_R_nl(n_prim, Q.l, nu)
-    def integrand(r):
-        return R_nl(r)*V(r, Q.l, Q.j)*R_nl_prim(r)*r**2
-    return integrand
-
+    
+def integrand(r, n, n_prim, V, Q, R_nls):
+    return R_nls[n](r)*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
+    
 def gen_R_nl(n, l, nu):
+    norm = sp.sqrt(
+                    sp.sqrt(2*nu**3/sp.pi)*
+                    2**(n + 2*l + 3)*factorial(n, exact=True)*
+                    nu**l/factorial2(2*n + 2*l + 1, exact=True)
+                  )
     laguerre = genlaguerre(n, l + .5)
     def R_nl(r):
-        norm = sp.sqrt(
-                        sp.sqrt(2*nu**3/sp.pi)*
-                        2**(n + 2*l + 3)*factorial(n, exact=True)*
-                        nu**l/factorial2(2*n + 2*l + 1, exact=True)
-                      )
-        lagge = laguerre(2*nu*r**2)
-        return norm * r**l * sp.e**(-nu * r**2) * lagge
+        return norm * r**l * sp.exp(-nu * r**2) * laguerre(2*nu*r**2)
     return R_nl
 
 

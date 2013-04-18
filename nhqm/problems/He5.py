@@ -16,7 +16,8 @@ problem = CentralProblem("Helium-5")
 problem.potential = V
 problem.mass = 0.019272
 problem.eV_factor = 1e6
-problem.omega_interval = (0, 50)
+problem.units = "MeV"
+problem.HO_omega = 20
 problem.V0 = -70 # MeV
 
 
