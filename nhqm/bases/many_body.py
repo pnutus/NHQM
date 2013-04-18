@@ -48,6 +48,8 @@ def coupled_H_elem(k_bra, k_ket, eigvals, Q):
             temp *= clebsch_gordan(Q.j, Q.j, m_prim, Q.M - m_prim, Q.J, Q.M)
             temp *= H_elem(bra, ket, eigvals)
             result += temp
+            #HINNER INTE FIXA NU, men vi ska inte summera över både m och m'. 
+            #Eller snarare, de skickas med H_elem vilket resulterar i ett delta_mm' pga hamilton diagonal i m
     return result
             
 def H_elem(bra, ket, eigvals):
