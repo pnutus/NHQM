@@ -1,40 +1,20 @@
-from imports import *
-from central_problem import CentralProblem
+from __future__ import division
+import scipy as sp
 
-@sp.vectorize
+name = "He5"
+mass = 0.019272
+eV_factor = 1e6
+units = "MeV"
+HO_omega = 20
+
+V0 = -70 # MeV
+Vso = -7.5 # MeV
+r0 = 2. # fm
+d = .65 # fm
+
 def V(r, l, j):
-    """Woods-Saxon potential for the He5 nucleus"""
-    #V0 = -70 # MeV
-    Vso = -7.5 # MeV
-    r0 = 2. # fm
-    d = .65 # fm
     f = 1/(1 + sp.e**((r - r0)/d))
     spin_orbit = .5*(j*(j + 1) - l*(l + 1) - .75)
-    return f * (problem.V0 - 4*Vso*spin_orbit*(f - 1) / (d * r))
-    
-problem = CentralProblem("Helium-5")
-problem.potential = V
-problem.mass = 0.019272
-problem.eV_factor = 1e6
-problem.units = "MeV"
-problem.HO_omega = 20
-problem.V0 = -70 # MeV
+    return f * (V0 - 4*Vso*spin_orbit*(f - 1) / (d * r))
 
-
-
-
-
-
-
-def plotV():
-    x = sp.linspace(0.1, 10, 100)
-    plt.plot(x, V(x, 0, 0.5), 'k', x, V(x, 1, 1.5), 'r', x, V(x, 1, .5), 'b')
-    # plt.axis([7, 10, -2, 2])
-    plt.show()
-
-
-if __name__ == '__main__':
-    plotV()
-    
-    
-
+potential = V

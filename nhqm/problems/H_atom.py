@@ -1,13 +1,14 @@
-from imports import *
-from central_problem import CentralProblem
+from __future__ import division
+import scipy as sp
+
+name = "H_atom"
+mass = 1
+HO_omega = 1
+eV_factor = 27.2113
+units = "Hartrees"
 
 @sp.vectorize
 def V(r, l, s):
     return - 1. / r
-    
-problem = CentralProblem("Hydrogen atom")
-problem.potential = V
-problem.mass = 1
-problem.HO_omega = 1
-problem.eV_factor = 27.2113
-problem.units = "Hartrees"
+
+potential = V

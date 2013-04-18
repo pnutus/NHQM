@@ -5,7 +5,7 @@ from nhqm.problems import He5
 from nhqm.QM_helpers import energies
 from nhqm.bases.gen_contour import gauss_contour
 
-problem = He5.problem   
+problem = He5  
 order = 30
 problem.V0 = -70.
 k_max = 4

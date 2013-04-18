@@ -7,7 +7,7 @@ from nhqm.QM_helpers import energies
 from helpers import progress
 from nhqm.bases.gen_contour import triangle_contour
 
-problem = He5.problem   
+problem = He5  
 order = 30
 peak_x = 0.17
 peak_y = 0.07
