@@ -34,7 +34,7 @@ class FermionState:
     def create(self, states):
         """Acts with creation operator on the fermionic state."""
         new_fermion = self.copy()
-        for state in states:
+        for state in reversed(states):
             new_fermion._create(state)
         return new_fermion
     

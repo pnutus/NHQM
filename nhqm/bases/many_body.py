@@ -77,7 +77,9 @@ def two_body_indexes(bra, ket):
                         .create(created))
             if new_ket.states == bra.states:
                 sign = new_ket.sign
-                result.append(created + annihilated + (sign,))
+                a,b = created
+                c,d = annihilated
+                result.append( (a,b,c,d,sign) )
     return result
     
 import unittest
@@ -85,21 +87,37 @@ import unittest
 class RedTests(unittest.TestCase):
     
     def setUp(self):
-        print "starting set up"
-        self.bra3 = FermionState([1,2,3]) 
-        self.ket3 = FermionState([1,3,4])
-        self.res3 = [(1, 2, 1, 4, 1), (2, 3, 3, 4, -1)]
+        self.bra32 = FermionState([1,2,3]) 
+        self.ket32 = FermionState([1,3,4])
+        self.res32 = [(1, 2, 1, 4, -1), (2, 3, 3, 4, 1)]
+        
+        self.bra31 = FermionState([1,2,3]) 
+        self.ket31 = FermionState([3,5,6])
+        self.res31 = [(1,2, 5,6, +1)]
+
+        self.bra33 = FermionState([1,2,3]) 
+        self.ket33 = FermionState([1,2,3])
+        self.res33 = [(1,2, 1,2, +1), (1,3,1,3,1), (2,3,2,3,1)]
         
         
+    def test32(self):
+        res = two_body_indexes(self.bra32, self.ket32)
         
-    def test3(self):
-        res = two_body_indexes(self.bra3, self.ket3)
+        self.assertEquals(res, self.res32 )
         
-        self.assertEquals(0, self.res3 )
+    def test31(self):
+        res = two_body_indexes(self.bra31, self.ket31)
+        
+        self.assertEquals(res, self.res31 ) 
+        
+    def test33(self):
+        res = two_body_indexes(self.bra33, self.ket33)
+        
+        self.assertEquals(res, self.res33 )       
         
 
             
 if __name__ == '__main__':
     print "kaptenkvant 4 lyfe"
-    unittest.main()        
-    
+    unittest.main()       
+

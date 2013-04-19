@@ -9,7 +9,7 @@ from nhqm.bases import two_body_interaction as n_n
 from nhqm.plot_helpers import *
 
 problem = He5 
-order = 10*3
+order = 5*3
 problem.V0 = -47.
 peak_x = 0.17
 peak_y = 0.07
