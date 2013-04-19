@@ -1,15 +1,31 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from scipy.optimize import minimize_scalar
 from scipy.misc import factorial, factorial2
 from scipy.special import genlaguerre
 from collections import namedtuple
-from nhqm.QM_helpers import matrix_from_function
+from nhqm.QM_helpers import matrix_from_function, energies
 
 name = "HarmOsc"
 
 QNums = namedtuple('qnums', 'l j n')
+
+def solution(order, problem, Q):
+    H = hamiltonian(order, problem, Q)
+    eigvals, eigvecs = energies(H)
+    
+    # Don't repeat this?
+    omega = problem.HO_omega
+    nu = problem.mass * omega / 2
+    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
+    
+    wavefunctions = [gen_wavefunction(eigvec, R_nls) for eigvec in eigvecs]
+    return eigvals, wavefunctions
+
+def gen_wavefunction(eigvec, R_nls):
+    def wavefunction(r):
+        return sum(R_nls[n](r)*eigvec[n] for n in xrange(len(eigvec)))
+    return wavefunction
 
 def hamiltonian(order, problem, Q):
     omega = problem.HO_omega
@@ -49,8 +65,10 @@ def gen_R_nl(n, l, nu):
     return R_nl
 
 
-def gen_basis_function(problem, omega, l = 0, j = .5):
+def gen_basis_function(problem, Q):
+    omega = problem.HO_omega
     nu = problem.mass * omega / 2
+    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
     def basis_function(r, n):
-        return R_nl(n, l, nu, r)
+        return R_nls[n](r)
     return basis_function
