@@ -44,7 +44,7 @@ def coupled_H_elem(k_bra, k_ket, eigvals, Q):
             ket = FermionState([SP(m_prim, k1_prim), 
                                 SP(Q.M - m_prim, k2_prim)])
             if ket.sign == 0: continue
-            temp = sp.conj(clebsch_gordan(Q.j, Q.j, m, Q.M - m, Q.J, Q.M))
+            temp = clebsch_gordan(Q.j, Q.j, m, Q.M - m, Q.J, Q.M)
             temp *= clebsch_gordan(Q.j, Q.j, m_prim, Q.M - m_prim, Q.J, Q.M)
             temp *= H_elem(bra, ket, eigvals)
             result += temp
