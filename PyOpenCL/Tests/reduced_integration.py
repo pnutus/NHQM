@@ -34,7 +34,7 @@ krnl = ReductionKernel(ctx, numpy.float32, neutral="0.0f",
         preamble="""
         float func(float x)
             {
-                return pow(x,5);
+                return pow(x,5.0f);
             }
         """)
 
