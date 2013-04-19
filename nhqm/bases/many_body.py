@@ -81,9 +81,18 @@ def two_body_indexes(bra, ket):
                 c,d = annihilated
                 result.append( (a,b,c,d,sign) )
     return result
+
+
+
+
+
+
+
+"""
+TESTS
+"""
     
 import unittest
-
 class RedTests(unittest.TestCase):
     
     def setUp(self):
