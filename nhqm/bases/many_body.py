@@ -6,6 +6,8 @@ from collections import namedtuple
 from nhqm.bases.fermion_state import FermionState
 import nhqm.bases.two_body_interaction as n_n
 from nhqm.QM_helpers import clebsch_gordan
+            
+
 
 # THIS IS FOR FERMIONS
 
@@ -78,6 +80,26 @@ def two_body_indexes(bra, ket):
                 result.append(created + annihilated + (sign,))
     return result
     
+import unittest
+
+class RedTests(unittest.TestCase):
+    
+    def setUp(self):
+        print "starting set up"
+        self.bra3 = FermionState([1,2,3]) 
+        self.ket3 = FermionState([1,3,4])
+        self.res3 = [(1, 2, 1, 4, 1), (2, 3, 3, 4, -1)]
+        
+        
+        
+    def test3(self):
+        res = two_body_indexes(self.bra3, self.ket3)
+        
+        self.assertEquals(0, self.res3 )
+        
+
+            
 if __name__ == '__main__':
     print "kaptenkvant 4 lyfe"
-    print two_body_indexes(FermionState([1,2,3]), FermionState([1,3,4]))
+    unittest.main()        
+    
