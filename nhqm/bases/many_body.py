@@ -48,8 +48,6 @@ def coupled_H_elem(k_bra, k_ket, eigvals, Q):
             temp *= clebsch_gordan(Q.j, Q.j, m_prim, Q.M - m_prim, Q.J, Q.M)
             temp *= H_elem(bra, ket, eigvals)
             result += temp
-            #HINNER INTE FIXA NU, men vi ska inte summera oever baade m och m'. 
-            #Eller snarare, de skickas med H_elem vilket resulterar i ett delta_mm' pga hamilton diagonal i m
     return result
             
 def H_elem(bra, ket, eigvals):
@@ -60,7 +58,7 @@ def H_elem(bra, ket, eigvals):
             one_body += eigvals[sp_state.k]
     
     # H_2, two-body interaction
-    two_body = sum(sign * n_n.interaction(a.k, b.k, c.k, d.k)
+    two_body = sum(sign * n_n.interaction(a, b, c, d)
                     for (a, b, c, d, sign) in two_body_indexes(bra, ket))       
     return one_body + two_body
 

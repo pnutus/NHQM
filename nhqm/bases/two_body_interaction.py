@@ -8,7 +8,12 @@ V0 = -1e9 #MeV
 beta = 1 # fm^-2
 
 def interaction(a, b, c, d):
-    return V0*(sep_M[a, c]*sep_M[b, d] - sep_M[a, d]*sep_M[b, c])
+    result = 0
+    if a.m == c.m and b.m == d.m:
+        result += sep_M[a.k, c.k]*sep_M[b.k, d.k]
+    if a.m == d.m and b.m == c.m:
+        result += - sep_M[a.k, d.k]*sep_M[b.k, c.k]
+    return result*V0
 
 def gen_matrix(eigvecs, contour, Q, verbose=False):
     order = len(eigvecs)

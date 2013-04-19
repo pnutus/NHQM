@@ -1,7 +1,6 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from scipy.optimize import minimize_scalar
 from scipy.misc import factorial, factorial2
 from scipy.special import genlaguerre
 from collections import namedtuple
