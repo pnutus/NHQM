@@ -46,9 +46,9 @@ def H_element(n, n_prim, problem, omega, Q, R_nls):
         result = 0
 
     V = problem.potential
-    (integral, _) = fixed_quad(integrand, 0, 10, n = 20, 
+    (integral, _) = fixed_quad(integrand, 0, 10, n = 30, 
                                 args=(n, n_prim, V, Q, R_nls))
-    return omega / 2 * result + float(integral)
+    return omega / 2 * result + integral
     
 def integrand(r, n, n_prim, V, Q, R_nls):
     return R_nls[n](r)*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
