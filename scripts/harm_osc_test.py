@@ -7,6 +7,7 @@ from nhqm.bases.gen_contour import gauss_contour
 
 order = 50
 problems = H_atom, He5
+mom.integration_order =30
 
 Q = osc.QNums(l=0, j=.5, n=range(order))
 
