@@ -7,6 +7,8 @@ from collections import namedtuple
 from nhqm.QM_helpers import matrix_from_function, energies
 
 name = "HarmOsc"
+integration_order = 60
+integration_range = 20
 
 QNums = namedtuple('qnums', 'l j n')
 
@@ -46,7 +48,7 @@ def H_element(n, n_prim, problem, omega, Q, R_nls):
         result = 0
 
     V = problem.potential
-    (integral, _) = fixed_quad(integrand, 0, 10, n = 30, 
+    (integral, _) = fixed_quad(integrand, 0, integration_range, n = integration_order, 
                                 args=(n, n_prim, V, Q, R_nls))
     return omega / 2 * result + integral
     

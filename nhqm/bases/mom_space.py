@@ -5,6 +5,8 @@ from nhqm.QM_helpers import matrix_from_function, j_l
 from collections import namedtuple
 
 name = "MomSpace"
+integration_order = 20
+integration_range = 10
 
 QNums = namedtuple('qnums', 'l j k')
 
@@ -17,7 +19,7 @@ def hamiltonian(contour, problem, Q):
 def H_element(k, k_prim, weight, problem, Q):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
     V = problem.potential
-    integral, _ = fixed_quad(integrand, 0, 10, n = 20,
+    integral, _ = fixed_quad(integrand, 0, integration_range, n = integration_order,
                                 args=(k, k_prim, V, Q.l, Q.j))
     return diagonal + 2 * k_prim**2 * weight / sp.pi * integral
 
