@@ -14,7 +14,7 @@ def hamiltonian(contour, problem, Q):
     points, weights = contour
     def H_func(i, j):
         return H_element(points[i], points[j], weights[i], weights[j], problem, Q)
-    return matrix_from_function(H_func, order=len(points))
+    return matrix_from_function(H_func, order=len(points), symmetric=True)
     
 def H_element(k, k_prim, weight, weight_prim, problem, Q):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
