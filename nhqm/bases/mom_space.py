@@ -13,15 +13,15 @@ QNums = namedtuple('qnums', 'l j k')
 def hamiltonian(contour, problem, Q):
     points, weights = contour
     def H_func(i, j):
-        return H_element(points[i], points[j], weights[j], problem, Q)
+        return H_element(points[i], points[j], weights[i], weights[j], problem, Q)
     return matrix_from_function(H_func, order=len(points))
     
-def H_element(k, k_prim, weight, problem, Q):
+def H_element(k, k_prim, weight, weight_prim, problem, Q):
     diagonal = k**2 / (2 * problem.mass) * (k == k_prim)
     V = problem.potential
     integral, _ = fixed_quad(integrand, 0, integration_range, n = integration_order,
                                 args=(k, k_prim, V, Q.l, Q.j))
-    return diagonal + 2 * k_prim**2 * weight / sp.pi * integral
+    return diagonal + 2*k*k_prim*sp.sqrt(weight*weight_prim) / sp.pi * integral
 
 @sp.vectorize
 def integrand(r, k, k_prim, V, l, j):
@@ -33,5 +33,5 @@ def gen_basis_function(problem, l = 0, j = .5):
     # Not normalized!
     # Doesn't work with G-L quadrature
     def basis_function(r, k, weight):
-        return 4*sp.pi/(2*sp.pi)**1.5 * k**2 * weight*j_l(l, k*r)
+        return sp.sqrt(2/pi) * 1j**l * k * sqrt(weight) * j_l(l, k*r)
     return basis_function
