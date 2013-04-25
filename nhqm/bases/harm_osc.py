@@ -7,7 +7,7 @@ from collections import namedtuple
 from nhqm.QM_helpers import matrix_from_function, energies
 
 name = "HarmOsc"
-integration_order = 60
+integration_order = 20
 integration_range = 20
 
 QNums = namedtuple('qnums', 'l j n')
