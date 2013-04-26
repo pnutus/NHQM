@@ -32,24 +32,6 @@ def energies(H, hermitian=False):
         eigvecs = eigvecs[:, indexes]
     return eigvals, eigvecs
 
-def gen_wavefunction(eigvec, basis_function, contour=None):
-    length = len(eigvec)
-    if contour == None:
-        @sp.vectorize
-        def wavefunction(r):
-            iterable = (basis_function(r, n) 
-                        for n in range(length))
-            basis_vec = sp.fromiter(iterable, complex, count=length)
-            return sp.dot(basis_vec, eigvec)
-    else:
-        @sp.vectorize
-        def wavefunction(r):
-            iterable = (basis_function(r, k, w)
-                            for (k, w) in zip(*contour))
-            basis_vec = sp.fromiter(iterable, complex, count=length)
-            return sp.dot(basis_vec, eigvec)
-    return wavefunction
-
 def j_l(l, x):
     """Spherical bessel."""
     L = 1 if l == 0 else l
