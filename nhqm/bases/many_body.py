@@ -5,47 +5,41 @@ from itertools import combinations, combinations_with_replacement
 from collections import namedtuple
 from nhqm.bases.fermion_state import FermionState
 import nhqm.bases.two_body_interaction as n_n
-from nhqm.QM_helpers import clebsch_gordan
+from nhqm.QM_helpers import clebsch_gordan, matrix_from_function
             
 
 
 # THIS IS FOR FERMIONS
 
-QNums = namedtuple('qnums', 'l J M j m k')
-SP = namedtuple('sp', ['m', 'k'])
+QNums = namedtuple('qnums', 'l J M j m E')
+SP = namedtuple('sp', ['E', 'm'])
 
-def hamiltonian(quantum_numbers, 
+def hamiltonian(Q, 
                 eigvals, eigvecs, contour, 
                 num_particles=2, verbose=False):
-    
-    if verbose: print "Generating matrix of separable interactions"
-    n_n.gen_matrix(eigvecs, contour, quantum_numbers)
+    n_n.gen_matrix(eigvecs, contour, Q)
     
     # tuples of k-indexes: (3, 6), (4, 4)
-    mb_k = list(combinations_with_replacement(quantum_numbers.k, 
-                                              num_particles))
-    order = len(mb_k)
+    mb_E = list(combinations_with_replacement(Q.E, num_particles))
+    order = len(mb_E)
     
-    if verbose: print "Generating many-body H"
-    H = sp.zeros((order, order), complex)
-    for i, k_bra in enumerate(mb_k):
-        for j, k_ket in enumerate(mb_k):
-            H[i,j] = coupled_H_elem(k_bra, k_ket, eigvals, quantum_numbers)
-    return H
+    def H_func(i, j):
+            return coupled_H_elem(mb_E[i], mb_E[j], eigvals, Q)
+    return matrix_from_function(H_func, order)
 
-def coupled_H_elem(k_bra, k_ket, eigvals, Q):
-    k1, k2 = k_bra
-    k1_prim, k2_prim = k_ket
+def coupled_H_elem(E_bra, E_ket, eigvals, Q):
+    E1, E2 = E_bra
+    E1_prim, E2_prim = E_ket
     
     result = 0
     for m in Q.m:
-        bra = FermionState([SP(m, k1), SP(Q.M - m, k2)])
-        if bra.sign == 0: continue
+        bra = FermionState([SP(m, E1), SP(Q.M - m, E2)])
+        if bra.sign is 0: continue
         
         for m_prim in Q.m:
-            ket = FermionState([SP(m_prim, k1_prim), 
-                                SP(Q.M - m_prim, k2_prim)])
-            if ket.sign == 0: continue
+            ket = FermionState([SP(m_prim, E1_prim), 
+                                SP(Q.M - m_prim, E2_prim)])
+            if ket.sign is 0: continue
             temp = clebsch_gordan(Q.j, Q.j, m, Q.M - m, Q.J, Q.M)
             temp *= clebsch_gordan(Q.j, Q.j, m_prim, Q.M - m_prim, Q.J, Q.M)
             temp *= H_elem(bra, ket, eigvals)
@@ -57,7 +51,7 @@ def H_elem(bra, ket, eigvals):
     one_body = 0
     if bra == ket:
         for sp_state in bra:
-            one_body += eigvals[sp_state.k]
+            one_body += eigvals[sp_state.E]
     
     # H_2, two-body interaction
     two_body = sum(sign * n_n.interaction(a, b, c, d)
