@@ -10,9 +10,9 @@ beta = 1 # fm^-2
 def interaction(a, b, c, d):
     result = 0
     if a.m == c.m and b.m == d.m:
-        result += sep_M[a.k, c.k]*sep_M[b.k, d.k]
+        result += sep_M[a.E, c.E]*sep_M[b.E, d.E]
     if a.m == d.m and b.m == c.m:
-        result += - sep_M[a.k, d.k]*sep_M[b.k, c.k]
+        result += - sep_M[a.E, d.E]*sep_M[b.E, c.E]
     return result*V0
 
 def gen_matrix(eigvecs, contour, Q, verbose=False):

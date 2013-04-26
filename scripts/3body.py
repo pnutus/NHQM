@@ -15,7 +15,7 @@ peak_x = 0.17
 peak_y = 0.07
 k_max = 4
 
-n_n.V0 = -10000
+n_n.V0 = 0
 
 def res_index(eigvecs):
     maxes = map(max, abs(eigvecs.T))
@@ -23,17 +23,19 @@ def res_index(eigvecs):
 
 contour = triangle_contour(peak_x, peak_y, k_max, order/3)
 points, _= contour
-Q = mb.QNums(l=1, J=0, M=0, j=1.5, 
-             m=[-1.5, -0.5, 0.5, 1.5], 
-             k=range(len(contour[0])))
-             
+
+Q = mom.QNums(l=1, j=1.5, k=range(len(contour[0])))
+      
 H = mom.hamiltonian(contour, problem, Q)
 eigvals, eigvecs = energies(H)
+
+Q = mb.QNums(l=1, J=0, M=0, j=1.5, 
+             m=[-1.5, -0.5, 0.5, 1.5], 
+             E=range(len(eigvals)))
 
 mb_H = mb.hamiltonian(Q, eigvals, eigvecs, contour, num_particles = 2, verbose=True)
 mb_eigvals, mb_eigvecs = energies(mb_H)
 print "lowest energy:", mb_eigvals[0]
-
 
 plt.figure(1)
 plt.clf()
