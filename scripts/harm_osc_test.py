@@ -9,6 +9,11 @@ order = 50
 problems = H_atom, He5
 mom.integration_order =30
 
+
+mom.integration_order = 20
+mom.integration_range = 10
+osc.integration_order = 60
+
 Q = osc.QNums(l=0, j=.5, n=range(order))
 
 for problem in problems:
