@@ -27,20 +27,11 @@ def H_element(k, k_prim, weight, weight_prim, problem, Q):
 def integrand(r, k, k_prim, V, l, j):
     return r**2 * j_l(l, k*r) * j_l(l, k_prim*r) * V(r, l, j)
 
-def gen_basis_function(problem, l = 0, j = .5):
-    # TODO
-    # contour/complex
-    # Not normalized!
-    # Doesn't work with G-L quadrature
-    def basis_function(r, k, weight):
-        return sp.sqrt(2/pi) * 1j**l * k * sqrt(weight) * j_l(l, k*r)
-    return basis_function
-
-def gen_wavefunction(eigvec, contour, problem, Q):
+def gen_wavefunction(eigvec, contour, Q):
     points, weights = contour
+    @sp.vectorize
     def wavefunction(r):
+        j_ls = [j_l(Q.l, points[n]*r) for n in xrange(len(points))]
         return sp.sqrt(2/sp.pi) * 1j**Q.l \
-                * sp.sum(sp.sqrt(weights[n]) * points[n] \
-                            * eigvec[n] * j_l(Q.l, points[n]*r) 
-                            for n in xrange(len(points)))
+                * sp.sum(sp.sqrt(weights)*points*j_ls*eigvec)
     return wavefunction

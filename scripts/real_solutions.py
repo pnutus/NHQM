@@ -4,13 +4,13 @@ from nhqm.bases import mom_space as mom
 from nhqm.bases import many_body as mb
 from nhqm.problems import He5
 from nhqm.bases.gen_contour import triangle_contour, naive_triangle_contour, gauss_contour
-from nhqm.QM_helpers import gen_wavefunction, energies, absq
+from nhqm.QM_helpers import gen_wavefunction, energies, absq, normalize
 from numpy.linalg import norm
 
 
 problem = He5
 k_max = 3
-order = 50
+order = 100
 
 peak_x = 0
 peak_y = 0
@@ -33,9 +33,8 @@ r_order = 500
 r = sp.linspace(1e-1, rmax, r_order)
 
 def sqrd_wf(eigvec):
-    wf = mom.gen_wavefunction(eigvec, contour, problem, Q)
-    wf=wf(r)
-    return r_order / rmax * r**2 * absq(wf) / norm(r*wf)**2 
+    wf = mom.gen_wavefunction(eigvec, contour, Q)
+    return r_order / rmax * r**2 * absq(wf(r))*30# / norm(r*wf)**2 
 
 def plotwf(eigvec, energy, color='k'):
     wf = sqrd_wf(eigvec)
@@ -52,7 +51,7 @@ plt.ylabel('$r^2|R(r)|^2$', fontsize=20)
 
 problem.V0=-52
 V = Q.l * (Q.l + 1) / r**2 + problem.potential(r, Q.l, Q.j)
-plt.plot(r, Q.l * (Q.l + 1) / r**2 + V, '--k', linewidth=3)
+plt.plot(r, V, '--k', linewidth=3)
 
 plotwf(eigvecs_1[:,10], eigvals_1[10])
 plotwf(eigvecs_1[:,14], eigvals_1[14])
@@ -67,25 +66,23 @@ plt.ylabel('Energy [MeV] / $r^2|R(r)|^2$', fontsize=20)
 
 problem.V0=-47
 V = Q.l * (Q.l + 1) / r**2 + problem.potential(r, Q.l, Q.j)
-plt.plot(r, Q.l * (Q.l + 1) / r**2 + V, '--k', linewidth=3)
+plt.plot(r, V, '--k', linewidth=3)
 
 plotwf(eigvecs_2[:,10], eigvals_2[10])
 plotwf(eigvecs_2[:,14], eigvals_2[14])
 plotwf(eigvecs_2[:,18], eigvals_2[18])
 plotwf(eigvecs_2[:,7], eigvals_2[7])
 
-plt.show()
-
-plt.figure(3)
-plt.clf()
-plt.plot(abs(eigvecs_1))
-plt.plot(abs(eigvecs_1[:,7]),'k', linewidth=3)
-
-plt.figure(4)
-plt.clf()
-plt.plot(abs(eigvecs_2))
-plt.plot(abs(eigvecs_2[:,7]),'k', linewidth=3)
-
+# 
+# plt.figure(3)
+# plt.clf()
+# plt.plot(abs(eigvecs_1))
+# plt.plot(abs(eigvecs_1[:,7]),'k', linewidth=3)
+# 
+# plt.figure(4)
+# plt.clf()
+# plt.plot(abs(eigvecs_2))
+# plt.plot(abs(eigvecs_2[:,7]),'k', linewidth=3)
 
 plt.show()
 
