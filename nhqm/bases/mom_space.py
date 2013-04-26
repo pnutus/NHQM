@@ -35,3 +35,12 @@ def gen_basis_function(problem, l = 0, j = .5):
     def basis_function(r, k, weight):
         return sp.sqrt(2/pi) * 1j**l * k * sqrt(weight) * j_l(l, k*r)
     return basis_function
+
+def gen_wavefunction(eigvec, contour, problem, Q):
+    points, weights = contour
+    def wavefunction(r):
+        return sp.sqrt(2/pi) * 1j**Q.l \
+                * sp.sum(sp.sqrt(weights[n]) * points[n] \
+                            * eigvec[n] * j_l(Q.l, points[n]*r) 
+                            for n in xrange(len(points)))
+    return wavefunction
