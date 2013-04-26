@@ -4,25 +4,20 @@ from nhqm.bases import mom_space as mom
 from nhqm.bases import many_body as mb
 from nhqm.problems import He5
 from nhqm.bases.gen_contour import triangle_contour, naive_triangle_contour, gauss_contour
-from nhqm.QM_helpers import gen_wavefunction, energies
+from nhqm.QM_helpers import gen_wavefunction, energies, absq
 from numpy.linalg import norm
-
-def absq(x):
-    return x*sp.conjugate(x)
 
 
 problem = He5
 k_max = 3
-order = 100
+order = 50
 
 peak_x = 0
 peak_y = 0
 contour = gauss_contour((0, k_max), order)
 #contour = naive_triangle_contour(peak_x, peak_y, k_max, order)
 ks, _ = contour
-Q = mb.QNums(l=1, J=0, M=0, j=1.5, 
-             m=[-1.5, -0.5, 0.5, 1.5], 
-             k=ks)
+Q = mom.QNums(l=1, j=1.5, k=ks)
 
 problem.V0 = -52
 H = mom.hamiltonian(contour, problem, Q)
@@ -33,13 +28,12 @@ H = mom.hamiltonian(contour, problem, Q)
 eigvals_2, eigvecs_2 = energies(H)
 
 
-basis_function = mom.gen_basis_function(problem, Q.l, Q.j)
 rmax = 100
 r_order = 500
 r = sp.linspace(1e-1, rmax, r_order)
 
 def sqrd_wf(eigvec):
-    wf = gen_wavefunction(eigvec, basis_function, contour=contour)
+    wf = mom.gen_wavefunction(eigvec, contour, problem, Q)
     wf=wf(r)
     return r_order / rmax * r**2 * absq(wf) / norm(r*wf)**2 
 
@@ -47,7 +41,6 @@ def plotwf(eigvec, energy, color='k'):
     wf = sqrd_wf(eigvec)
     plt.plot((0, rmax), (energy, energy),'r',linewidth=2)
     plt.plot(r, wf + energy, color, linewidth=3)
-    return _
 
 
 
@@ -81,6 +74,7 @@ plotwf(eigvecs_2[:,14], eigvals_2[14])
 plotwf(eigvecs_2[:,18], eigvals_2[18])
 plotwf(eigvecs_2[:,7], eigvals_2[7])
 
+plt.show()
 
 plt.figure(3)
 plt.clf()
