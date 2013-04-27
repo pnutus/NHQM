@@ -77,29 +77,39 @@ def plotwf(eigvec, energy, color='k'):
 #plt.plot(abs(eigvecs_2[:,13]),'k', linewidth=3)
 
 
+wf1_res = sqrd_wf(eigvecs_1[:,8])
+wf1_1 = sqrd_wf(eigvecs_1[:,17])
+
+wf2_res = sqrd_wf(eigvecs_2[:,13])
+wf2_1 = sqrd_wf(eigvecs_2[:,17])
+
+
 fig1=plt.figure(5)
 fig1.clf()
-
 ax1=fig1.add_subplot(121)
-wf_res = sqrd_wf(eigvecs_1[:,8])
-wf_1 = sqrd_wf(eigvecs_1[:,17])
-wf_2 = sqrd_wf(eigvecs_1[:,30])
-
-ax1.plot(r, wf_res, 'k', linewidth=3)
-ax1.plot(r, wf_1, 'k', linewidth=3) 
-ax1.axis([0, 100, 0, 1.6])
-
-ax1.get_yaxis().set_ticks([])
-
 ax2=fig1.add_subplot(122)
-wf_res = sqrd_wf(eigvecs_2[:,13])
-wf_1 = sqrd_wf(eigvecs_2[:,17])
-wf_2 = sqrd_wf(eigvecs_2[:,30])
+
+ax1.plot(r, wf1_res, 'k', linewidth=3)
+ax1.plot(r, wf1_1, 'k', linewidth=3) 
 
 ax2.plot(r, wf_res, 'k', linewidth=3)
 ax2.plot(r, wf_1, 'k', linewidth=3) 
+
+
+
+ax1.axis([0, 100, 0, 1.6])
+ax1.get_yaxis().set_ticks([])
+ax1.set_xlabel('$r$ [fm]', fontsize=24)
+ax1.set_ylabel('$r^2|R(r)|^2$', fontsize=24)
+ax1.set_title('$V0 = -52$', fontsize=24)
+plt.setp(ax1.get_xticklabels(), fontsize=24)
+
 ax2.axis([0, 100, 0, 1.6])
 ax2.get_yaxis().set_ticks([])
+ax2.set_xlabel('$r$ [fm]', fontsize=24)
+ax2.set_ylabel('$r^2|R(r)|^2$', fontsize=24)
+ax2.set_title('$V0 = -47$', fontsize=24)
+plt.setp(ax2.get_xticklabels(), fontsize=24)
 
 plt.show()
 
