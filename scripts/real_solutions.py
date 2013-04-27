@@ -4,7 +4,7 @@ from nhqm.bases import mom_space as mom
 from nhqm.bases import many_body as mb
 from nhqm.problems import He5
 from nhqm.bases.gen_contour import triangle_contour, naive_triangle_contour, gauss_contour
-from nhqm.QM_helpers import gen_wavefunction, energies, absq, normalize
+from nhqm.QM_helpers import energies, absq, normalize
 from numpy.linalg import norm
 
 
@@ -78,10 +78,10 @@ def plotwf(eigvec, energy, color='k'):
 
 
 wf1_res = sqrd_wf(eigvecs_1[:,8])
-wf1_1 = sqrd_wf(eigvecs_1[:,17])
+wf1 = sqrd_wf(eigvecs_1[:,17])
 
 wf2_res = sqrd_wf(eigvecs_2[:,13])
-wf2_1 = sqrd_wf(eigvecs_2[:,17])
+wf2 = sqrd_wf(eigvecs_2[:,17])
 
 
 fig1=plt.figure(5)
@@ -90,10 +90,10 @@ ax1=fig1.add_subplot(121)
 ax2=fig1.add_subplot(122)
 
 ax1.plot(r, wf1_res, 'k', linewidth=3)
-ax1.plot(r, wf1_1, 'k', linewidth=3) 
+ax1.plot(r, wf1, 'k', linewidth=3) 
 
-ax2.plot(r, wf_res, 'k', linewidth=3)
-ax2.plot(r, wf_1, 'k', linewidth=3) 
+ax2.plot(r, wf2_res, 'k', linewidth=3)
+ax2.plot(r, wf2, 'k', linewidth=3) 
 
 
 
@@ -101,14 +101,14 @@ ax1.axis([0, 100, 0, 1.6])
 ax1.get_yaxis().set_ticks([])
 ax1.set_xlabel('$r$ [fm]', fontsize=24)
 ax1.set_ylabel('$r^2|R(r)|^2$', fontsize=24)
-ax1.set_title('$V0 = -52$', fontsize=24)
+ax1.set_title('$V0 = -52$ MeV', fontsize=24)
 plt.setp(ax1.get_xticklabels(), fontsize=24)
 
 ax2.axis([0, 100, 0, 1.6])
 ax2.get_yaxis().set_ticks([])
 ax2.set_xlabel('$r$ [fm]', fontsize=24)
 ax2.set_ylabel('$r^2|R(r)|^2$', fontsize=24)
-ax2.set_title('$V0 = -47$', fontsize=24)
+ax2.set_title('$V0 = -47$ MeV', fontsize=24)
 plt.setp(ax2.get_xticklabels(), fontsize=24)
 
 plt.show()
