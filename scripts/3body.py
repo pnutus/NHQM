@@ -9,13 +9,13 @@ from nhqm.bases import two_body_interaction as n_n
 from nhqm.plot_helpers import *
 
 problem = He5 
-order = 5*3
+order = 10*3
 problem.V0 = -47.
 peak_x = 0.17
-peak_y = 0.07
+peak_y = 0.2
 k_max = 4
 
-n_n.V0 = 0
+n_n.V0 = -175
 
 def res_index(eigvecs):
     maxes = map(max, abs(eigvecs.T))

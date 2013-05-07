@@ -17,17 +17,35 @@ SP = namedtuple('sp', ['E', 'm'])
 def hamiltonian(Q, 
                 eigvals, eigvecs, contour, 
                 num_particles=2, verbose=False):
-    n_n.gen_matrix(eigvecs, contour, Q)
+    sep_M = n_n.gen_matrix(eigvecs, contour, Q)
     
     # tuples of k-indexes: (3, 6), (4, 4)
     mb_E = list(combinations_with_replacement(Q.E, num_particles))
     order = len(mb_E)
     
     def H_func(i, j):
-            return coupled_H_elem(mb_E[i], mb_E[j], eigvals, Q)
+            return coupled_H_elem(mb_E[i], mb_E[j], eigvals, sep_M, Q)
     return matrix_from_function(H_func, order)
 
-def coupled_H_elem(E_bra, E_ket, eigvals, Q):
+def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
+    E1, E2 = E_ket
+    E1_prim, E2_prim = E_bra
+    mod = 1
+    if E1 == E2:
+        mod = mod/2
+    if E1_prim == E2_prim:
+        mod = mod/2
+    
+    one_body = 0
+    if E_bra == E_ket:
+        one_body += eigvals[E1] + eigvals[E2]
+    
+    two_body = sep_M[E1, E1_prim] * sep_M[E2, E2_prim] + sep_M[E1, E2_prim] * sep_M[E2, E1_prim]
+    two_body = n_n.V0 * two_body
+    
+    return mod * (one_body + two_body)
+
+def coupled_H_elem_prev(E_bra, E_ket, eigvals, Q):
     E1, E2 = E_bra
     E1_prim, E2_prim = E_ket
     
