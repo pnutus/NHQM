@@ -15,11 +15,7 @@ peak_x = 0.17
 peak_y = 0.07
 k_max = 4
 
-n_n.V0 = 0
-
-def res_index(eigvecs):
-    maxes = map(max, abs(eigvecs.T))
-    return maxes.index(min(maxes))
+n_n.V0 = -5000.
 
 contour = triangle_contour(peak_x, peak_y, k_max, order/3)
 points, _= contour

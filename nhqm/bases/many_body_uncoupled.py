@@ -15,91 +15,29 @@ QNums = namedtuple('qnums', 'l J M j E m')
 
 def hamiltonian(Q, eigvals, eigvecs, contour, 
                 num_particles=2, verbose=False):
-    n_n.gen_matrix(eigvecs, contour, Q)
+    sep_M = n_n.gen_matrix(eigvecs, contour, Q)
     
+    def total_M(mb_state):
+        return Q.M == sum(state.m for state in mb_state)
     # tuples of k-indexes: (3, 6), (4, 4)
     mb_states = gen_mb_states(Q, num_particles)
+    #mb_states = filter(total_M, mb_states)
     order = len(mb_states)
     
     def H_func(i, j):
-            return H_elem(mb_states[i], mb_states[j], eigvals)
+            return H_elem(mb_states[i], mb_states[j], eigvals, sep_M)
     return matrix_from_function(H_func, order)
             
-def H_elem(bra, ket, eigvals):
+def H_elem(bra, ket, eigvals, sep_M):
     # H_1, one-body interaction
-    one_body = 0
     if bra == ket:
-        for sp_state in bra:
-            one_body += eigvals[sp_state.E]
+        return sum(eigvals[sp.E] for sp in bra)
     
     # H_2, two-body interaction
-    two_body = sum(sign * n_n.interaction(a, b, c, d)
-                    for (a, b, c, d, sign) in two_body_indexes(bra, ket))       
-    return one_body + two_body
-
-
-
-def two_body_indexes(bra, ket):
-    result = []
-    if len(set(bra) - set(ket)) > 2:
-        return []
-    for annihilated in combinations(ket, 2):
-        for created in combinations(bra, 2):
-            new_ket = (ket
-                        .annihilate(annihilated)
-                        .create(created))
-            if new_ket.states == bra.states:
-                sign = new_ket.sign
-                a,b = created
-                c,d = annihilated
-                result.append( (a,b,c,d,sign) )
-    return result
-
-
-
-
-
-
-
-"""
-TESTS
-"""
-    
-import unittest
-class RedTests(unittest.TestCase):
-    
-    def setUp(self):
-        self.bra32 = FermionState([1,2,3]) 
-        self.ket32 = FermionState([1,3,4])
-        self.res32 = [(1, 2, 1, 4, -1), (2, 3, 3, 4, 1)]
-        
-        self.bra31 = FermionState([1,2,3]) 
-        self.ket31 = FermionState([3,5,6])
-        self.res31 = [(1,2, 5,6, +1)]
-
-        self.bra33 = FermionState([1,2,3]) 
-        self.ket33 = FermionState([1,2,3])
-        self.res33 = [(1,2, 1,2, +1), (1,3,1,3,1), (2,3,2,3,1)]
-        
-        
-    def test32(self):
-        res = two_body_indexes(self.bra32, self.ket32)
-        
-        self.assertEquals(res, self.res32 )
-        
-    def test31(self):
-        res = two_body_indexes(self.bra31, self.ket31)
-        
-        self.assertEquals(res, self.res31 ) 
-        
-    def test33(self):
-        res = two_body_indexes(self.bra33, self.ket33)
-        
-        self.assertEquals(res, self.res33 )       
-        
-
-            
-if __name__ == '__main__':
-    print "kaptenkvant 4 lyfe"
-    unittest.main()       
-
+    bra1, bra2 = bra
+    ket1, ket2 = ket
+    if bra1.m == ket1.m and bra2.m == ket2.m:
+        return   n_n.V0 * sep_M[bra1.E, ket1.E] * sep_M[bra2.E, ket2.E]
+    if bra1.m == ket2.m and bra2.m == ket1.m:
+        return - n_n.V0 * sep_M[bra1.E, ket2.E] * sep_M[bra2.E, ket1.E]
+    return 0
