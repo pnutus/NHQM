@@ -7,7 +7,7 @@ eV_factor = 1e6
 units = "MeV"
 HO_omega = 20
 
-V0 = -70 # MeV
+V0 = -47 # MeV
 Vso = -7.5 # MeV
 r0 = 2. # fm
 d = .65 # fm
