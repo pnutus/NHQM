@@ -4,7 +4,7 @@ from scipy.integrate import fixed_quad
 import mom_space as mom
 from nhqm.QM_helpers import matrix_from_function, j_l
 
-V0 = -1e9 #MeV
+V0 = -200 #MeV
 beta = 1 # fm^-2
 
 def interaction(a, b, c, d):
@@ -25,7 +25,7 @@ def gen_matrix(eigvecs, contour, Q, verbose=False):
     
     global sep_M
     def sep_M_func(i, j):
-        dk = weights * points**2
+        dk = sp.sqrt(weights * points**2)
         return V_matrix.dot(eigvecs[i]*dk).dot(eigvecs[j]*dk)
     sep_M = 2 / sp.pi * matrix_from_function(sep_M_func, order, 
                                              symmetric=True)

@@ -30,6 +30,7 @@ def hamiltonian(Q,
 def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
     E1, E2 = E_ket
     E1_prim, E2_prim = E_bra
+    
     mod = 1
     if E1 == E2:
         mod = mod/2
@@ -37,7 +38,9 @@ def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
         mod = mod/2
     
     one_body = 0
-    if E_bra == E_ket:
+    if E1 == E1_prim and E2 == E2_prim:
+        one_body += eigvals[E1] + eigvals[E2]
+    if E1 == E2_prim and E2 == E1_prim:
         one_body += eigvals[E1] + eigvals[E2]
     
     two_body = sep_M[E1, E1_prim] * sep_M[E2, E2_prim] + sep_M[E1, E2_prim] * sep_M[E2, E1_prim]
@@ -46,6 +49,7 @@ def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
     return mod * (one_body + two_body)
 
 def coupled_H_elem_prev(E_bra, E_ket, eigvals, Q):
+    #the original coupled_H_elem
     E1, E2 = E_bra
     E1_prim, E2_prim = E_ket
     
