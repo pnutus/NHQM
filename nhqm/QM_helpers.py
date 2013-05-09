@@ -114,6 +114,23 @@ class ComplexTests(unittest.TestCase):
     
 class WeightTests(unittest.TestCase):
     pass
+class RedTests(unittest.TestCase):
+    
+    def setUp(self):
+        self.a =0
+        
+        
+    def test32(self):
+        #(j1, j2, m1, m2, J, M)
+        j1 =5/2
+        j2=2
+        M=7/2
+        J=9/2
+        m1 = 5/2
+        m2= 1
+        cg = clebsch_gordan(j1, j2, m1, m2, J, M)
+        res = 2/3
+        self.assertEquals(res, cg )
 
 if __name__ == '__main__':
     unittest.main()
