@@ -15,7 +15,7 @@ peak_x = 0.17
 peak_y = 0.2
 k_max = 4
 
-n_n.V0 = -180
+n_n.V0 = 0
 
 contour = triangle_contour(peak_x, peak_y, k_max, order/3)
 points, _= contour
@@ -28,7 +28,7 @@ eigvals, eigvecs = energies(H)
 Q = mb.QNums(l=1, J=0, M=0, j=1.5, 
              m=[-1.5, -0.5, 0.5, 1.5], 
              E=range(len(eigvals)))
-
+             
 mb_H = mb.hamiltonian(Q, eigvals, eigvecs, contour, num_particles = 2, verbose=True)
 mb_eigvals, mb_eigvecs = energies(mb_H)
 print "lowest energy:", mb_eigvals[0]
@@ -44,5 +44,88 @@ for i, ks1 in enumerate(points):
         k[i,j]=sp.sqrt(ks1 ** 2 + ks2 ** 2)
 plt.plot(sp.real(k),sp.imag(k),'og')
         
+#plt.show()
 
-plt.show()
+"""
+ONE-BODY TESTS
+"""
+    
+import unittest
+class RedTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        
+        problem = He5 
+        order = 10*3
+        problem.V0 = -47.
+        peak_x = 0.17
+        peak_y = 0.2
+        k_max = 4
+
+        n_n.V0 = 0
+
+        contour = triangle_contour(peak_x, peak_y, k_max, order/3)
+        points, _= contour
+
+        Q = mom.QNums(l=1, j=1.5, k=range(len(contour[0])))
+      
+        H = mom.hamiltonian(contour, problem, Q)
+        eigvals, eigvecs = energies(H)
+
+        Q = mb.QNums(l=1, J=0, M=0, j=1.5, 
+                     m=[-1.5, -0.5, 0.5, 1.5], 
+                     E=range(len(eigvals)))
+             
+        mb_H = mb.hamiltonian(Q, eigvals, eigvecs, contour, num_particles = 2, verbose=True)
+        mb_eigvals, mb_eigvecs = energies(mb_H)
+        
+        cls.hamilton_test =mb_H
+        cls.eigvals = eigvals 
+    
+    def setUp(self):
+        print ""
+        
+        
+    def test1(self):
+        a = 0
+        b = 0
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )
+        
+    def test2(self):
+        a = 1
+        b = 0
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+    def test3(self):
+        a = 1
+        b = 1
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+    def test4(self):
+        a = 2
+        b = 0
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+    def test5(self):
+        a = 2
+        b = 1
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+    def test6(self):
+        a = 3
+        b = 1
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+    def test7(self):
+        a = 2
+        b = 2
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+    def test8(self):
+        a = 5
+        b = 0
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+    def test9(self):
+        a = 1
+        b = 4
+        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+        
+
+            
+if __name__ == '__main__':
+    print "kaptenkvant 4 lyfe"
+    unittest.main()    
