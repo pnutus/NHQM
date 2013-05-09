@@ -17,7 +17,7 @@ peak_x = 0.17
 peak_y = 0.2
 k_max = 3
 
-n_n.V0 = -5000
+n_n.V0 = -1250
 
 def res_index(eigvecs):
     maxes = map(max, abs(eigvecs.T))
@@ -50,7 +50,7 @@ for i, ks1 in enumerate(points):
         k[i,j]=sp.sqrt(ks1 ** 2 + ks2 ** 2)
 plt.plot(sp.real(k),sp.imag(k),'og')
         
-#plt.show()"""
+plt.show()
 
 """
 ONE-BODY TESTS
@@ -122,6 +122,6 @@ class RedTests(unittest.TestCase):
         else:
             self.assertEquals(self.hamilton_test[c,c], self.eigvals[a] + self.eigvals[b] )    
         
-if __name__ == '__main__':
-    print "kaptenkvant 4 lyfe"
+#if __name__ == '__main__':
+    #print "kaptenkvant 4 lyfe"
     unittest.main()    

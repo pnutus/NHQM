@@ -5,8 +5,8 @@ from nhqm.QM_helpers import matrix_from_function, j_l
 from collections import namedtuple
 
 name = "MomSpace"
-integration_order = 20
-integration_range = 10
+integration_order = 50
+integration_range = 20
 
 QNums = namedtuple('qnums', 'l j k')
 

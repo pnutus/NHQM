@@ -33,7 +33,7 @@ def gen_matrix(eigvecs, contour, Q, verbose=False):
     
 def V_sep(k, k_prim, Q):
     V = potential
-    integral, _ = fixed_quad(mom.integrand, 0, 10, n = 20,
+    integral, _ = fixed_quad(mom.integrand, 0, 10, n = 60,
                                 args=(k, k_prim, V, Q.l, Q.j))
     return integral
 

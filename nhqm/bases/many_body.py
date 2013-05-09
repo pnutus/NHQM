@@ -33,15 +33,17 @@ def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
     
     mod = 1
     if E1 == E2:
-        mod /= 2
+        mod /= sp.sqrt(2)
     if E1_prim == E2_prim:
-        mod /= 2
+        mod /= sp.sqrt(2)
     
     one_body = 0
-    if E1 == E1_prim and E2 == E2_prim:
+    if E_bra == E_ket:
         one_body += eigvals[E1] + eigvals[E2]
-    if E1 == E2_prim and E2 == E1_prim:
-        one_body += eigvals[E1] + eigvals[E2]
+    #if E1 == E1_prim and E2 == E2_prim:
+    #    one_body += eigvals[E1] + eigvals[E2]
+    #if E1 == E2_prim and E2 == E1_prim:
+    #    one_body += eigvals[E1] + eigvals[E2]
     
     two_body = n_n.V0 * ( sep_M[E1, E1_prim] * sep_M[E2, E2_prim] 
                         + sep_M[E1, E2_prim] * sep_M[E2, E1_prim])
