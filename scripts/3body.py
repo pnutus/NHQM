@@ -7,8 +7,9 @@ from nhqm.bases.gen_contour import triangle_contour
 from nhqm.bases import many_body as mb
 from nhqm.bases import two_body_interaction as n_n
 from nhqm.plot_helpers import *
+from itertools import combinations_with_replacement
 
-problem = He5 
+"""problem = He5 
 order = 10*3
 problem.V0 = -47.
 peak_x = 0.17
@@ -44,7 +45,7 @@ for i, ks1 in enumerate(points):
         k[i,j]=sp.sqrt(ks1 ** 2 + ks2 ** 2)
 plt.plot(sp.real(k),sp.imag(k),'og')
         
-#plt.show()
+#plt.show()"""
 
 """
 ONE-BODY TESTS
@@ -56,7 +57,7 @@ class RedTests(unittest.TestCase):
     def setUpClass(cls):
         
         problem = He5 
-        order = 10*3
+        order = 1*3
         problem.V0 = -47.
         peak_x = 0.17
         peak_y = 0.2
@@ -75,57 +76,47 @@ class RedTests(unittest.TestCase):
         Q = mb.QNums(l=1, J=0, M=0, j=1.5, 
                      m=[-1.5, -0.5, 0.5, 1.5], 
                      E=range(len(eigvals)))
-             
-        mb_H = mb.hamiltonian(Q, eigvals, eigvecs, contour, num_particles = 2, verbose=True)
+        num_particles = 2     
+        mb_H = mb.hamiltonian(Q, eigvals, eigvecs, contour, num_particles, verbose=True)
         mb_eigvals, mb_eigvecs = energies(mb_H)
         
         cls.hamilton_test =mb_H
         cls.eigvals = eigvals 
+        cls.order = order
+        cls.mb_E = list(combinations_with_replacement(Q.E, num_particles))
+        cls.mod = True
     
     def setUp(self):
         print ""
         
         
-    def test1(self):
+    def test00(self):
         a = 0
         b = 0
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )
+        c = self.mb_E.index((a,b))
+        if self.mod and a == b: 
+            self.assertEquals(4 * self.hamilton_test[c,c], self.eigvals[a] + self.eigvals[b] )
+        else:
+            self.assertEquals(self.hamilton_test[c,c], self.eigvals[a] + self.eigvals[b] )    
         
-    def test2(self):
-        a = 1
-        b = 0
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
-    def test3(self):
-        a = 1
+    def test01(self):
+        a = 0
         b = 1
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
-    def test4(self):
-        a = 2
-        b = 0
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
-    def test5(self):
-        a = 2
-        b = 1
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
-    def test6(self):
-        a = 3
-        b = 1
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
-    def test7(self):
-        a = 2
-        b = 2
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
-    def test8(self):
-        a = 5
-        b = 0
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
-    def test9(self):
-        a = 1
-        b = 4
-        self.assertEquals(self.hamilton_test[a,b], self.eigvals[a] + self.eigvals[b] )     
+        c = self.mb_E.index((a,b))        
+        if self.mod and a == b: 
+            self.assertEquals(4 * self.hamilton_test[c,c], self.eigvals[a] + self.eigvals[b] )
+        else:
+            self.assertEquals(self.hamilton_test[c,c], self.eigvals[a] + self.eigvals[b] )    
         
-
-            
+    def test11(self):
+        a = 1
+        b = 1
+        c = self.mb_E.index((a,b))
+        if self.mod and a == b: 
+            self.assertEquals(4 * self.hamilton_test[c,c], self.eigvals[a] + self.eigvals[b] )
+        else:
+            self.assertEquals(self.hamilton_test[c,c], self.eigvals[a] + self.eigvals[b] )    
+        
 if __name__ == '__main__':
     print "kaptenkvant 4 lyfe"
     unittest.main()    
