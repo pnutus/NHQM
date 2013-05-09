@@ -21,7 +21,7 @@ def hamiltonian(Q, eigvals, eigvecs, contour,
         return Q.M == sum(state.m for state in mb_state)
     # tuples of k-indexes: (3, 6), (4, 4)
     mb_states = gen_mb_states(Q, num_particles)
-    #mb_states = filter(total_M, mb_states)
+    mb_states = filter(total_M, mb_states)
     order = len(mb_states)
     
     def H_func(i, j):
@@ -30,14 +30,23 @@ def hamiltonian(Q, eigvals, eigvecs, contour,
             
 def H_elem(bra, ket, eigvals, sep_M):
     # H_1, one-body interaction
+    one_b =0
+    twob_1 =0
+    twob_2 =0
     if bra == ket:
-        return sum(eigvals[sp.E] for sp in bra)
+        one_b = sum(eigvals[sp.E] for sp in bra)
+  
     
     # H_2, two-body interaction
     bra1, bra2 = bra
     ket1, ket2 = ket
     if bra1.m == ket1.m and bra2.m == ket2.m:
-        return   n_n.V0 * sep_M[bra1.E, ket1.E] * sep_M[bra2.E, ket2.E]
+        twob_1 =  n_n.V0 * sep_M[bra1.E, ket1.E] * sep_M[bra2.E, ket2.E]
     if bra1.m == ket2.m and bra2.m == ket1.m:
-        return - n_n.V0 * sep_M[bra1.E, ket2.E] * sep_M[bra2.E, ket1.E]
-    return 0
+        twob_2 = - n_n.V0 * sep_M[bra1.E, ket2.E] * sep_M[bra2.E, ket1.E]
+    
+    if not True and one_b == twob_2 == twob_1 == 0:
+        print bra, ket
+        print one_b, twob_2, twob_1    
+        print "::::"
+    return one_b + twob_2 + twob_1
