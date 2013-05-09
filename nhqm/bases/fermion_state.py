@@ -1,5 +1,5 @@
 from itertools import combinations, product
-from collections import namedtuple
+from collections import namedtuple, Iterable
 
 class FermionState:
     """
@@ -83,14 +83,18 @@ def state_index(states, new_state):
             return i
     return len(states)
 
-def gen_mb_states(quantum_numbers, num_particles=2):
+def gen_mb_states(Q, num_particles=2):
     """
     Generates many-body states given a list of 
     quantum numbers and their possible values.
     Like so [('m', [-1.5, -0.5, 0.5, 1.5]),
              ('k', [0, 1, 2, 3, 4, 5, 6])]
     """
-    names, values = zip(*quantum_numbers)
+    
+    
+    q_nums = [(name, value) for name, value in zip(Q._fields, Q) 
+                            if isinstance(value, Iterable)]
+    names, values = zip(*q_nums)
     SP = namedtuple('sp', names)
     sp_states = [SP(*tup) for tup in product(*values)]
     return map(FermionState, combinations(sp_states, num_particles))

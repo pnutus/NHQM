@@ -5,7 +5,7 @@ from nhqm.bases import mom_space as mom
 from nhqm.problems import He5
 from nhqm.calculations import QM as calc
 
-problem = He5.problem   
+problem = He5 
 order = 50
 l = 1
 j = 1.5

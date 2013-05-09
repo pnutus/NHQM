@@ -33,9 +33,9 @@ def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
     
     mod = 1
     if E1 == E2:
-        mod = mod/2
+        mod /= 2
     if E1_prim == E2_prim:
-        mod = mod/2
+        mod /= 2
     
     one_body = 0
     if E1 == E1_prim and E2 == E2_prim:
@@ -43,8 +43,8 @@ def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
     if E1 == E2_prim and E2 == E1_prim:
         one_body += eigvals[E1] + eigvals[E2]
     
-    two_body = sep_M[E1, E1_prim] * sep_M[E2, E2_prim] + sep_M[E1, E2_prim] * sep_M[E2, E1_prim]
-    two_body = n_n.V0 * two_body
+    two_body = n_n.V0 * ( sep_M[E1, E1_prim] * sep_M[E2, E2_prim] 
+                        + sep_M[E1, E2_prim] * sep_M[E2, E1_prim])
     
     return mod * (one_body + two_body)
 
@@ -62,7 +62,7 @@ def coupled_H_elem_prev(E_bra, E_ket, eigvals, Q):
             ket = FermionState([SP(m_prim, E1_prim), 
                                 SP(Q.M - m_prim, E2_prim)])
             if ket.sign is 0: continue
-            temp = clebsch_gordan(Q.j, Q.j, m, Q.M - m, Q.J, Q.M)
+            temp =  clebsch_gordan(Q.j, Q.j, m, Q.M - m, Q.J, Q.M)
             temp *= clebsch_gordan(Q.j, Q.j, m_prim, Q.M - m_prim, Q.J, Q.M)
             temp *= H_elem(bra, ket, eigvals)
             result += temp

@@ -16,7 +16,7 @@ def absq(x):
 def logspace(min, max, order):
     return sp.around(sp.logspace(log(min), log(max), order))
 
-problem = He5.problem   
+problem = He5 
 l = 1
 j = 1.5
 args = (problem, l, j)
@@ -29,7 +29,7 @@ order_nr = 30
 V0s = sp.linspace(-55, -40, order_nr)
 
 
-basis_function = mom.gen_basis_function(problem, l=l, j=j)
+#basis_function = mom.gen_basis_function(problem, l=l, j=j)
 rmax=40
 r = sp.linspace(1e-1, rmax, 2000)
 
@@ -48,7 +48,8 @@ for m, V0 in enumerate(V0s):
     print order_nr-m, 'to go'
     contour = calc.triangle_contour(peak_x, peak_y, k_max, order/3)
     ks, _ = contour
-    H = calc.contour_hamiltonian(mom.H_element_contour, contour, args)
+    Q = mom.QNums(l=1, j=1.5, k=range(len(contour[0])))
+    H = mom.hamiltonian(contour, problem, Q)
     eigvals, eigvecs = calc.energies(H)
     res = res_index(eigvecs)
     k_res[m]=sp.sqrt(2*problem.mass*eigvals[res])
