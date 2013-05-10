@@ -26,7 +26,8 @@ def gen_matrix(eigvecs, contour, Q, verbose=False):
     global sep_M
     def sep_M_func(i, j):
         dk = sp.sqrt(weights) * points
-        return V_matrix.dot(eigvecs[i]*dk).dot(eigvecs[j]*dk)
+        return V_matrix.dot(eigvecs[j]*dk).dot(eigvecs[i]*dk)
+        
     sep_M = 2 / sp.pi * matrix_from_function(sep_M_func, order, 
                                              symmetric=True)
     return sep_M

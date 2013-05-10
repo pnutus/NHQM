@@ -8,6 +8,7 @@ name = "MomSpace"
 integration_order = 50
 integration_range = 20
 
+
 QNums = namedtuple('qnums', 'l j k')
 
 def hamiltonian(contour, problem, Q):
@@ -21,7 +22,7 @@ def H_element(k, k_prim, weight, weight_prim, problem, Q):
     V = problem.potential
     integral, _ = fixed_quad(integrand, 0, integration_range, n = integration_order,
                                 args=(k, k_prim, V, Q.l, Q.j))
-    return diagonal + 2*k*k_prim*sp.sqrt(weight*weight_prim) / sp.pi * integral
+    return diagonal + 2*k*k_prim*sp.sqrt(weight*weight_prim) * integral / sp.pi
 
 @sp.vectorize
 def integrand(r, k, k_prim, V, l, j):

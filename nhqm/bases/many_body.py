@@ -46,7 +46,7 @@ def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
     #    one_body += eigvals[E1] + eigvals[E2]
     
     two_body = n_n.V0 * ( sep_M[E1, E1_prim] * sep_M[E2, E2_prim] 
-                        + sep_M[E1, E2_prim] * sep_M[E2, E1_prim])
+                        + 1 * sep_M[E1, E2_prim] * sep_M[E2, E1_prim])
     
     return mod * (one_body + two_body)
 
