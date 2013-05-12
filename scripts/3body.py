@@ -15,8 +15,8 @@ from itertools import combinations_with_replacement
 problem = He5 
 problem.V0 = -47.
 
-n_n.V0 = -5000
-order = 5*3
+n_n.V0 = -500
+order = 25*3
 
 Q = mom_coupled.QNums(l=1, j=1.5, J=0, M=0, 
                       m=[-1.5, -0.5, 0.5, 1.5], 
@@ -29,8 +29,8 @@ contour = triangle_contour(peak_x, peak_y, k_max, order/3)
 points, _= contour
 
 def main():
-    run_mom_coupled()
-    run_mom_uncoupled()
+    # run_mom_coupled()
+    # run_mom_uncoupled()
     run_osc_uncoupled()
 
 def run_mom_coupled():
