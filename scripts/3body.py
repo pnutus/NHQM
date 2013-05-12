@@ -3,11 +3,11 @@ from imports import *
 from nhqm.problems import He5
 from nhqm.QM_helpers import energies, symmetric, hermitian
 from nhqm.bases.gen_contour import triangle_contour
-from nhqm.bases import (mom_space               as mom, 
-                        harm_osc                as osc, 
-                        many_body               as mb_coupled, 
-                        many_body_uncoupled     as mb_uncoupled,
-                        two_body_interaction    as n_n)
+from nhqm.bases import (mom_space            as mom, 
+                        harm_osc             as osc, 
+                        mb_coupled           as coupled, 
+                        mb_uncoupled         as uncoupled,
+                        two_body_interaction as n_n)
 from nhqm.plot_helpers import *
 
 problem = He5 
@@ -16,30 +16,31 @@ problem.V0 = -47.
 n_n.V0 = -500
 order = 25*3
 
-Q = mb_coupled.QNums(l=1, j=1.5, J=0, M=0, 
-                      m=[-1.5, -0.5, 0.5, 1.5], 
-                      E=range(order))
+Q = coupled.QNums(l=1, j=1.5, J=0, M=0, 
+                  m=[-1.5, -0.5, 0.5, 1.5], 
+                  E=range(order))
 
 peak_x = 0.17
 peak_y = 0.2
 k_max = 4
 contour = triangle_contour(peak_x, peak_y, k_max, order/3)
-points, _= contour
+points, _ = contour
 
 def main():
-    solve_3b(mom, mb_coupled)
-    solve_3b(mom, mb_uncoupled)
-    solve_3b(osc, mb_coupled)
-    solve_3b(osc, mb_uncoupled)
+    solve_3b(mom, coupled)
+    solve_3b(mom, uncoupled)
+    solve_3b(osc, coupled)
+    solve_3b(osc, uncoupled)
 
-def solve_3b(sp_basis, mb_basis):
+def solve_3b(sp_basis, mb_scheme):
     eigvals, eigvecs, sep_M = solve_2b(sp_basis)
     
-    mb_H = mb_basis.hamiltonian(Q, eigvals, eigvecs, 
-                                sep_M, num_particles = 2)
+    mb_H = mb_scheme.hamiltonian(Q, eigvals, eigvecs, 
+                                 sep_M, num_particles = 2)
     mb_eigvals, mb_eigvecs = energies(mb_H)
     
-    print mb_basis.name + sp_basis.name + " lowest energy:", mb_eigvals[0]
+    print mb_scheme.name, sp_basis.name, 
+    print "lowest energy:" , mb_eigvals[0]
 
 def solve_2b(basis):
     if basis == osc:
