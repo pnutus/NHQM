@@ -1,16 +1,14 @@
 from __future__ import division
 from imports import *
-from nhqm.bases import mom_space as mom, \
-                       harm_osc as osc
 from nhqm.problems import He5
-from nhqm.QM_helpers import energies
+from nhqm.QM_helpers import energies, symmetric, hermitian
 from nhqm.bases.gen_contour import triangle_contour
-from nhqm.bases import  many_body as mom_coupled, \
-                        many_body_uncoupled as mom_uncoupled, \
-                        many_body_uncoupled_HO as osc_uncoupled
-from nhqm.bases import two_body_interaction as n_n
+from nhqm.bases import (mom_space               as mom, 
+                        harm_osc                as osc, 
+                        many_body               as mb_coupled, 
+                        many_body_uncoupled     as mb_uncoupled,
+                        two_body_interaction    as n_n)
 from nhqm.plot_helpers import *
-from itertools import combinations_with_replacement
 
 problem = He5 
 problem.V0 = -47.
@@ -18,7 +16,7 @@ problem.V0 = -47.
 n_n.V0 = -500
 order = 25*3
 
-Q = mom_coupled.QNums(l=1, j=1.5, J=0, M=0, 
+Q = mb_coupled.QNums(l=1, j=1.5, J=0, M=0, 
                       m=[-1.5, -0.5, 0.5, 1.5], 
                       E=range(order))
 
@@ -29,36 +27,28 @@ contour = triangle_contour(peak_x, peak_y, k_max, order/3)
 points, _= contour
 
 def main():
-    # run_mom_coupled()
-    # run_mom_uncoupled()
-    run_osc_uncoupled()
+    solve_3b(mom, mb_coupled)
+    solve_3b(mom, mb_uncoupled)
+    solve_3b(osc, mb_coupled)
+    solve_3b(osc, mb_uncoupled)
 
-def run_mom_coupled():
-    H = mom.hamiltonian(contour, problem, Q)
-    eigvals, eigvecs = energies(H)
-
-    mb_H = mom_coupled.hamiltonian(Q, eigvals, eigvecs, 
-                                contour, num_particles = 2)
-    mb_eigvals, mb_eigvecs = energies(mb_H)
-    print "Coupled MomSpace lowest energy:", mb_eigvals[0]
-
-def run_mom_uncoupled():
-    H = mom.hamiltonian(contour, problem, Q)
-    eigvals, eigvecs = energies(H)
+def solve_3b(sp_basis, mb_basis):
+    eigvals, eigvecs, sep_M = solve_2b(sp_basis)
     
-    mb_H = mom_uncoupled.hamiltonian(Q, eigvals, eigvecs, 
-                                contour, num_particles = 2)
+    mb_H = mb_basis.hamiltonian(Q, eigvals, eigvecs, 
+                                sep_M, num_particles = 2)
     mb_eigvals, mb_eigvecs = energies(mb_H)
-    print "Uncoupled MomSpace lowest energy:", mb_eigvals[0]
-
-def run_osc_uncoupled():
-    H = osc.hamiltonian(order, problem, Q)
-    eigvals, eigvecs = energies(H)
     
-    mb_H = osc_uncoupled.hamiltonian(Q, eigvals, eigvecs, 
-                                    num_particles = 2)
-    mb_eigvals, mb_eigvecs = energies(mb_H)
-    print "Uncoupled HarmOsc lowest energy:", mb_eigvals[0]
+    print mb_basis.name + sp_basis.name + " lowest energy:", mb_eigvals[0]
+
+def solve_2b(basis):
+    if basis == osc:
+        H = osc.hamiltonian(order, problem, Q)
+    else:
+        H = mom.hamiltonian(contour, problem, Q)
+    eigvals, eigvecs = energies(H)
+    sep_M = n_n.gen_matrix(eigvecs, Q, basis, contour)
+    return eigvals, eigvecs, sep_M
     
 def plot_shit(mb_eigvals):
     plt.figure(1)
@@ -71,8 +61,6 @@ def plot_shit(mb_eigvals):
         for j, ks2 in enumerate(points):
             k[i,j]=sp.sqrt(ks1 ** 2 + ks2 ** 2)
     plt.plot(sp.real(k),sp.imag(k),'og')
-        
-    plt.show()
 
 if __name__ == '__main__':
     main()
