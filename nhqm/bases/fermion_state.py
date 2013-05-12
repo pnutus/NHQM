@@ -110,5 +110,55 @@ if __name__ == '__main__':
         print mb_state
     print "Number of many-body states:", len(mb_states)
 
+def two_body_indexes(bra, ket):
+    result = []
+    if len(set(bra) - set(ket)) > 2:
+        return []
+    for annihilated in combinations(ket, 2):
+        for created in combinations(bra, 2):
+            new_ket = (ket
+                        .annihilate(annihilated)
+                        .create(created))
+            if new_ket.states == bra.states:
+                sign = new_ket.sign
+                a,b = created
+                c,d = annihilated
+                result.append( (a,b,c,d,sign) )
+    return result
 
-# TESTS?
+
+"""
+TESTS
+"""
+    
+import unittest
+class RedTests(unittest.TestCase):
+    
+    def setUp(self):
+        self.bra32 = FermionState([1,2,3]) 
+        self.ket32 = FermionState([1,3,4])
+        self.res32 = [(1, 2, 1, 4, -1), (2, 3, 3, 4, 1)]
+        
+        self.bra31 = FermionState([1,2,3]) 
+        self.ket31 = FermionState([3,5,6])
+        self.res31 = [(1,2, 5,6, +1)]
+
+        self.bra33 = FermionState([1,2,3]) 
+        self.ket33 = FermionState([1,2,3])
+        self.res33 = [(1,2, 1,2, +1), (1,3,1,3,1), (2,3,2,3,1)]
+        
+        
+    def test32(self):
+        res = two_body_indexes(self.bra32, self.ket32)
+        
+        self.assertEquals(res, self.res32 )
+        
+    def test31(self):
+        res = two_body_indexes(self.bra31, self.ket31)
+        
+        self.assertEquals(res, self.res31 ) 
+        
+    def test33(self):
+        res = two_body_indexes(self.bra33, self.ket33)
+        
+        self.assertEquals(res, self.res33 ) 
