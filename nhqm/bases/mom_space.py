@@ -2,14 +2,11 @@ from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
 from nhqm.QM_helpers import matrix_from_function, j_l
-from collections import namedtuple
 
 name = "MomSpace"
+
 integration_order = 50
 integration_range = 20
-
-
-QNums = namedtuple('qnums', 'l j k')
 
 def hamiltonian(contour, problem, Q):
     points, weights = contour

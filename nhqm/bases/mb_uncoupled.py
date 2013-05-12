@@ -2,13 +2,10 @@ from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
 from itertools import combinations, combinations_with_replacement
-from collections import namedtuple
 from nhqm.bases.fermion_state import FermionState, gen_mb_states
 from nhqm.QM_helpers import clebsch_gordan, matrix_from_function
 
 name = "Uncoupled"
-
-QNums = namedtuple('qnums', 'l j J M E m')
 
 def hamiltonian(Q, eigvals, eigvecs, sep_M, num_particles=2):
     # Generate many-body states

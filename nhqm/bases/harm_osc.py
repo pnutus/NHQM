@@ -3,15 +3,11 @@ import scipy as sp
 from scipy.integrate import fixed_quad
 from scipy.misc import factorial, factorial2
 from scipy.special import genlaguerre
-from collections import namedtuple
 from nhqm.QM_helpers import matrix_from_function, energies
 
 name = "HarmOsc"
 integration_order = 70
 integration_range = 20
-
-
-QNums = namedtuple('qnums', 'l j n')
 
 def solution(order, problem, Q):
     H = hamiltonian(order, problem, Q)

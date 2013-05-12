@@ -2,15 +2,10 @@ from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
 from itertools import combinations, combinations_with_replacement
-from collections import namedtuple
 from nhqm.bases.fermion_state import FermionState
 from nhqm.QM_helpers import clebsch_gordan, matrix_from_function
             
-
 name = "Coupled"
-
-QNums = namedtuple('qnums', 'l J M j m E')
-SP = namedtuple('sp', ['E', 'm'])
 
 def hamiltonian(Q, eigvals, eigvecs, sep_M, num_particles=2):
     

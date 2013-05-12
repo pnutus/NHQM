@@ -1,5 +1,6 @@
 from __future__ import division
 from imports import *
+from collections import namedtuple
 from nhqm.problems import He5
 from nhqm.QM_helpers import energies, symmetric, hermitian
 from nhqm.bases.gen_contour import triangle_contour
@@ -16,9 +17,10 @@ problem.V0 = -47.
 n_n.V0 = -500
 order = 25*3
 
-Q = coupled.QNums(l=1, j=1.5, J=0, M=0, 
-                  m=[-1.5, -0.5, 0.5, 1.5], 
-                  E=range(order))
+QNums = namedtuple('qnums', 'l j J M E m')
+Q = QNums(l=1, j=1.5, J=0, M=0, 
+          m=[-1.5, -0.5, 0.5, 1.5], 
+          E=range(order))
 
 peak_x = 0.17
 peak_y = 0.2
