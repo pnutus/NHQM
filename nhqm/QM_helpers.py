@@ -17,6 +17,12 @@ def matrix_from_function(function, order, dtype=complex,
             elif symmetric:
                 matrix[j, i] = matrix[i, j]
     return matrix
+    
+def symmetric(matrix):
+    return sp.allclose(matrix, matrix.T)
+    
+def hermitian(matrix):
+    return sp.allclose(matrix, sp.conj(matrix.T))
 
 def energies(H, hermitian=False):
     """
