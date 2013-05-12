@@ -27,7 +27,7 @@ def gen_matrix(eigvecs, Q, verbose=False):
         dk = 1
         return V_matrix.dot(eigvecs[j]*dk).dot(eigvecs[i]*dk)
         
-    sep_M = 2 / sp.pi * matrix_from_function(sep_M_func, order, 
+    sep_M = matrix_from_function(sep_M_func, order, 
                                              symmetric=True)
     return sep_M
     

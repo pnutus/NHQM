@@ -7,7 +7,7 @@ from collections import namedtuple
 from nhqm.QM_helpers import matrix_from_function, energies
 
 name = "HarmOsc"
-integration_order = 20
+integration_order = 70
 integration_range = 20
 
 
@@ -56,11 +56,7 @@ def H_element(n, n_prim, problem, omega, Q, R_nls):
     return omega / 2 * result + integral
     
 def integrand(r, n, n_prim, V, Q):
-    return R_nls[n](r)*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
-
-def integrand_stand_alone(r, n, n_prim, V, Q, R_nls):
-    nu = problem.mass * omega / 2
-    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
+    #reuires hamiltonian to be run beforehand
     return R_nls[n](r)*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
     
 def gen_R_nl(n, l, nu):
