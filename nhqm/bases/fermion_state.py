@@ -102,8 +102,9 @@ def gen_mb_states(Q, num_particles=2):
 if __name__ == '__main__':
     # example
     order = 10
-    q_nums = [('m', [-1.5, -0.5, 0.5, 1.5]),
-              ('k', range(order))]
+    QNums = namedtuple('qnums', 'E m')
+    q_nums = QNums(m = [-1.5, -0.5, 0.5, 1.5], E = range(order))
+           
     mb_states = gen_mb_states(q_nums, 2)
     for mb_state in mb_states:
         print mb_state

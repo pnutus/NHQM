@@ -10,6 +10,7 @@ name = "HarmOsc"
 integration_order = 20
 integration_range = 20
 
+
 QNums = namedtuple('qnums', 'l j n')
 
 def solution(order, problem, Q):
@@ -19,6 +20,7 @@ def solution(order, problem, Q):
     # Don't repeat this?
     omega = problem.HO_omega
     nu = problem.mass * omega / 2
+    global R_nls
     R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
     
     wavefunctions = [gen_wavefunction(eigvec, R_nls) for eigvec in eigvecs]
@@ -32,6 +34,7 @@ def gen_wavefunction(eigvec, R_nls):
 def hamiltonian(order, problem, Q):
     omega = problem.HO_omega
     nu = problem.mass * omega / 2
+    global R_nls
     R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
     def H_func(i, j):
         return H_element(i, j, problem, omega, Q, R_nls)
@@ -49,10 +52,15 @@ def H_element(n, n_prim, problem, omega, Q, R_nls):
 
     V = problem.potential
     (integral, _) = fixed_quad(integrand, 0, integration_range, n = integration_order, 
-                                args=(n, n_prim, V, Q, R_nls))
+                                args=(n, n_prim, V, Q))
     return omega / 2 * result + integral
     
-def integrand(r, n, n_prim, V, Q, R_nls):
+def integrand(r, n, n_prim, V, Q):
+    return R_nls[n](r)*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
+
+def integrand_stand_alone(r, n, n_prim, V, Q, R_nls):
+    nu = problem.mass * omega / 2
+    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
     return R_nls[n](r)*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
     
 def gen_R_nl(n, l, nu):
