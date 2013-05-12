@@ -10,11 +10,10 @@ from nhqm.plot_helpers import *
 
 from nhqm.bases import mom_space as mom
 
-problem = He5 
-order = 50
-problem.V0 = -47
-n_n.V0 = -180
-
+problem = He5
+problem.V0 = -47 
+order = 20
+n_n.V0 = -1190
 Q = osc.QNums(l=1, j=1.5, n=range(order))
 H = osc.hamiltonian(order, problem, Q)
 eigvals, eigvecs = energies(H)

@@ -51,13 +51,14 @@ def H_element(n, n_prim, problem, omega, Q, R_nls):
         result = 0
 
     V = problem.potential
-    (integral, _) = fixed_quad(integrand, 0, integration_range, n = integration_order, 
+    (integral, _) = fixed_quad(integrand, 0, integration_range, 
+                                n = integration_order, 
                                 args=(n, n_prim, V, Q))
     return omega / 2 * result + integral
     
 def integrand(r, n, n_prim, V, Q):
     #reuires hamiltonian to be run beforehand
-    return R_nls[n](r)*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
+    return sp.conj(R_nls[n](r))*V(r, Q.l, Q.j)*R_nls[n_prim](r)*r**2
     
 def gen_R_nl(n, l, nu):
     norm = sp.sqrt(
@@ -72,8 +73,7 @@ def gen_R_nl(n, l, nu):
 
 
 def gen_basis_function(problem, Q):
-    omega = problem.HO_omega
-    nu = problem.mass * omega / 2
+    nu = problem.mass * problem.HO_omega / 2
     R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
     def basis_function(r, n):
         return R_nls[n](r)
