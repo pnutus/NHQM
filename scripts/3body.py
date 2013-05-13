@@ -3,7 +3,7 @@ from imports import *
 from collections import namedtuple
 from nhqm.problems import He5
 from nhqm.QM_helpers import energies, symmetric, hermitian
-from nhqm.bases.gen_contour import triangle_contour
+from nhqm.bases.gen_contour import triangle_contour, gauss_contour
 from nhqm.bases import (mom_space            as mom, 
                         harm_osc             as osc, 
                         mb_coupled           as coupled, 
@@ -14,18 +14,19 @@ from nhqm.plot_helpers import *
 problem = He5 
 problem.V0 = -47.
 
-n_n.V0 = -500
-order = 25*3
+n_n.V0 = -1200
+basis_size = 7*3
 
 QNums = namedtuple('qnums', 'l j J M E m')
 Q = QNums(l=1, j=1.5, J=0, M=0, 
           m=[-1.5, -0.5, 0.5, 1.5], 
-          E=range(order))
+          E=range(basis_size))
 
 peak_x = 0.17
 peak_y = 0.2
-k_max = 4
-contour = triangle_contour(peak_x, peak_y, k_max, order/3)
+k_max = 5
+contour = triangle_contour(peak_x, peak_y, k_max, basis_size/3)
+contour = gauss_contour([0, k_max], basis_size)
 points, _ = contour
 
 def main():
@@ -46,7 +47,7 @@ def solve_3b(sp_basis, mb_scheme):
 
 def solve_2b(basis):
     if basis == osc:
-        H = osc.hamiltonian(order, problem, Q)
+        H = osc.hamiltonian(basis_size, problem, Q)
     else:
         H = mom.hamiltonian(contour, problem, Q)
     eigvals, eigvecs = energies(H)
