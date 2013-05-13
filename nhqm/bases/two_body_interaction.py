@@ -29,7 +29,7 @@ def gen_matrix(eigvecs, Q, basis, contour=None):
         return (eigvecs[:,i]*dk).dot(V_ij).dot(eigvecs[:,j]*dk)
         
     sep_M = matrix_from_function(sep_M_func, order, symmetric=True)
-    return V0 * sep_M
+    return sp.sqrt(V0) * sep_M
     
 @sp.vectorize
 def potential(r, l, j):
