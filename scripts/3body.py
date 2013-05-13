@@ -29,6 +29,7 @@ Q = QNums(l=1, j=1.5, J=0, M=0,
           m=[-1.5, -0.5, 0.5, 1.5], 
           E=range(basis_size))
 
+
 def main():
     print "n-n V0:", n_n.V0
     print "Basis size:", basis_size
@@ -40,7 +41,6 @@ def main():
 
 def solve_3b(sp_basis, mb_scheme):
     eigvals, eigvecs, sep_M = solve_2b(sp_basis)
-    
     mb_H = mb_scheme.hamiltonian(Q, eigvals, eigvecs, 
                                  sep_M, num_particles = 2)
     mb_eigvals, mb_eigvecs = energies(mb_H)
