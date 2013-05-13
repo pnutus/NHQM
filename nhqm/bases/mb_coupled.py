@@ -17,22 +17,19 @@ def hamiltonian(Q, eigvals, eigvecs, sep_M, num_particles=2):
     return matrix_from_function(H_func, order)
 
 def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
-    E1, E2 = E_ket
-    E1_prim, E2_prim = E_bra
-    
-    mod = 1
-    if E1 == E2:
-        mod /= sp.sqrt(2)
-    if E1_prim == E2_prim:
-        mod /= sp.sqrt(2)
-    
+    # H_1, one-body interaction
     one_body = 0
     if E_bra == E_ket:
-        one_body = eigvals[E1] + eigvals[E2]
+        one_body = sum(eigvals[E] for E in E_bra)
     
-    two_body =  (sep_M[E1, E1_prim] * sep_M[E2, E2_prim] 
-           + 1 * sep_M[E1, E2_prim] * sep_M[E2, E1_prim])
+    # H_2, two-body interaction
+    a, b = E_ket
+    c, d = E_bra
+    two_body = (sep_M[a, c] * sep_M[b, d] 
+              + sep_M[a, d] * sep_M[b, c] * 1)
     
-    return one_body + two_body * mod
+    mod = sp.sqrt(1 + (a == b)) * sp.sqrt(1 + (c == d)) 
+    
+    return one_body + two_body / mod
    
         
