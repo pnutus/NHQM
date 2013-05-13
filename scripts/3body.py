@@ -11,29 +11,32 @@ from nhqm.bases import (mom_space            as mom,
                         two_body_interaction as n_n)
 from nhqm.plot_helpers import *
 
+n_n.V0 = -1500
+basis_size = 8*3
+
+k_max = 6.2
+peak_x = 0.17
+peak_y = 0.2
+contour = triangle_contour(peak_x, peak_y, k_max, basis_size/3)
+contour = gauss_contour([0, k_max], basis_size)
+points, _ = contour
+
 problem = He5 
 problem.V0 = -47.
-
-n_n.V0 = -1200
-basis_size = 7*3
 
 QNums = namedtuple('qnums', 'l j J M E m')
 Q = QNums(l=1, j=1.5, J=0, M=0, 
           m=[-1.5, -0.5, 0.5, 1.5], 
           E=range(basis_size))
 
-peak_x = 0.17
-peak_y = 0.2
-k_max = 5
-contour = triangle_contour(peak_x, peak_y, k_max, basis_size/3)
-contour = gauss_contour([0, k_max], basis_size)
-points, _ = contour
-
 def main():
+    print "n-n V0:", n_n.V0
+    print "Basis size:", basis_size
+    print "k_max:", k_max
     solve_3b(mom, coupled)
-    solve_3b(mom, uncoupled)
+    # solve_3b(mom, uncoupled)
     solve_3b(osc, coupled)
-    solve_3b(osc, uncoupled)
+    # solve_3b(osc, uncoupled)
 
 def solve_3b(sp_basis, mb_scheme):
     eigvals, eigvecs, sep_M = solve_2b(sp_basis)
