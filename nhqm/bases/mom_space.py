@@ -5,7 +5,7 @@ from nhqm.QM_helpers import matrix_from_function, j_l
 
 name = "MomSpace"
 
-integration_order = 50
+integration_order = 60
 integration_range = 20
 
 def hamiltonian(contour, problem, Q):

@@ -26,10 +26,8 @@ def coupled_H_elem(E_bra, E_ket, eigvals, sep_M, Q):
     a, b = E_ket
     c, d = E_bra
     two_body = (sep_M[a, c] * sep_M[b, d] 
-              + sep_M[a, d] * sep_M[b, c] * 1)
+              + sep_M[a, d] * sep_M[b, c] * (-1)**Q.J )
     
     mod = sp.sqrt(1 + (a == b)) * sp.sqrt(1 + (c == d)) 
     
     return one_body + two_body / mod
-   
-        

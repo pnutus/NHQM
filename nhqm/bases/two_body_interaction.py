@@ -14,19 +14,22 @@ def gen_matrix(eigvecs, Q, basis, contour=None):
         points, weights = contour
         dk = sp.sqrt(weights) * points
         def V_func(i, j):
-            integral, _ = fixed_quad(mom.integrand, 0, 10, n = 60,
+            integral, _ = fixed_quad(mom.integrand, 0, 20, n = 60,
                         args=(points[i], points[j], potential, Q.l, Q.j))
             return 2 / sp.pi * integral
     elif basis == osc:
         dk = 1
         def V_func(i, j):
-            integral, _ = fixed_quad(osc.integrand, 0, 10, n = 30,
+            integral, _ = fixed_quad(osc.integrand, 0, 20, n = 60,
                                         args=(i, j, potential, Q))
             return integral
     V_ij = matrix_from_function(V_func, order, symmetric=True)
     
+    
     def sep_M_func(i, j):
-        return (eigvecs[:,i]*dk).dot(V_ij).dot(eigvecs[:,j]*dk)
+        def phi(index):
+            return eigvecs[:,index] * dk
+        return phi(i).dot( V_ij.dot(phi(j)) )
         
     sep_M = matrix_from_function(sep_M_func, order, symmetric=True)
     return sp.sqrt(V0) * sep_M
