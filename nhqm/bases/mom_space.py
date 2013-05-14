@@ -1,12 +1,20 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from nhqm.QM_helpers import matrix_from_function, j_l
+from nhqm.QM_helpers import matrix_from_function, j_l, energies, berggren_norm
 
 name = "MomSpace"
 
 integration_order = 60
 integration_range = 20
+
+def solution(contour, problem, Q):
+    H = hamiltonian(contour, problem, Q)
+    eigvals, eigvecs = energies(H)
+    norm_eigvecs = sp.empty(sp.shape(eigvecs), complex)
+    for col in xrange(len(eigvecs)):
+         norm_eigvecs[:,col] = eigvecs[:,col] / berggren_norm(eigvecs[:,col])
+    return eigvals, norm_eigvecs
 
 def hamiltonian(contour, problem, Q):
     points, weights = contour

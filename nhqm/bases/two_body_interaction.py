@@ -31,6 +31,18 @@ def gen_matrix(eigvecs, Q, basis, contour=None):
             return eigvecs[:,index] * dk
         return phi(i).dot( V_ij.dot(phi(j)) )
         
+        
+    def sep_M_func_sum(i, j):
+        """this function is just for comparison, doesn't work with HO, can't be arsed to fix it """
+        res = []
+        points, weights = contour
+        for k in xrange(len(eigvecs[:,i])):
+            for l in xrange(len(eigvecs[:,j])):
+                temp = sp.sqrt(weights[k]) * points[k] * eigvecs[k,i]
+                temp *= sp.sqrt(weights[l]) * points[l] * eigvecs[l,j]
+                res.append( temp * V_ij[k,l])
+        return sp.sum(res)        
+        
     sep_M = matrix_from_function(sep_M_func, order, symmetric=True)
     return sp.sqrt(V0) * sep_M
     

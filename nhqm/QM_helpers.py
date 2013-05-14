@@ -81,6 +81,9 @@ def clebsch_gordan(j1, j2, m1, m2, J, M):
     
 def absq(x):
     return sp.real(x)**2 + sp.imag(x)**2
+    
+def berggren_norm(x):
+    return sp.sqrt(sp.dot(x, x))
 
 def norm(f, start, stop, weight = lambda x: 1):
     def integrand(x):

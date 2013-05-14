@@ -10,19 +10,13 @@ integration_order = 70
 integration_range = 20
 
 def solution(order, problem, Q):
+    try: order = len(order[0])
+    except Exception: pass
     H = hamiltonian(order, problem, Q)
-    eigvals, eigvecs = energies(H)
-    
-    # Don't repeat this?
-    omega = problem.HO_omega
-    nu = problem.mass * omega / 2
-    global R_nls
-    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
-    
-    wavefunctions = [gen_wavefunction(eigvec, R_nls) for eigvec in eigvecs]
-    return eigvals, wavefunctions
+    eigvals, eigvecs = energies(H, hermitian=True)
+    return eigvals, eigvecs
 
-def gen_wavefunction(eigvec, R_nls):
+def gen_wavefunction(eigvec):
     def wavefunction(r):
         return sum(R_nls[n](r)*eigvec[n] for n in xrange(len(eigvec)))
     return wavefunction
@@ -66,11 +60,3 @@ def gen_R_nl(n, l, nu):
     def R_nl(r):
         return norm * r**l * sp.exp(-nu * r**2) * laguerre(2*nu*r**2)
     return R_nl
-
-
-def gen_basis_function(problem, Q):
-    nu = problem.mass * problem.HO_omega / 2
-    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
-    def basis_function(r, n):
-        return R_nls[n](r)
-    return basis_function
