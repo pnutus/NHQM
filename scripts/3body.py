@@ -11,16 +11,15 @@ from nhqm.bases import (mom_space            as mom,
                         two_body_interaction as n_n)
 from nhqm.plot_helpers import *
 
-n_n.V0 = -1500
-basis_size = 8*3
+n_n.V0 = -2000
+basis_size = 7*3
 
-k_max = 6.2
+k_max = 5
 peak_x = 0.17
 peak_y = 0.2
 contour = triangle_contour(peak_x, peak_y, k_max, basis_size/3)
-contour = gauss_contour([0, k_max], basis_size)
+#contour = gauss_contour([0, k_max], basis_size)
 points, _ = contour
-
 problem = He5 
 problem.V0 = -47.
 
@@ -50,10 +49,9 @@ def solve_3b(sp_basis, mb_scheme):
 
 def solve_2b(basis):
     if basis == osc:
-        H = osc.hamiltonian(basis_size, problem, Q)
+        eigvals, eigvecs = osc.solution(basis_size, problem, Q)
     else:
-        H = mom.hamiltonian(contour, problem, Q)
-    eigvals, eigvecs = energies(H)
+        eigvals, eigvecs = mom.solution(contour, problem, Q)
     sep_M = n_n.gen_matrix(eigvecs, Q, basis, contour)
     return eigvals, eigvecs, sep_M
     
