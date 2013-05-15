@@ -29,7 +29,8 @@ p32res_exp = 0.17 -0.03j
 
 def find_closest(vec, val):
     #returns index, value
-    return min(enumerate(vec), key=lambda x: abs(vec[1]-val))
+    index= min(range(len(vec)), key=lambda i: abs(vec[i]-val))
+    return index, vec[index]
             
 contour = gauss_contour([0,corner_y, corner_x +corner_y, corner_x, k_max], [bs,bs,bs,tail_size] )
 QNums = namedtuple('qnums', 'l j J M E m')
