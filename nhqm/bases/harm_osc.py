@@ -11,7 +11,7 @@ integration_range = 20
 
 def solution(order, problem, Q):
     try: order = len(order[0])
-    except Exception: pass
+    except: pass
     H = hamiltonian(order, problem, Q)
     eigvals, eigvecs = energies(H, hermitian=True)
     return eigvals, eigvecs

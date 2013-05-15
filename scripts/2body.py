@@ -3,7 +3,7 @@ from imports import *
 from nhqm.bases import harm_osc as osc, mom_space as mom
 from nhqm.problems import He5, H_atom
 from nhqm.QM_helpers import absq, energies
-from nhqm.bases.gen_contour import gauss_contour
+from nhqm.bases.contours import gauss_contour
 from collections import namedtuple
 
 problem = He5

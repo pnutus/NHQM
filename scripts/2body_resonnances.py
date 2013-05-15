@@ -1,9 +1,9 @@
 from __future__ import division
 from imports import *
 from nhqm.bases import harm_osc as osc, mom_space as mom
-from nhqm.problems import He5, H_atom
+from nhqm.problems import He5
 from nhqm.QM_helpers import absq, energies
-from nhqm.bases.gen_contour import gauss_contour, triangle_contour
+from nhqm.bases.contours import gauss_contour, triangle_contour
 from collections import namedtuple
 
 
@@ -29,10 +29,10 @@ p32res_exp = 0.17 -0.03j
 
 def find_closest(vec, val):
     #returns index, value
-    index= min(range(len(vec)), key=lambda i: abs(vec[i]-val))
+    index = min(range(len(vec)), key=lambda i: abs(vec[i]-val))
     return index, vec[index]
             
-contour = gauss_contour([0,corner_y, corner_x +corner_y, corner_x, k_max], [bs,bs,bs,tail_size] )
+contour = gauss_contour([0,corner_y, corner_x + corner_y, corner_x, k_max], [bs,bs,bs,tail_size] )
 QNums = namedtuple('qnums', 'l j J M E m')
 Qs = [QNums(l=1, j=1.5, J=0, M=0, 
           m=[-1.5, -0.5, 0.5, 1.5], 
@@ -42,11 +42,11 @@ Qs = [QNums(l=1, j=1.5, J=0, M=0,
               E=range(basis_size))]
                     
 for m,Q in enumerate(Qs):
-    print Q.l, Q.j
+    print "l:", Q.l, "j:", Q.j
     
     eigvals, eigvecs = basis.solution(contour, problem, Q)
     for i in xrange(len(eigvals)):
-        ks[m].append(sp.sqrt(2*problem.mass*eigvals[i])    )
+        ks[m].append(sp.sqrt(2*problem.mass*eigvals[i]))
         if sp.imag(ks[m][i]) > 0:
             ks[m][i] = sp.conj(ks[m][i])
         
@@ -57,4 +57,4 @@ print "p1/2 resonnance:",res12
 
 plt.plot(sp.real(ks[1]),sp.imag(ks[1]),'b*')
 plt.plot(sp.real(ks[1][i12]),sp.imag(ks[1][i12]),'r*')
-plt.show()
+#plt.show()

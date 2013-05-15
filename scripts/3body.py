@@ -4,14 +4,11 @@ from itertools import combinations_with_replacement
 from collections import namedtuple
 from nhqm.problems import He5
 from nhqm.QM_helpers import energies, symmetric, hermitian
-from nhqm.bases.gen_contour import triangle_contour, gauss_contour
-from nhqm.bases import (mom_space            as mom, 
-                        harm_osc             as osc, 
-                        mb_coupled           as coupled, 
-                        mb_uncoupled         as uncoupled,
-                        two_body_interaction as n_n)
+from nhqm.bases.contours import triangle_contour, gauss_contour
+from nhqm.bases import mom_space as mom, harm_osc as osc
+from nhqm.interactions import gaussian as n_n
+from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
-import numpy as np
 
 #finds bound state and resonance
 problem = He5 
@@ -23,8 +20,6 @@ peak_y = 0.5
 k_max = 12
 problem.V0 = -47.
 real_contour = False
-
-
 
 #problem = He5 
 #basis_size = 25*3
@@ -68,9 +63,10 @@ def main():
 
 def solve_3b(sp_basis, mb_scheme):
     global eigvals
-    eigvals, eigvecs, sep_M = solve_2b(sp_basis)
+    eigvals, eigvecs = solve_2b(sp_basis)
+    interaction = n_n.gen_interaction(eigvecs, Q, sp_basis, contour)
     mb_H = mb_scheme.hamiltonian(Q, eigvals, eigvecs, 
-                                 sep_M, num_particles = 2)
+                                 interaction, num_particles = 2)
     mb_eigvals, mb_eigvecs = energies(mb_H)
     
     print mb_scheme.name, sp_basis.name, 
@@ -83,8 +79,7 @@ def solve_2b(basis):
         eigvals, eigvecs = osc.solution(basis_size, problem, Q)
     else:
         eigvals, eigvecs = mom.solution(contour, problem, Q)
-    sep_M = n_n.gen_matrix(eigvecs, Q, basis, contour)
-    return eigvals, eigvecs, sep_M
+    return eigvals, eigvecs
     
 def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     def res_index():
