@@ -7,14 +7,11 @@ def gauss_contour(vertices, points_per_seg):
     Generates a contour along the line segments between
     vertices using Gauss-Legendre quadrature.
     """
-
     num_segments = len(vertices) - 1
     points = weights = sp.empty(0, complex)
     for i in range(num_segments):
-        try:
-            (x, w) = p_roots(points_per_seg[i])
-        except: 
-            (x, w) = p_roots(points_per_seg)                
+        try:    (x, w) = p_roots(points_per_seg[i])
+        except: (x, w) = p_roots(points_per_seg)
         a = vertices[i]
         b = vertices[i + 1]
         scaled_x = (x * (b - a) + (a + b))/2
@@ -22,7 +19,6 @@ def gauss_contour(vertices, points_per_seg):
         points = sp.hstack((points, scaled_x))
         weights = sp.hstack((weights, scaled_w))
     return (points, weights)
-
         
 def triangle_contour(peak_x, peak_y, k_max, order):
     return triangle_contour_explicit(peak_x, peak_y, k_max, 2*order, order)
