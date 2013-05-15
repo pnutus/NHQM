@@ -30,11 +30,11 @@ def plot_mom_wf(index, c = '', lw = 1):
     plt.plot(abs(points), wf, c, linewidth = lw)
 
 problem = He5 
-order = 25*3
+order = 15*3
 problem.V0 = -47.
 peak_x = 0.17
 peak_y = 0.3
-k_max = 15
+k_max = 12
 
 
 

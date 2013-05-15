@@ -4,8 +4,9 @@ from scipy.integrate import fixed_quad
 import mom_space as mom, harm_osc as osc
 from nhqm.QM_helpers import matrix_from_function
 
-V0 = -200 #MeV
-beta = 1 # fm^-2
+
+V0 = -200 # MeV
+r0 = 2 # fm
 
 def gen_matrix(eigvecs, Q, basis, contour=None):
     order = len(eigvecs)
@@ -48,5 +49,5 @@ def gen_matrix(eigvecs, Q, basis, contour=None):
     
 @sp.vectorize
 def potential(r, l, j):
-    return sp.exp(- beta * r**2)
+    return sp.exp(-(r/r0)**2)
     
