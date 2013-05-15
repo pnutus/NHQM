@@ -9,6 +9,7 @@ from nhqm.bases import mom_space as mom, harm_osc as osc
 from nhqm.interactions import gaussian, delta
 from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
+import resonnances_2body as res2b
 
 # delta trickery
 problem = He5 
@@ -93,6 +94,9 @@ def solve_2b(basis):
         eigvals, eigvecs = osc.solution(basis_size, problem, Q)
     else:
         eigvals, eigvecs = mom.solution(contour, problem, Q)
+    # p12_en, p12_vec = res2b.export_resonance_p12(contour)
+    # sp.append(eigvals,p12_en)
+    # sp.append(eigvecs,p12_vec)
     return eigvals, eigvecs
     
 def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
