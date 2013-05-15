@@ -38,6 +38,6 @@ def gen_wavefunction(eigvec, contour, Q):
     @sp.vectorize
     def wavefunction(r):
         j_ls = [j_l(Q.l, points[n]*r) for n in xrange(len(points))]
-        return sp.sqrt(2/sp.pi) * 1j**Q.l \
-                * sp.sum(sp.sqrt(weights)*points*j_ls*eigvec)
+        # A factor 1j**Q.l is removed for convenience
+        return sp.sqrt(2/sp.pi)*sp.sum(sp.sqrt(weights)*points*j_ls*eigvec)
     return wavefunction

@@ -4,6 +4,7 @@ from scipy.integrate import fixed_quad
 from nhqm.bases import mom_space as mom, harm_osc as osc
 from nhqm.QM_helpers import matrix_from_function
 
+name = "Gaussian"
 
 V0 = -200 # MeV
 r0 = 2 # fm

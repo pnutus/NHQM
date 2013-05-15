@@ -33,8 +33,8 @@ def H_elem(bra, ket, eigvals, interaction):
     c, d = ket
     two_body = 0
     if a.m == c.m and b.m == d.m:
-        two_body += interaction(a, b, c, d)
+        two_body += interaction(a.E, b.E, c.E, d.E)
     if a.m == d.m and b.m == c.m:
-        two_body -= interaction(a, b, d, c)
+        two_body -= interaction(a.E, b.E, d.E, c.E)
         
     return one_body + two_body
