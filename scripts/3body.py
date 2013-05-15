@@ -9,7 +9,7 @@ from nhqm.bases import mom_space as mom, harm_osc as osc
 from nhqm.interactions import gaussian, delta
 from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
-import resonnances_2body as res2b
+import resonances_2body as res2b
 
 # delta trickery
 problem = He5 
