@@ -1,5 +1,6 @@
 from __future__ import division
 from imports import *
+from itertools import combinations_with_replacement
 from collections import namedtuple
 from nhqm.problems import He5
 from nhqm.QM_helpers import energies, symmetric, hermitian
@@ -10,13 +11,14 @@ from nhqm.bases import (mom_space            as mom,
                         mb_uncoupled         as uncoupled,
                         two_body_interaction as n_n)
 from nhqm.plot_helpers import *
+import numpy as np
 
 problem = He5 
-basis_size = 10*3
-n_n.V0 = -1800
+basis_size = 25*3
+n_n.V0 = -1500
 peak_x = 0.17
-peak_y = 0.2
-k_max = 4
+peak_y = 0.3
+k_max = 15
 problem.V0 = -47.
 
 contour = triangle_contour(peak_x, peak_y, k_max, basis_size/3)
@@ -45,8 +47,8 @@ def solve_3b(sp_basis, mb_scheme):
     
     print mb_scheme.name, sp_basis.name, 
     print "lowest energy:" , mb_eigvals[0]
-    plot_shit(mb_eigvals)
-    plt.show()
+    #plot_shit(eigvals, mb_eigvals, mb_eigvecs)
+    #plt.show()
 
 def solve_2b(basis):
     if basis == osc:
@@ -56,18 +58,50 @@ def solve_2b(basis):
     sep_M = n_n.gen_matrix(eigvecs, Q, basis, contour)
     return eigvals, eigvecs, sep_M
     
-def plot_shit(mb_eigvals):
+def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
+    def res_index():
+        result = 0
+        global_min = 1
+        for i in range(len(mb_eigvecs)):
+            temp_max = max(abs(mb_eigvecs[:,i]))
+            if temp_max < global_min:
+                global_min = temp_max
+                result = i
+                return result
+    res = res_index()
+    
     plt.figure(1)
     plt.clf()
     #plot_poles(mb_eigvals, problem.mass)
     ks = sp.sqrt(2*problem.mass*mb_eigvals)
     plt.plot(sp.real(ks), sp.imag(ks), 'ko')
-
+    
     k = sp.zeros((len(points), len(points)),complex)
     for i, E1 in enumerate(eigvals):
         for j, E2 in enumerate(eigvals):
             k[i,j]=sp.sqrt(2*problem.mass*(E1 + E2))
     plt.plot(sp.real(k),sp.imag(k),'or', markersize=4)
     #plt.axis([0, 2.1 * 1.42 * peak_x, - 1.1 * 1.42 * peak_y, 0])
+    
+    plt.figure(2)
+    plt.clf()
+    mb_E = list(combinations_with_replacement(Q.E, 2))
+    Es = sp.zeros(len(mb_E), complex)
+    Es_2 = sp.zeros((len(mb_E),2), complex)
+    for i, (E_1, E_2) in enumerate(mb_E):
+        Es[i] = eigvals[E_1]+eigvals[E_2]
+        Es_2[i,:] = (eigvals[E_1], eigvals[E_2])
+        #Es[i] = max(abs(eigvals[E_1]), abs(eigvals[E_2]))
+    args = np.argsort(mb_eigvecs[:,res])
+    plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,0])))
+    plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,1])))
+    plt.figure(3)
+    plt.clf()
+    #plt.plot(abs(Es),abs(mb_eigvecs[:,res]), 'k*')
+    
+    #plt.figure(4)
+    #plt.clf()
+    plt.plot(sp.sqrt(abs(2*problem.mass*Es_2[:,1])),abs(mb_eigvecs[:,res]),'k*')
+
 if __name__ == '__main__':
     main()

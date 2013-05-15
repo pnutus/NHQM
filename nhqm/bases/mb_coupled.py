@@ -3,7 +3,7 @@ import scipy as sp
 from scipy.integrate import fixed_quad
 from itertools import combinations_with_replacement
 from nhqm.QM_helpers import clebsch_gordan, matrix_from_function
-            
+ 
 name = "Coupled"
 
 def hamiltonian(Q, eigvals, eigvecs, sep_M, num_particles=2):
