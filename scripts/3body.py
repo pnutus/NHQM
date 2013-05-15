@@ -12,6 +12,7 @@ from nhqm.bases import (mom_space            as mom,
                         two_body_interaction as n_n)
 from nhqm.plot_helpers import *
 import numpy as np
+import resonnances_2body as res2b
 
 #finds bound state and resonance
 problem = He5 
@@ -84,6 +85,10 @@ def solve_2b(basis):
     else:
         eigvals, eigvecs = mom.solution(contour, problem, Q)
     sep_M = n_n.gen_matrix(eigvecs, Q, basis, contour)
+    
+    p12_en, p12_vec = res2b.export_resonance_p12(contour)
+    sp.append(eigvals,p12_en)
+    sp.append(eigvecs,p12_vec)
     return eigvals, eigvecs, sep_M
     
 def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
