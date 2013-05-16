@@ -75,8 +75,8 @@ def solve_3b(sp_basis, mb_scheme):
     
     print mb_scheme.name, sp_basis.name, 
     print "lowest energy:" , mb_eigvals[0]
-    #plot_shit(eigvals, mb_eigvals, mb_eigvecs)
-    #plt.show()
+    plot_shit(eigvals, mb_eigvals, mb_eigvecs)
+    plt.show()
 
 def solve_2b(basis):
     if basis == osc:
