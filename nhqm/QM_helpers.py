@@ -91,7 +91,6 @@ def norm(f, start, stop, weight = lambda x: 1):
     (N, _) = sp.integrate.quad(integrand, start, stop)
     return N
 
-
 def normalize(f, start, stop, weight = lambda x: 1):
     N = norm(f, start, stop, weight = weight)
     return lambda x: f(x) / sp.sqrt(N)

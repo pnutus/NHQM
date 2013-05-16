@@ -28,6 +28,7 @@ def coupled_H_elem(E_bra, E_ket, eigvals, interaction, Q):
     two_body = (interaction(a, b, c, d) 
               + interaction(a, b, d, c) * (-1)**Q.J )
     
-    mod = sp.sqrt( (1 + (a == b)) * (1 + (c == d)) )
-    
-    return one_body + two_body / mod
+    return one_body + two_body * N(a, b, Q) * N(c, d, Q)
+
+def N(a, b, Q):
+    return sp.sqrt(1 + (a == b)*(-1)**Q.J)/(1 + (a == b))

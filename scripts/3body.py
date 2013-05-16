@@ -14,14 +14,14 @@ import resonances_2body as res2b
 # delta trickery
 problem = He5 
 problem.V0 = -47.
-basis_size = 10 + 20
+basis_size = 10 + 10
 gaussian.V0 = -1140
 gaussian.r0 = 1
-delta.V0 = -160
+delta.V0 = -1670
 delta.r0 = 2
-peak_x = 0.5
-peak_y = 0.2
-k_max = 21
+peak_x = 0.3
+peak_y = 0.3
+k_max = 4
 complex_contour = True
 
 #finds bound state and resonance
