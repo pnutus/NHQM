@@ -9,55 +9,26 @@ from nhqm.bases import mom_space as mom, harm_osc as osc
 from nhqm.interactions import gaussian, SDI
 from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
-import resonances_2body as res2b
+import numpy as np
+#import resonances_2body as res2b
 
 # SDI trickery
 problem = He5 
 problem.V0 = -47.
-basis_size = 10 + 10
+basis_size = 75
+points_on_triangle = 10
 gaussian.V0 = -1140
 gaussian.r0 = 1
 SDI.V0 = -1670
 SDI.r0 = 2
 peak_x = 0.3
 peak_y = 0.3
-k_max = 4
-complex_contour = True
-
-#finds bound state and resonance
-# problem = He5 
-# basis_size = 15*3
-# gaussian.V0 = -1140
-# gaussian.r0 = 1
-# peak_x = 0.5
-# peak_y = 0.5
-# k_max = 12
-# k_max = 20
-# problem.V0 = -47.
-# complex_contour = True
-
-# problem = He5 
-# basis_size = 25*3
-# gaussian.V0 = -5810
-# gaussian.r0 = 0.5
-# peak_x = 0.6
-# peak_y = 0.5
-# k_max = 20
-# problem.V0 = -47.
-# complex_contour = True
-  
-# problem = He5 
-# basis_size = 10*3
-# gaussian.V0 = -98
-# gaussian.r0 = 2
-# peak_x = .5
-# peak_y = .5
-# k_max = 5
-# problem.V0 = -47.
-# complex_contour = True
+k_max = 30
+complex_contour = False
 
 if complex_contour:
-    contour = triangle_contour_explicit(peak_x, peak_y, k_max, 10, basis_size - 10)
+    contour = triangle_contour_explicit(peak_x, peak_y, k_max, 
+                                        points_on_triangle, basis_size - points_on_triangle)
 else:
     contour = gauss_contour([0, k_max], basis_size)
 points, _ = contour
@@ -122,24 +93,24 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
         for j, E2 in enumerate(eigvals):
             k[i,j]=sp.sqrt(2*problem.mass*(E1 + E2))
     plt.plot(sp.real(k),sp.imag(k),'or', markersize=4)
-    plt.axis([0, 2.1 * 1.42 * peak_x, - 1.1 * 1.42 * peak_y, 0])
+    #plt.axis([0, 2.1 * 1.42 * peak_x, - 1.1 * 1.42 * peak_y, 0])
     
     plt.figure(2)
     plt.clf()
-    #mb_E = list(combinations_with_replacement(Q.E, 2))
-    #Es = sp.zeros(len(mb_E), complex)
-    #Es_2 = sp.zeros((len(mb_E),2), complex)
-    #for i, (E_1, E_2) in enumerate(mb_E):
-    #    Es[i] = eigvals[E_1]+eigvals[E_2]
-    #    Es_2[i,:] = (eigvals[E_1], eigvals[E_2])
-    #    #Es[i] = max(abs(eigvals[E_1]), abs(eigvals[E_2]))
-    #args = np.argsort(mb_eigvecs[:,res])
-    #plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,0])),'b')
-    #plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,1])),'g')
-    #plt.figure(3)
-    #plt.clf()
-    #plt.plot(sp.sqrt(abs(2*problem.mass*Es_2[:,0])),abs(mb_eigvecs[:,res]),'b*')
-    #plt.plot(sp.sqrt(abs(2*problem.mass*Es_2[:,1])),abs(mb_eigvecs[:,res]),'g*')
+    mb_E = list(combinations_with_replacement(Q.E, 2))
+    Es = sp.zeros(len(mb_E), complex)
+    Es_2 = sp.zeros((len(mb_E),2), complex)
+    for i, (E_1, E_2) in enumerate(mb_E):
+        Es[i] = eigvals[E_1]+eigvals[E_2]
+        Es_2[i,:] = (eigvals[E_1], eigvals[E_2])
+        #Es[i] = max(abs(eigvals[E_1]), abs(eigvals[E_2]))
+    args = np.argsort(mb_eigvecs[:,res])
+    plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,0])),'b')
+    plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,1])),'g')
+    plt.figure(3)
+    plt.clf()
+    plt.plot(sp.sqrt(abs(2*problem.mass*Es_2[:,0])),abs(mb_eigvecs[:,res]),'b*')
+    plt.plot(sp.sqrt(abs(2*problem.mass*Es_2[:,1])),abs(mb_eigvecs[:,res]),'g*')
     plt.figure(4)
     plt.clf()
     plt.plot(abs(mb_eigvecs[:,res]))
@@ -148,3 +119,38 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
 
 if __name__ == '__main__':
     main()
+
+
+
+
+#finds bound state and resonance
+# problem = He5 
+# basis_size = 15*3
+# gaussian.V0 = -1140
+# gaussian.r0 = 1
+# peak_x = 0.5
+# peak_y = 0.5
+# k_max = 12
+# k_max = 20
+# problem.V0 = -47.
+# complex_contour = True
+
+# problem = He5 
+# basis_size = 25*3
+# gaussian.V0 = -5810
+# gaussian.r0 = 0.5
+# peak_x = 0.6
+# peak_y = 0.5
+# k_max = 20
+# problem.V0 = -47.
+# complex_contour = True
+  
+# problem = He5 
+# basis_size = 10*3
+# gaussian.V0 = -98
+# gaussian.r0 = 2
+# peak_x = .5
+# peak_y = .5
+# k_max = 5
+# problem.V0 = -47.
+# complex_contour = True

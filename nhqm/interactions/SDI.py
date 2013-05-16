@@ -23,5 +23,5 @@ def gen_interaction(eigvecs, Q, sp_basis, contour=None):
                   
     def interaction(a, b, c, d):
         Kabcd = V0*r0**2*R[a]*R[b]*R[c]*R[d] / (16*sp.pi)
-        return Kabcd * hatjs * wigners
+        return 2 * Kabcd * hatjs * wigners
     return interaction
