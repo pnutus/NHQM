@@ -9,13 +9,12 @@ from nhqm.bases import mom_space as mom, harm_osc as osc
 from nhqm.interactions import gaussian, SDI
 from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
-import numpy as np
 #import resonances_2body as res2b
 
 # SDI trickery
 problem = He5 
 problem.V0 = -47.
-basis_size = 75
+basis_size = 40
 points_on_triangle = 10
 gaussian.V0 = -1140
 gaussian.r0 = 1
@@ -23,7 +22,7 @@ SDI.V0 = -1670
 SDI.r0 = 2
 peak_x = 0.3
 peak_y = 0.3
-k_max = 30
+k_max = 20
 complex_contour = False
 
 if complex_contour:
@@ -104,7 +103,7 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
         Es[i] = eigvals[E_1]+eigvals[E_2]
         Es_2[i,:] = (eigvals[E_1], eigvals[E_2])
         #Es[i] = max(abs(eigvals[E_1]), abs(eigvals[E_2]))
-    args = np.argsort(mb_eigvecs[:,res])
+    args = sp.argsort(mb_eigvecs[:,res])
     plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,0])),'b')
     plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,1])),'g')
     plt.figure(3)
