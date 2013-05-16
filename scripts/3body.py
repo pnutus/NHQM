@@ -6,19 +6,19 @@ from nhqm.problems import He5
 from nhqm.QM_helpers import energies, symmetric, hermitian
 from nhqm.bases.contours import triangle_contour_explicit, gauss_contour
 from nhqm.bases import mom_space as mom, harm_osc as osc
-from nhqm.interactions import gaussian, delta
+from nhqm.interactions import gaussian, SDI
 from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
 import resonances_2body as res2b
 
-# delta trickery
+# SDI trickery
 problem = He5 
 problem.V0 = -47.
 basis_size = 10 + 10
 gaussian.V0 = -1140
 gaussian.r0 = 1
-delta.V0 = -1670
-delta.r0 = 2
+SDI.V0 = -1670
+SDI.r0 = 2
 peak_x = 0.3
 peak_y = 0.3
 k_max = 4
@@ -67,7 +67,7 @@ Q = QNums(l=1, j=1.5, J=0, M=0,
           E=range(basis_size))
 
 def main():
-    solve_3b(mom, coupled, delta)
+    solve_3b(mom, coupled, SDI)
 
 def solve_3b(sp_basis, mb_scheme, two_body):
     print mb_scheme.name, sp_basis.name
