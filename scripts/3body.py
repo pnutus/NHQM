@@ -9,7 +9,6 @@ from nhqm.bases import mom_space as mom, harm_osc as osc
 from nhqm.interactions import gaussian, SDI
 from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
-import numpy as np
 #import resonances_2body as res2b
 
 # SDI trickery
@@ -103,7 +102,7 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
         Es[i] = eigvals[E_1]+eigvals[E_2]
         Es_2[i,:] = (eigvals[E_1], eigvals[E_2])
         #Es[i] = max(abs(eigvals[E_1]), abs(eigvals[E_2]))
-    args = np.argsort(mb_eigvecs[:,res])
+    args = sp.argsort(mb_eigvecs[:,res])
     plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,0])),'b')
     plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,1])),'g')
     plt.figure(3)
