@@ -4,51 +4,61 @@ from itertools import combinations_with_replacement
 from collections import namedtuple
 from nhqm.problems import He5
 from nhqm.QM_helpers import energies, symmetric, hermitian
-from nhqm.bases.gen_contour import triangle_contour, gauss_contour
-from nhqm.bases import (mom_space            as mom, 
-                        harm_osc             as osc, 
-                        mb_coupled           as coupled, 
-                        mb_uncoupled         as uncoupled,
-                        two_body_interaction as n_n)
+from nhqm.bases.contours import triangle_contour_explicit, gauss_contour
+from nhqm.bases import mom_space as mom, harm_osc as osc
+from nhqm.interactions import gaussian, delta
+from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
-import numpy as np
+import resonances_2body as res2b
+
+# delta trickery
+problem = He5 
+problem.V0 = -47.
+basis_size = 10 + 20
+gaussian.V0 = -1140
+gaussian.r0 = 1
+delta.V0 = -160
+delta.r0 = 2
+peak_x = 0.5
+peak_y = 0.2
+k_max = 21
+complex_contour = True
 
 #finds bound state and resonance
-problem = He5 
-basis_size = 15*3
-n_n.V0 = -1140
-n_n.r0 = 1
-peak_x = 0.5
-peak_y = 0.5
-k_max = 12
-problem.V0 = -47.
-real_contour = False
+# problem = He5 
+# basis_size = 15*3
+# gaussian.V0 = -1140
+# gaussian.r0 = 1
+# peak_x = 0.5
+# peak_y = 0.5
+# k_max = 12
+# k_max = 20
+# problem.V0 = -47.
+# complex_contour = True
 
+# problem = He5 
+# basis_size = 25*3
+# gaussian.V0 = -5810
+# gaussian.r0 = 0.5
+# peak_x = 0.6
+# peak_y = 0.5
+# k_max = 20
+# problem.V0 = -47.
+# complex_contour = True
+  
+# problem = He5 
+# basis_size = 10*3
+# gaussian.V0 = -98
+# gaussian.r0 = 2
+# peak_x = .5
+# peak_y = .5
+# k_max = 5
+# problem.V0 = -47.
+# complex_contour = True
 
-
-#problem = He5 
-#basis_size = 25*3
-#n_n.V0 = -5810
-#n_n.r0 = 0.5
-#peak_x = 0.6
-#peak_y = 0.5
-#k_max = 20
-#problem.V0 = -47.
-#real_contour = False
-
-#problem = He5 
-#basis_size = 10*3
-#n_n.V0 = -98
-#n_n.r0 = 2
-#peak_x = .5
-#peak_y = .5
-#k_max = 5
-#problem.V0 = -47.
-#real_contour = False
-
-
-contour = triangle_contour(peak_x, peak_y, k_max, basis_size/3)
-if real_contour:
+if complex_contour:
+    contour = triangle_contour_explicit(peak_x, peak_y, k_max, 10, basis_size - 10)
+else:
     contour = gauss_contour([0, k_max], basis_size)
 points, _ = contour
 QNums = namedtuple('qnums', 'l j J M E m')
@@ -57,20 +67,21 @@ Q = QNums(l=1, j=1.5, J=0, M=0,
           E=range(basis_size))
 
 def main():
-    print ("Real contour" if real_contour else "Complex Contour")
-    print "n-n V0:", n_n.V0
-    print "Basis size:", basis_size
-    print "k_max:", k_max
-    solve_3b(mom, coupled)
-    # solve_3b(mom, uncoupled)
-    # solve_3b(osc, coupled)
-    # solve_3b(osc, uncoupled)
+    solve_3b(mom, coupled, delta)
 
-def solve_3b(sp_basis, mb_scheme):
-    global eigvals
-    eigvals, eigvecs, sep_M = solve_2b(sp_basis)
+def solve_3b(sp_basis, mb_scheme, two_body):
+    print mb_scheme.name, sp_basis.name
+    print "\tBasis size:", basis_size
+    if sp_basis == mom:
+        print "\t",("Complex contour" if complex_contour else "Real contour")
+        print "\t\tk_max:", k_max
+    print two_body.name, "interaction"
+    print "\tV0:", two_body.V0
+    print "\tr0:", two_body.r0
+    eigvals, eigvecs = solve_2b(sp_basis)
+    interaction = two_body.gen_interaction(eigvecs, Q, sp_basis, contour)
     mb_H = mb_scheme.hamiltonian(Q, eigvals, eigvecs, 
-                                 sep_M, num_particles = 2)
+                                 interaction, num_particles = 2)
     mb_eigvals, mb_eigvecs = energies(mb_H)
     
     print mb_scheme.name, sp_basis.name, 
@@ -83,8 +94,10 @@ def solve_2b(basis):
         eigvals, eigvecs = osc.solution(basis_size, problem, Q)
     else:
         eigvals, eigvecs = mom.solution(contour, problem, Q)
-    sep_M = n_n.gen_matrix(eigvecs, Q, basis, contour)
-    return eigvals, eigvecs, sep_M
+    # p12_en, p12_vec = res2b.export_resonance_p12(contour)
+    # sp.append(eigvals,p12_en)
+    # sp.append(eigvecs,p12_vec)
+    return eigvals, eigvecs
     
 def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     def res_index():
