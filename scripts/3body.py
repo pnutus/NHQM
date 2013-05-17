@@ -15,16 +15,14 @@ from nhqm.plot_helpers import *
 problem = He5 
 problem.V0 = -47.
 
-basis_size = 24
-points_on_triangle = basis_size*2/3
->>>>>>> aa68477a0d502a4aa3a1a6274ba19f48a0b7d3f5
-gaussian.V0 = -1140
+basis_size = 35
+points_on_triangle = 20
+gaussian.V0 = -540
 gaussian.r0 = 1
-SDI.V0 = -805
+SDI.V0 = -700
 SDI.r0 = 2
-<<<<<<< HEAD
-peak_x = 0.5
-peak_y = 0.5
+peak_x = 1
+peak_y = 0.8
 k_max = 10
 complex_contour = True
 
@@ -40,7 +38,7 @@ Q = QNums(l=1, j=1.5, J=0, M=0,
           E=range(basis_size))
 
 def main():
-    solve_3b(mom, coupled, gaussian)
+    solve_3b(mom, coupled, SDI)
 
 def solve_3b(sp_basis, mb_scheme, two_body):
     print mb_scheme.name, sp_basis.name
