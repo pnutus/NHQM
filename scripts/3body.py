@@ -14,15 +14,18 @@ from nhqm.plot_helpers import *
 # SDI trickery
 problem = He5 
 problem.V0 = -47.
-basis_size = 40
-points_on_triangle = 20
+
+basis_size = 24
+points_on_triangle = basis_size*2/3
+>>>>>>> aa68477a0d502a4aa3a1a6274ba19f48a0b7d3f5
 gaussian.V0 = -1140
 gaussian.r0 = 1
-SDI.V0 = -1670
+SDI.V0 = -805
 SDI.r0 = 2
+<<<<<<< HEAD
 peak_x = 0.5
 peak_y = 0.5
-k_max = 15
+k_max = 10
 complex_contour = True
 
 if complex_contour:
@@ -54,8 +57,7 @@ def solve_3b(sp_basis, mb_scheme, two_body):
                                  interaction, num_particles = 2)
     mb_eigvals, mb_eigvecs = energies(mb_H)
     
-    print mb_scheme.name, sp_basis.name, 
-    print "lowest energy:" , mb_eigvals[0]
+    print "Lowest energy:" , mb_eigvals[0]
     plot_shit(eigvals, mb_eigvals, mb_eigvecs)
     plt.show()
 
@@ -113,8 +115,8 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     plt.figure(4)
     plt.clf()
     plt.plot(abs(mb_eigvecs[:,res]))
-    print 'energy =', mb_eigvals[res], 'MeV'
-    print 'momentum =', sp.sqrt(2*problem.mass*(mb_eigvals[res]))
+    print 'Maybe resonance energy =', mb_eigvals[res], 'MeV'
+    print 'Maybe resonance momentum =', sp.sqrt(2*problem.mass*(mb_eigvals[res]))
 
 if __name__ == '__main__':
     main()
