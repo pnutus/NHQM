@@ -1,6 +1,3 @@
-from itertools import combinations, product
-from collections import namedtuple, Iterable
-
 class FermionState:
     """
     Represents a fermionic many-body state as a list of
@@ -82,33 +79,6 @@ def state_index(states, new_state):
         if state > new_state:
             return i
     return len(states)
-
-def gen_mb_states(Q, num_particles=2):
-    """
-    Generates many-body states given a list of 
-    quantum numbers and their possible values.
-    Like so [('m', [-1.5, -0.5, 0.5, 1.5]),
-             ('k', [0, 1, 2, 3, 4, 5, 6])]
-    """
-    
-    
-    q_nums = [(name, value) for name, value in zip(Q._fields, Q) 
-                            if isinstance(value, Iterable)]
-    names, values = zip(*q_nums)
-    SP = namedtuple('sp', names)
-    sp_states = [SP(*tup) for tup in product(*values)]
-    return map(FermionState, combinations(sp_states, num_particles))
-
-if __name__ == '__main__':
-    # example
-    order = 10
-    QNums = namedtuple('qnums', 'E m')
-    q_nums = QNums(m = [-1.5, -0.5, 0.5, 1.5], E = range(order))
-           
-    mb_states = gen_mb_states(q_nums, 2)
-    for mb_state in mb_states:
-        print mb_state
-    print "Number of many-body states:", len(mb_states)
 
 def two_body_indexes(bra, ket):
     result = []
