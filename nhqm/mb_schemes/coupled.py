@@ -21,17 +21,16 @@ def hamiltonian(sp_states, interaction, J):
     return matrix_from_function(H_func, matrix_size)
 
 def H_elem(bra, ket, interaction, J):
-    # H_1, one-body interaction
-    one_body = 0
-    if bra == ket:
-        one_body = sum(sp.E for sp in bra)
-        
-    # H_2, two-body interaction
     a, b = ket
     c, d = bra
+    
+    one_body = 0
+    if bra == ket:
+        one_body = sum(sp.E for sp in bra) * (1 + (a == b)*(-1)**J)
+        
     two_body = interaction(a, b, c, d)
     
-    return one_body + two_body * N(a, b, J) * N(c, d, J)
+    return (one_body + two_body) * N(a, b, J) * N(c, d, J)
 
 def N(a, b, J):
     return sp.sqrt(1 + (a == b)*(-1)**J)/(1 + (a == b))
