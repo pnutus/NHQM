@@ -2,33 +2,36 @@ from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
 from itertools import combinations_with_replacement
-from nhqm.QM_helpers import clebsch_gordan, matrix_from_function
+from collections import namedtuple, Iterable
+from nhqm.QM_helpers import matrix_from_function, energies
  
 name = "Coupled"
 
-def hamiltonian(Q, eigvals, eigvecs, interaction, num_particles=2):
-    
-    # tuples of k-indexes: (3, 6), (4, 4)
-    mb_E = list(combinations_with_replacement(Q.E, num_particles))
-    order = len(mb_E)
+def solution(sp_states, interaction, J):
+    H = hamiltonian(sp_states, interaction)
+    return energies(H)
+
+def hamiltonian(sp_states, interaction, J):
+    # tuples of sp states (sp(E=1, j=1.5), sp(E=7, j=1.5))
+    mb_states = list(combinations_with_replacement(sp_states, 2))
+    matrix_size = len(mb_states)
     
     def H_func(i, j):
-        return coupled_H_elem(mb_E[i], mb_E[j], eigvals, interaction, Q)
-    return matrix_from_function(H_func, order)
+        return H_elem(mb_states[i], mb_states[j], interaction, J)
+    return matrix_from_function(H_func, matrix_size)
 
-def coupled_H_elem(E_bra, E_ket, eigvals, interaction, Q):
+def H_elem(bra, ket, interaction, J):
     # H_1, one-body interaction
     one_body = 0
-    if E_bra == E_ket:
-        one_body = sum(eigvals[E] for E in E_bra)
-    
+    if bra == ket:
+        one_body = sum(sp.E for sp in bra)
+        
     # H_2, two-body interaction
-    a, b = E_ket
-    c, d = E_bra
-    two_body = (interaction(a, b, c, d) 
-              + interaction(a, b, d, c) * (-1)**Q.J )
+    a, b = ket
+    c, d = bra
+    two_body = interaction(a, b, c, d)
     
-    return one_body + two_body * N(a, b, Q) * N(c, d, Q)
+    return one_body + two_body * N(a, b, J) * N(c, d, J)
 
-def N(a, b, Q):
-    return sp.sqrt(1 + (a == b)*(-1)**Q.J)/(1 + (a == b))
+def N(a, b, J):
+    return sp.sqrt(1 + (a == b)*(-1)**J)/(1 + (a == b))

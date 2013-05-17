@@ -9,26 +9,27 @@ name = "HarmOsc"
 integration_order = 70
 integration_range = 20
 
-def solution(order, problem, Q):
-    try: order = len(order[0])
+def solution(basis_size, problem, Q):
+    try: basis_size = len(basis_size[0])
     except: pass
-    H = hamiltonian(order, problem, Q)
+    H = hamiltonian(basis_size, problem, Q)
     eigvals, eigvecs = energies(H, hermitian=True)
     return eigvals, eigvecs
 
-def gen_wavefunction(eigvec):
+def gen_wavefunction(eigvec, Q, problem, contour=None):
+    nu = problem.mass * problem.HO_omega / 2
+    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(basis_size)]
     def wavefunction(r):
         return sum(R_nls[n](r)*eigvec[n] for n in xrange(len(eigvec)))
     return wavefunction
 
-def hamiltonian(order, problem, Q):
-    omega = problem.HO_omega
-    nu = problem.mass * omega / 2
+def hamiltonian(basis_size, problem, Q):
+    nu = problem.mass * problem.HO_omega / 2
     global R_nls
-    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(order)]
+    R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(basis_size)]
     def H_func(i, j):
         return H_element(i, j, problem, omega, Q, R_nls)
-    return matrix_from_function(H_func, order, hermitian=True)
+    return matrix_from_function(H_func, basis_size, hermitian=True)
     
 def H_element(n, n_prim, problem, omega, Q, R_nls):
     if n == n_prim:

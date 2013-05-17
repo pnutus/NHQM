@@ -11,63 +11,64 @@ from nhqm.mb_schemes import coupled, uncoupled
 from nhqm.plot_helpers import *
 #import resonances_2body as res2b
 
+sp_basis = mom
+mb_scheme = coupled
+two_body = SDI
+
 # SDI trickery
 problem = He5 
 problem.V0 = -47.
-basis_size = 24
+basis_size = 15
 points_on_triangle = basis_size*2/3
 gaussian.V0 = -1140
 gaussian.r0 = 1
-SDI.V0 = -805
+SDI.V0 = 2800
 SDI.r0 = 2
-peak_x = 0.3
-peak_y = 0.3
-k_max = 5
-complex_contour = True
+peak_x = 0.2
+peak_y = 0.1
+k_max = 2.5
+complex_contour = True 
+J = 0
+js = [1.5]
 
 if complex_contour:
     contour = triangle_contour_explicit(peak_x, peak_y, k_max, 
-                                        points_on_triangle, basis_size - points_on_triangle)
+                    points_on_triangle, basis_size - points_on_triangle)
 else:
     contour = gauss_contour([0, k_max], basis_size)
 points, _ = contour
-QNums = namedtuple('qnums', 'l j J M E m')
-Q = QNums(l=1, j=1.5, J=0, M=0, 
-          m=[-1.5, -0.5, 0.5, 1.5], 
-          E=range(basis_size))
 
-def main():
-    solve_3b(mom, coupled, SDI)
+print mb_scheme.name, sp_basis.name
+print "\tBasis size:", basis_size
+if sp_basis == mom:
+    print "\t",("Complex contour" if complex_contour else "Real contour")
+    print "\t\tk_max:", k_max
+print two_body.name, "interaction"
+print "\tV0:", two_body.V0
+print "\tr0:", two_body.r0
 
-def solve_3b(sp_basis, mb_scheme, two_body):
-    print mb_scheme.name, sp_basis.name
-    print "\tBasis size:", basis_size
-    if sp_basis == mom:
-        print "\t",("Complex contour" if complex_contour else "Real contour")
-        print "\t\tk_max:", k_max
-    print two_body.name, "interaction"
-    print "\tV0:", two_body.V0
-    print "\tr0:", two_body.r0
-    eigvals, eigvecs = solve_2b(sp_basis)
-    interaction = two_body.gen_interaction(eigvecs, Q, sp_basis, contour)
-    mb_H = mb_scheme.hamiltonian(Q, eigvals, eigvecs, 
-                                 interaction, num_particles = 2)
-    mb_eigvals, mb_eigvecs = energies(mb_H)
-    
-    print "Lowest energy:" , mb_eigvals[0]
-    plot_shit(eigvals, mb_eigvals, mb_eigvecs)
-    plt.show()
 
-def solve_2b(basis):
-    if basis == osc:
-        eigvals, eigvecs = osc.solution(basis_size, problem, Q)
-    else:
-        eigvals, eigvecs = mom.solution(contour, problem, Q)
-    # p12_en, p12_vec = res2b.export_resonance_p12(contour)
-    # sp.append(eigvals,p12_en)
-    # sp.append(eigvecs,p12_vec)
-    return eigvals, eigvecs
-    
+# Construct sp states
+spQ = namedtuple('qnums', 'l j')
+SP = namedtuple('sp', "id l j E eigvec contour basis")
+sp_states = []
+for j in js:
+    # We can use different contours here
+    Q = spQ(l=1, j=j)
+    eigvals, eigvecs = sp_basis.solution(contour, problem, Q)
+    for i in xrange(len(eigvals)):
+        sp_states.append(SP(id=len(sp_states), l=1, j=j, E=eigvals[i], 
+                eigvec=eigvecs[:,i], contour=contour, basis=sp_basis))
+
+# for state in sp_states:
+#     print state.id, state.j, state.E
+
+interaction = two_body.gen_interaction(sp_states, J, problem=problem)
+mb_H = coupled.hamiltonian(sp_states, interaction, J)
+mb_eigvals, mb_eigvecs = energies(mb_H)
+
+print "Lowest energy:" , mb_eigvals[0]
+
 def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     def res_index():
         result = 0
@@ -115,9 +116,8 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     print 'Maybe resonance energy =', mb_eigvals[res], 'MeV'
     print 'Maybe resonance momentum =', sp.sqrt(2*problem.mass*(mb_eigvals[res]))
 
-if __name__ == '__main__':
-    main()
-
+# plot_shit(eigvals, mb_eigvals, mb_eigvecs)
+# plt.show()
 
 
 

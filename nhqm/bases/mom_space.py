@@ -33,7 +33,7 @@ def H_element(k, k_prim, weight, weight_prim, problem, Q):
 def integrand(r, k, k_prim, V, l, j):
     return r**2 * j_l(l, k*r) * j_l(l, k_prim*r) * V(r, l, j)
 
-def gen_wavefunction(eigvec, contour, Q):
+def gen_wavefunction(eigvec, Q, contour, problem=None):
     points, weights = contour
     @sp.vectorize
     def wavefunction(r):
