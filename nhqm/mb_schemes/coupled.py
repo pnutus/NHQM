@@ -20,7 +20,7 @@ def coupled_H_elem(E_bra, E_ket, eigvals, interaction, Q):
     # H_1, one-body interaction
     one_body = 0
     if E_bra == E_ket:
-        one_body = sum(eigvals[E] for E in E_bra)
+        one_body = sum(eigvals[E] for E in E_bra) * (1 + (a == b)*(-1)**Q.J)
     
     # H_2, two-body interaction
     a, b = E_ket
@@ -28,7 +28,7 @@ def coupled_H_elem(E_bra, E_ket, eigvals, interaction, Q):
     two_body = (interaction(a, b, c, d) 
               + interaction(a, b, d, c) * (-1)**Q.J )
     
-    return one_body + two_body * N(a, b, Q) * N(c, d, Q)
+    return (one_body  + two_body) * N(a, b, Q) * N(c, d, Q)
 
 def N(a, b, Q):
     return sp.sqrt(1 + (a == b)*(-1)**Q.J)/(1 + (a == b))

@@ -15,15 +15,15 @@ from nhqm.plot_helpers import *
 problem = He5 
 problem.V0 = -47.
 basis_size = 40
-points_on_triangle = 10
+points_on_triangle = 20
 gaussian.V0 = -1140
 gaussian.r0 = 1
 SDI.V0 = -1670
 SDI.r0 = 2
-peak_x = 0.3
-peak_y = 0.3
-k_max = 20
-complex_contour = False
+peak_x = 0.5
+peak_y = 0.5
+k_max = 15
+complex_contour = True
 
 if complex_contour:
     contour = triangle_contour_explicit(peak_x, peak_y, k_max, 
@@ -37,7 +37,7 @@ Q = QNums(l=1, j=1.5, J=0, M=0,
           E=range(basis_size))
 
 def main():
-    solve_3b(mom, coupled, SDI)
+    solve_3b(mom, coupled, gaussian)
 
 def solve_3b(sp_basis, mb_scheme, two_body):
     print mb_scheme.name, sp_basis.name
