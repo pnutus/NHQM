@@ -17,17 +17,18 @@ two_body = SDI
 
 # SDI trickery
 problem = He5 
-problem.V0 = -47.
-basis_size = 24
-points_on_triangle = basis_size*2/3
+problem.V0 = -47.05
+problem.Vso = -7.04
+basis_size = 40
+points_on_triangle = 30
 gaussian.V0 = -7140
 gaussian.r0 = 1
-SDI.V0 = 970
+SDI.V0 = 998
 SDI.r0 = 2
 peak_x = 0.3
-peak_y = 0.4
+peak_y = 0.3
 k_max = 2.5
-complex_contour = True 
+complex_contour = True
 J = 2
 js = [1.5]
 
@@ -106,6 +107,13 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     plt.plot(sp.real(ks), sp.imag(ks), 'ko')
     plt.plot(sp.real(ks[res_1]), sp.imag(ks[res_1]), 'go', markersize=10)
     plt.plot(sp.real(ks[res_2]), sp.imag(ks[res_2]), 'bo', markersize=10)
+    
+    print len(mb_states)
+    import os
+    script_dir = os.path.dirname(os.path.realpath(__file__)) + "/"
+    dataoladata = sp.array([sp.real(ks), sp.imag(ks)])
+    sp.savetxt(script_dir + "he6_momenta"+ str(res_1)+".data", dataoladata.T)
+
     k = sp.zeros((len(points), len(points)),complex)
     for i, E1 in enumerate(eigvals):
         for j, E2 in enumerate(eigvals):

@@ -16,16 +16,17 @@ two_body = gaussian
 
 # SDI trickery
 problem = He5 
-problem.V0 = -47.
-basis_size = 24
-points_on_triangle = basis_size*2/3
-gaussian.V0 = 97
-gaussian.r0 = 2
+problem.V0 = -47.05
+problem.Vso = -7.04
+basis_size = 60
+points_on_triangle = 20
+gaussian.V0 = 5810
+gaussian.r0 = 0.5
 peak_x = 0.3
-peak_y = 0.3
-k_max = 4
+peak_y = 0.8
+k_max = 20
 complex_contour = True 
-J = 2
+J = 0
 js = [1.5]
 
 
@@ -96,6 +97,8 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     res_2 = find_index(abs(mb_eigvecs[dbl_res,:]), temp_sorted[-2])
     print 'Maybe resonance energy =', mb_eigvals[res_1], 'MeV'
     print 'Maybe resonance momentum =', sp.sqrt(2*problem.mass*(mb_eigvals[res_1]))
+    print 'Maybe resonance energy NR2 =', mb_eigvals[res_2], 'MeV'
+    print 'Maybe resonance momentum NR2 =', sp.sqrt(2*problem.mass*(mb_eigvals[res_2]))
     plt.figure(1)
     plt.clf()
     #plot_poles(mb_eigvals, problem.mass)
@@ -112,6 +115,15 @@ def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
     
     plt.figure(2)
     plt.clf()
+
+    import os
+
+    dataola=sp.array(sp.real(ks),sp.imag(ks))
+    script_dir = os.path.dirname(os.path.realpath(__file__)) + "/"
+    sp.savetxt(script_dir + "he6_momenta"+ str(res_1)+".data", dataola)
+
+
+    
 
     
         #Es[i] = max(abs(eigvals[E_1]), abs(eigvals[E_2]))
