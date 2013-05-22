@@ -8,6 +8,7 @@ from nhqm.QM_helpers import matrix_from_function, energies
 name = "HarmOsc"
 integration_order = 70
 integration_range = 20
+omega = 1
 
 def solution(basis_size, problem, Q):
     try: basis_size = len(basis_size[0])
