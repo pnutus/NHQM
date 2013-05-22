@@ -18,17 +18,17 @@ two_body = SDI
 # SDI trickery
 problem = He5 
 problem.V0 = -47.
-basis_size = 15
+basis_size = 24
 points_on_triangle = basis_size*2/3
-gaussian.V0 = -1140
+gaussian.V0 = -7140
 gaussian.r0 = 1
-SDI.V0 = 2800
+SDI.V0 = 970
 SDI.r0 = 2
-peak_x = 0.2
-peak_y = 0.1
+peak_x = 0.3
+peak_y = 0.4
 k_max = 2.5
 complex_contour = True 
-J = 0
+J = 2
 js = [1.5]
 
 if complex_contour:
@@ -63,63 +63,79 @@ for j in js:
 # for state in sp_states:
 #     print state.id, state.j, state.E
 
+he6_spstates=[]
+for sp_state in sp_states:
+    if sp.real(sp.sqrt(2*problem.mass*sp_state.E)) < 0.7:
+        he6_spstates.append(sp_state)
+he6_spstates = sp_states
+
 interaction = two_body.gen_interaction(sp_states, J, problem=problem)
-mb_H = coupled.hamiltonian(sp_states, interaction, J)
+mb_H = coupled.hamiltonian(he6_spstates, interaction, J)
 mb_eigvals, mb_eigvecs = energies(mb_H)
 
 print "Lowest energy:" , mb_eigvals[0]
 
 def plot_shit(eigvals, mb_eigvals, mb_eigvecs):
-    def res_index():
-        result = 0
-        global_min = 1
-        for i in range(len(mb_eigvecs)):
-            temp_max = max(abs(mb_eigvecs[:,i]))
-            if temp_max < global_min:
-                global_min = temp_max
-                result = i
-        return result
-    res = res_index()
     
+    def find_index(vector, value):
+        for x,y in enumerate(vector):
+            if y==value:
+                return x
+    
+    def res_index(eigvecs):
+        maxes = map(max, abs(eigvecs.T))
+        return maxes.index(min(maxes))
+    
+    sp_res = res_index(eigvecs)
+    mb_states = list(combinations_with_replacement(he6_spstates, 2))
+    Es = sp.zeros((len(mb_states),2), complex)
+    for i, (sp_state_1, sp_state_2) in enumerate(mb_states):
+        Es[i,:] = (sp_state_1.E, sp_state_2.E)
+        if sp_state_1.E == eigvals[sp_res] and sp_state_2.E == eigvals[sp_res]:
+            dbl_res = i
+    
+    temp_sorted = sp.sort(abs(mb_eigvecs[dbl_res,:]))
+    res_1 = find_index(abs(mb_eigvecs[dbl_res,:]), temp_sorted[-1])
+    res_2 = find_index(abs(mb_eigvecs[dbl_res,:]), temp_sorted[-2])
+    print 'Maybe resonance energy =', mb_eigvals[res_1], 'MeV'
+    print 'Maybe resonance momentum =', sp.sqrt(2*problem.mass*(mb_eigvals[res_1]))
     plt.figure(1)
     plt.clf()
     #plot_poles(mb_eigvals, problem.mass)
     ks = sp.sqrt(2*problem.mass*mb_eigvals)
     plt.plot(sp.real(ks), sp.imag(ks), 'ko')
-    
+    plt.plot(sp.real(ks[res_1]), sp.imag(ks[res_1]), 'go', markersize=10)
+    plt.plot(sp.real(ks[res_2]), sp.imag(ks[res_2]), 'bo', markersize=10)
     k = sp.zeros((len(points), len(points)),complex)
     for i, E1 in enumerate(eigvals):
         for j, E2 in enumerate(eigvals):
             k[i,j]=sp.sqrt(2*problem.mass*(E1 + E2))
     plt.plot(sp.real(k),sp.imag(k),'or', markersize=4)
-    #plt.axis([0, 2.1 * 1.42 * peak_x, - 1.1 * 1.42 * peak_y, 0])
+    #plt.axis([0, 0.3, -0.02, 0])
     
     plt.figure(2)
     plt.clf()
-    mb_E = list(combinations_with_replacement(Q.E, 2))
-    Es = sp.zeros(len(mb_E), complex)
-    Es_2 = sp.zeros((len(mb_E),2), complex)
-    for i, (E_1, E_2) in enumerate(mb_E):
-        Es[i] = eigvals[E_1]+eigvals[E_2]
-        Es_2[i,:] = (eigvals[E_1], eigvals[E_2])
+
+    
         #Es[i] = max(abs(eigvals[E_1]), abs(eigvals[E_2]))
-    args = sp.argsort(mb_eigvecs[:,res])
-    plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,0])),'b')
-    plt.plot(abs(sp.sqrt(2*problem.mass*Es_2[args,1])),'g')
+    args = sp.argsort(mb_eigvecs[:,res_1])
+    plt.plot(abs(sp.sqrt(2*problem.mass*Es[args,0])),'b')
+    plt.plot(abs(sp.sqrt(2*problem.mass*Es[args,1])),'g')
     plt.figure(3)
     plt.clf()
-    plt.plot(sp.sqrt(abs(2*problem.mass*Es_2[:,0])),abs(mb_eigvecs[:,res]),'b*')
-    plt.plot(sp.sqrt(abs(2*problem.mass*Es_2[:,1])),abs(mb_eigvecs[:,res]),'g*')
+    plt.plot(sp.sqrt(abs(2*problem.mass*Es[:,0])),abs(mb_eigvecs[:,res_1]),'b*')
+    plt.plot(sp.sqrt(abs(2*problem.mass*Es[:,1])),abs(mb_eigvecs[:,res_1]),'g*')
     plt.figure(4)
     plt.clf()
-    plt.plot(abs(mb_eigvecs[:,res]))
-    print 'Maybe resonance energy =', mb_eigvals[res], 'MeV'
-    print 'Maybe resonance momentum =', sp.sqrt(2*problem.mass*(mb_eigvals[res]))
+    plt.plot(abs(mb_eigvecs[:,res_1]))
+    plt.figure(5)
+    plt.clf()
+    plt.plot(abs(mb_eigvecs[dbl_res,:]),'ko')
+    plt.plot(res_1, abs(mb_eigvecs[dbl_res,res_1]), 'go', markersize=8)
+    plt.plot(res_2, abs(mb_eigvecs[dbl_res,res_2]), 'bo', markersize=8)
 
-# plot_shit(eigvals, mb_eigvals, mb_eigvecs)
-# plt.show()
-
-
+plot_shit(eigvals, mb_eigvals, mb_eigvecs)
+plt.show()
 
 #finds bound state and resonance
 # problem = He5 

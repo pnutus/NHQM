@@ -15,26 +15,26 @@ def res_index():
     result = 0
     global_min = 1
     for i in range(order):
-        temp_max = max( abs(eigvecs[:,i]/(sp.sqrt(weights)*points))/norm(abs(eigvecs[:,i]/(sp.sqrt(weights)*points))) )
+        temp_max = max( abs(eigvecs[:,i]/sp.sqrt(weights))/norm(abs(eigvecs[:,i]/sp.sqrt(weights))) )
         if temp_max < global_min:
             global_min = temp_max
             result = i
     return result
 
 def prob_wf(index):
-    wf = mom.gen_wavefunction(eigvecs[:,index], contour, Q)
+    wf = mom.gen_wavefunction(eigvecs[:,index], Q, contour)
     return r_order / rmax * r**2 * absq(wf(r))/ norm(r*wf(r))**2
 
 def plot_mom_wf(index, c = '', lw = 1):
-    wf = abs(eigvecs[:,index]/(sp.sqrt(weights)*points))/norm(abs(eigvecs[:,index]/(sp.sqrt(weights)*points)))
-    plt.plot(abs(points), wf, c, linewidth = lw)
+    wf = abs(eigvecs[:,index]/(sp.sqrt(weights)))/norm(abs(eigvecs[:,index]/(sp.sqrt(weights))))
+    plt.plot(sp.real(points), wf ** 2, c, linewidth = lw)
 
 problem = He5 
 order = 15*3
 problem.V0 = -47.
-peak_x = 0.17
-peak_y = 0.3
-k_max = 12
+peak_x = 0.3
+peak_y = 0.4
+k_max = 2.5
 
 
 
@@ -44,7 +44,7 @@ contour = triangle_contour(peak_x, peak_y, k_max, order/3)
 points, weights = contour
 
 QNums = namedtuple('qnums', 'l j J M E m')
-Q = QNums(l=1, j=1.5, J=0, M=0, 
+Q = QNums(l=1, j=.5, J=0, M=0, 
           m=[-1.5, -0.5, 0.5, 1.5], 
           E=range(order))
 

@@ -30,8 +30,14 @@ Q32 = QNums(l=1, j=1.5, J=0, M=0,
     m=[-1.5, -0.5, 0.5, 1.5], 
     E=range(basis_size))    
 
-p12res_exp = 0.35 -0.2j
-p32res_exp = 0.17 -0.03j
+#energi
+Ep12res_exp = 4.9-0.5j
+Ep31res_exp = 0.89-0.3j
+#momentum
+#p12res_exp = 0.35 -0.2j
+#p32res_exp = 0.17 -0.03j
+p12res_exp = .435-.022
+p32res_exp = .1878-.031
 
 def find_closest(vec, val):
     #returns index, value
