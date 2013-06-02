@@ -31,8 +31,8 @@ def plot_mom_wf(index, c = '', lw = 1):
 
 problem = He5 
 order = 15*3
-problem.V0 = -47.
-problem.Vso = -7.5
+problem.V0 = -47.05
+problem.Vso = -7.04
 peak_x = 0.35
 peak_y = 0.4
 k_max = 2.5
