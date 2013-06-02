@@ -29,7 +29,7 @@ def hamiltonian(basis_size, problem, Q):
     global R_nls
     R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(basis_size)]
     def H_func(i, j):
-        return H_element(i, j, problem, omega, Q, R_nls)
+        return H_element(i, j, problem, problem.HO_omega, Q, R_nls)
     return matrix_from_function(H_func, basis_size, hermitian=True)
     
 def H_element(n, n_prim, problem, omega, Q, R_nls):
