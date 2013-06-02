@@ -18,7 +18,8 @@ ax.axis([-0.02, 0.7, -0.11, 0.01])
 
 problem = He5 
 order = 10*3
-problem.V0 = -47.05
+V0max = 70
+V0min = 40
 problem.Vso = -7.04
 QNums = namedtuple('qnums', 'l j J M E m')
 Q = QNums(l=1, j=1.5, J=0, M=0, 
@@ -27,12 +28,16 @@ Q = QNums(l=1, j=1.5, J=0, M=0,
 k_max = 2.5
 
 peak_x = 0.17
+peak_y = 0.07
+
+contour = triangle_contour(peak_x, peak_y, k_max, order/3)
+points, weights = contour   
 
 
 FPS = 24
 film_length = 6
 frames = film_length * FPS
-peak_ys = sp.linspace(0, 0.1, frames)
+V0s = sp.linspace(-V0max, -V0min, frames)
 
 def init():
     ks = ax.plot([],[])
@@ -41,9 +46,7 @@ def init():
 def animate(i):
     ax.cla()
     ax.axis([-0.02, 0.7, -0.11, 0.01])
-    peak_y = peak_ys[i]
-    contour = triangle_contour(peak_x, peak_y, k_max, order/3)
-    points, weights = contour   
+    problem.V0 = V0s[i]
     H = mom.hamiltonian(contour, problem, Q)
     eigvals, eigvecs = energies(H)
     k = sp.sqrt(2*problem.mass*eigvals)
@@ -52,6 +55,6 @@ def animate(i):
     return ks, mesh, 
 
 ani= anim.FuncAnimation(fig, animate, frames, init_func=init, interval=2, blit=False)
-ani.save('kontursvep_anim.mp4', fps=FPS)
+ani.save('polsvep_anim.mp4', fps=FPS)
 
 plt.show()
