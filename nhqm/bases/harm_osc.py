@@ -8,7 +8,9 @@ from nhqm.QM_helpers import matrix_from_function
 from nhqm.helpers import memoize
 
 class HarmOscBasis(Basis):
-    name = "HarmOscBasis"
+    
+    name = "Harmonic Oscillator Basis"
+    hermitian = True
     
     def __init__(self, 
                  basis_state_count, mass, omega,
@@ -18,6 +20,7 @@ class HarmOscBasis(Basis):
         self.omega = omega
         self.integration_order = int_order # Number of points in integration
         self.integration_range = int_range
+        
     
     def hamiltonian(self, problem, Q):
         """

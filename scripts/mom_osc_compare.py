@@ -1,10 +1,10 @@
 from __future__ import division
 from imports import *
-from nhqm.bases import mom_space as mom, harm_osc as osc
+from nhqm.bases.mom import mom_space as mom, harm_osc as osc
 from nhqm.problems import He5, H_atom
 from nhqm.calculations import QM as calc
 
-problems = [He5.problem, H_atom.problem]
+problems = [He5, H_atom]
 bases = [mom, osc]
 order = 30
 k_max = 5
@@ -12,9 +12,6 @@ step_size = k_max / order
 l = 0
 j = 0.5
 r = sp.linspace(0, 10, 200)
-
-def absq(x):
-    return x*sp.conjugate(x)
     
 plt.suptitle("Radial probability distribution "
           "with $l = {1}$, $j = {2}$ "

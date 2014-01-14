@@ -6,8 +6,8 @@ from nhqm.bases.basis import Basis
 from nhqm.QM_helpers import matrix_from_function, j_l
 from scipy.special.orthogonal import p_roots
 
-class MomSpaceBasis(Basis):
-    name = "MomSpace"
+class MomentumBasis(Basis):
+    name = "Momentum Basis"
     hermitian = False
     
     def __init__(self, contour, int_order=60, int_range=20):

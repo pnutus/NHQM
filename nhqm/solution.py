@@ -2,12 +2,12 @@ from nhqm.QM_helpers import eigensolve
 
 def solve(problem, quantum_numbers, basis):
     """
-    Given a spherically symmetric problem, quantum numbers and a basis,
+    Given a spherically symmetric problem, relevant quantum numbers and a basis,
     expands the problem in the basis and returns a list of stationary states, 
     in order of ascending binding energy (the real part of the energy).
     """
     H = basis.hamiltonian(problem, quantum_numbers)
-    energies, eigenvectors = eigensolve(H)
+    energies, eigenvectors = eigensolve(H, hermitian=basis.hermitian)
     
     
     def create_solution(energy, eigenvector):
