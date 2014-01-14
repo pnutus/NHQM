@@ -11,7 +11,7 @@ from nhqm.QM_helpers import absq
 # using by expanding in the harmonic oscillator and momentum bases.
 # We also throw in the analytical solutions for good measure.
 
-# Setup – try varying these parameters and guess what they do
+# Setup - try varying these parameters and guess what they do!
 
 problem = H_atom
 basis_state_count = 30
@@ -23,7 +23,7 @@ quantum_numbers = QuantumNumbers(l, j)
 # We generate basis objects to use later
 
 contour = gauss_contour([0, k_max], basis_state_count)
-mom = MomSpaceBasis(contour)
+mom = MomentumBasis(contour)
 osc = HarmOscBasis(basis_state_count, problem.mass, problem.HO_omega)
 bases = [osc, mom]
 
@@ -35,8 +35,8 @@ r = sp.linspace(0, 10, 100)
 # and plot the probability distribution.
 
 for basis in bases:
-    sp_states = solve(problem, quantum_numbers, basis)
-    ground_state = sp_states[0]
+    states = solve(problem, quantum_numbers, basis)
+    ground_state = states[0]
     
     print basis.name
     print "Ground state energy:", ground_state.energy, problem.units

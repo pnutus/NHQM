@@ -1,41 +1,50 @@
 from __future__ import division
 from imports import *
 from nhqm.plot_helpers import *
-from nhqm.bases import mom_space as mom
+from nhqm.bases.momentum import MomentumBasis, triangle_contour
 from nhqm.problems import He5
-from nhqm.QM_helpers import energies
-from helpers import progress
-from nhqm.bases.gen_contour import triangle_contour
+from nhqm.solution import solve
+from nhqm.quantum_numbers import QuantumNumbers
+
+# This example plots the resonance pole as the potential well
+# gets more and more shallow. The pole is first a bound state on
+# the imaginary axis, then gets less bound and finally moves into the 
+# fourth quadrant and becomes a resonance.
+
+# Setup - try experimenting with the numbers!
 
 problem = He5  
-order = 30
+quantum_numbers = QuantumNumbers(l=1, j=1.5)
+basis_state_count = 30
 peak_x = 0.17
 peak_y = 0.07
 k_max = 2.5
-steps = 5
+contour = triangle_contour(peak_x - 1j*peak_y, k_max, basis_state_count/3)
+momentum_basis = MomentumBasis(contour)
 
-Q = mom.QNums(l=1, j=1.5, k=range(order))
+# Parameters for the potential strength variation
 
-def res_index(eigvecs):
-    maxes = map(max, abs(eigvecs.T))
-    return maxes.index(min(maxes))
+startV0 = -55
+endV0 = -45
+steps = 20
+V0s = sp.linspace(startV0, endV0, steps)
+ks = sp.empty(steps, complex)
 
-contour = triangle_contour(peak_x, peak_y, k_max, order/3)
-V0s = sp.linspace(-53, -51, steps)
-poles = sp.empty(steps, complex)
+# Solve the problem and save the momentum (k) values for 
+# every resonance state
 
-for (i, V0) in enumerate(progress(V0s)):
+for (i, V0) in enumerate(V0s):
     problem.V0 = V0
-    H = mom.hamiltonian(contour, problem, Q)
-    eigvals, eigvecs = energies(H)
-    idx = res_index(eigvecs)
-    res_E = eigvals[idx]
-    pole = sp.sqrt(2*problem.mass*res_E)
-    if sp.real(pole) < 1e-4 and abs(sp.imag(pole)) > 0.02:
-        pole = 1j*abs(pole)
-    poles[i] = pole
+    states = solve(problem, quantum_numbers, momentum_basis)
+    resonance = find_resonance_state(states)
+    k = sp.sqrt(2*problem.mass*resonance.energy)
+    # Hack to fix rounding errors
+    if sp.real(k) < 1e-4 and abs(sp.imag(k)) > 0.02:
+        k = 1j*abs(k)
+    ks[i] = k
+
+# Plot the momentum poles together with the contour
 
 plot_contour(contour)
-# plot_poles(eigvals, problem.mass)
-plt.plot(sp.real(poles), sp.imag(poles), 'ro')
+plt.plot(sp.real(ks), sp.imag(ks), 'ro')
 plt.show()

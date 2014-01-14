@@ -87,7 +87,7 @@ def triangle_contour(peak, k_max, points_per_segment):
      peak
     
     """
-    vertices = [0, peak, 2 * sp.real(peak_x), k_max]
+    vertices = [0, peak, 2 * sp.real(peak), k_max]
     return gauss_contour(vertices, points_per_segment)
 
 #

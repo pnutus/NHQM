@@ -1,5 +1,3 @@
-from __future__ import division
-import scipy as sp
 import collections
 import functools
 

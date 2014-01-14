@@ -11,14 +11,15 @@ def solve(problem, quantum_numbers, basis):
     
     
     def create_solution(energy, eigenvector):
-        return Solution(energy, eigenvector, problem, quantum_numbers, basis)
+        return StationaryState(energy, eigenvector, problem, 
+                               quantum_numbers, basis)
     solutions = map(create_solution, energies, eigenvectors.T)
     return solutions
     
 
-class Solution:
+class StationaryState:
     """
-    Stationary state for a single-particle problem.  
+    Stationary (or quasi-stationary) state for a single-particle problem.  
     """
     def __init__(self, energy, eigenvector, problem, quantum_numbers, basis):
         self.energy          = energy
@@ -29,7 +30,7 @@ class Solution:
         
     def wavefunction(self, r):
         """
-        The radial wavefunction.
+        The radial wavefunction for plotting.
         """
         # The wavefunction is cached so that it only has to be generated once
         try:

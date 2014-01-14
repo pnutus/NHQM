@@ -64,7 +64,32 @@ def j_l(l, x):
     L = 1 if l == 0 else l
     _, j_l, _, _, _ = csphjy(L, x)
     return j_l[l]
+    
+def absq(x):
+    """
+    Computes the absolute value squared. Faster than norm(x)^2 since
+    it avoids the square root operation.
+    """
+    return sp.real(x)**2 + sp.imag(x)**2
 
+
+def L2_norm(f, a, b, weight = lambda x: 1):
+    """
+    Computes the L2 norm of a function f given limits a and b 
+    and a weight for the L2 space.
+    """
+    def integrand(x):
+        return absq(f(x)) * weight(x);
+    (N, _) = sp.integrate.quad(integrand, a, b)
+    return N
+
+def L2_normalize(f, a, b, weight = lambda x: 1):
+    """
+    Normalizes a function over an L2 space. See L2_norm. 
+    """
+    N = L2_norm(f, a, b, weight = weight)
+    return lambda x: f(x) / sp.sqrt(N)
+    
 # Limit on number of iterations for computing C-G coefficients
 CG_LIMIT = 50
 
@@ -101,53 +126,3 @@ def clebsch_gordan(j1, j2, m1, m2, J, M):
         if use:
             c3 += (-1)**k/prod
     return c1*c2*c3
-    
-def absq(x):
-    """
-    Computes the absolute value squared. Faster than norm(x)^2 since
-    it avoids the square root operation.
-    """
-    return sp.real(x)**2 + sp.imag(x)**2
-
-
-def L2_norm(f, a, b, weight = lambda x: 1):
-    """
-    Computes the L2 norm of a function f given limits a and b 
-    and a weight for the L2 space.
-    """
-    def integrand(x):
-        return absq(f(x)) * weight(x);
-    (N, _) = sp.integrate.quad(integrand, a, b)
-    return N
-
-def L2_normalize(f, a, b, weight = lambda x: 1):
-    """
-    Normalizes a function over an L2 space. See L2_norm. 
-    """
-    N = L2_norm(f, a, b, weight = weight)
-    return lambda x: f(x) / sp.sqrt(N)
-    
-#
-#   Tests
-#
-   
-import unittest
-   
-class SinTests(unittest.TestCase):
-    
-    def setUp(self):
-        self.a = 0
-        self.b = 5
-        self.f = lambda x: sp.sin(sp.pi / self.b * x)
-    
-    def testNorm(self):
-        N = norm(self.f, self.a, self.b)
-        self.assertEquals(N, (self.b - self.a) * .5 )
-    
-    def testNormalize(self):
-        g = normalize(self.f, self.a, self.b)
-        N = norm(g, self.a, self.b)
-        self.assertEquals(N, 1.0)
-        
-if __name__ == '__main__':
-    unittest.main()
