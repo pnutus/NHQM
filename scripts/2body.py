@@ -22,7 +22,8 @@ Q = QNums(l=0, j=.5, J=0, M=0,
 for basis in bases:
     print basis.name
     eigvals, eigvecs = basis.solution(contour, problem, Q)
-    wavef = basis.gen_wavefunction(eigvecs[:,0], Q, problem, contour)
+    wavef = basis.gen_wavefunction(eigvecs[:,0], Q, 
+                    contour=contour, problem=problem)
 
     print "Lowest energy:", eigvals[0]
     r = sp.linspace(0, 10, 100)
