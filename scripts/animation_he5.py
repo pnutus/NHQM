@@ -40,7 +40,7 @@ def init():
 
 def animate(i):
     ax.cla()
-    ax.axis([-0.02, 0.7, -0.11, 0.01])
+    ax.axis([-0.1, 0.7, -0.11, 0.01])
     peak_y = peak_ys[i]
     contour = triangle_contour(peak_x, peak_y, k_max, order/3)
     points, weights = contour   
@@ -49,9 +49,15 @@ def animate(i):
     k = sp.sqrt(2*problem.mass*eigvals)
     mesh, = ax.plot(sp.real(points), sp.imag(points), 'og')
     ks, = ax.plot(sp.real(k), sp.imag(k), 'ob')
+    ax.spines['left'].set_position('zero')
+    ax.spines['right'].set_color('none')
+    ax.spines['bottom'].set_position('zero')
+    ax.spines['top'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
     return ks, mesh, 
 
 ani= anim.FuncAnimation(fig, animate, frames, init_func=init, interval=2, blit=False)
-ani.save('kontursvep_anim.mp4', fps=FPS)
+ani.save('res(contour).mp4', fps=FPS, writer=anim.FFMpegFileWriter())
 
-plt.show()
+#plt.show()

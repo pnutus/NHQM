@@ -7,6 +7,12 @@ from nhqm.helpers import memoize
 
 def matrix_from_function(function, order, dtype=complex, 
                          hermitian=False, symmetric=False):
+    """
+    Given a function of two integer indexes, generates a square
+    matrix of a certain order using that function. If the matrix 
+    is known to be hermitian or symmetric, this can be entered to
+    almost halve the execution time.
+    """
     matrix = sp.empty((order, order), dtype)
     for i in xrange(order):
         limit = (i + 1) if hermitian or symmetric else order
@@ -19,15 +25,22 @@ def matrix_from_function(function, order, dtype=complex,
     return matrix
     
 def symmetric(matrix):
+    """
+    Returns true if the matrix is symmetric.
+    """
     return sp.allclose(matrix, matrix.T)
     
 def hermitian(matrix):
+    """
+    Returns true if the matrix is hermitian.
+    """
     return sp.allclose(matrix, sp.conj(matrix.T))
 
 def energies(H, hermitian=False):
     """
     Given a hamiltonian matrix, calculates energies and 
-    sorts them by their real part.
+    sorts them by their real part in ascending order.
+    
     """
     if hermitian:
         eigvals, eigvecs = linalg.eigh(H)
@@ -39,7 +52,12 @@ def energies(H, hermitian=False):
     return eigvals, eigvecs
 
 def j_l(l, x):
-    """Spherical bessel."""
+    """
+    The Spherical Bessel function j_l.
+    
+    Reference:
+    http://en.wikipedia.org/wiki/Bessel_function#Spherical_Bessel_functions:_jn.2C_yn
+    """
     L = 1 if l == 0 else l
     _, j_l, _, _, _ = csphjy(L, x)
     return j_l[l]
@@ -49,11 +67,13 @@ CG_LIMIT = 50
 
 @memoize
 def clebsch_gordan(j1, j2, m1, m2, J, M):
-    """Computes the Clebsch-Gordan coefficient
+    """
+    Computes the Clebsch-Gordan coefficient
     <j1 j2; m1 m2|j1 j2; J M>.
 
     For reference see
-    http://en.wikipedia.org/wiki/Table_of_Clebsch-Gordan_coefficients."""
+    http://en.wikipedia.org/wiki/Table_of_Clebsch-Gordan_coefficients.
+    """
     if M != m1 + m2 or not abs(j1 - j2) <= J <= j1 + j2:
         return 0
     c1 = sp.sqrt((2*J+1) * factorial(J+j1-j2) * factorial(J-j1+j2) * \
@@ -80,19 +100,36 @@ def clebsch_gordan(j1, j2, m1, m2, J, M):
     return c1*c2*c3
     
 def absq(x):
+    """
+    Computes the absolute value squared. Faster than norm(x)^2 since
+    it avoids the square root operation.
+    """
     return sp.real(x)**2 + sp.imag(x)**2
     
 def berggren_norm(x):
+    """
+    Computes the norm of a vector using the non-conjugated
+    scalar product. 
+    < x | y > = ∑ x_i y_i
+    < x | y > ≠ ∑ x_i y_i^*
+    """
     return sp.sqrt(sp.dot(x, x))
 
-def norm(f, start, stop, weight = lambda x: 1):
+def L2_norm(f, a, b, weight = lambda x: 1):
+    """
+    Computes the L2 norm of a function f given limits a and b 
+    and a weight for the L2 space.
+    """
     def integrand(x):
         return absq(f(x)) * weight(x);
-    (N, _) = sp.integrate.quad(integrand, start, stop)
+    (N, _) = sp.integrate.quad(integrand, a, b)
     return N
 
-def normalize(f, start, stop, weight = lambda x: 1):
-    N = norm(f, start, stop, weight = weight)
+def L2_normalize(f, a, b, weight = lambda x: 1):
+    """
+    Normalizes a function over an L2 space. See L2_norm. 
+    """
+    N = L2_norm(f, a, b, weight = weight)
     return lambda x: f(x) / sp.sqrt(N)
     
 #
@@ -117,28 +154,5 @@ class SinTests(unittest.TestCase):
         N = norm(g, self.a, self.b)
         self.assertEquals(N, 1.0)
         
-class ComplexTests(unittest.TestCase):
-    pass
-    
-class WeightTests(unittest.TestCase):
-    pass
-class RedTests(unittest.TestCase):
-    
-    def setUp(self):
-        self.a =0
-        
-        
-    def test32(self):
-        #(j1, j2, m1, m2, J, M)
-        j1 =5/2
-        j2=2
-        M=7/2
-        J=9/2
-        m1 = 5/2
-        m2= 1
-        cg = clebsch_gordan(j1, j2, m1, m2, J, M)
-        res = 2/3
-        self.assertEquals(res, cg )
-
 if __name__ == '__main__':
     unittest.main()

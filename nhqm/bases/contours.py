@@ -2,16 +2,15 @@ from __future__ import division
 import scipy as sp
 from scipy.special.orthogonal import p_roots
 
-def gauss_contour(vertices, points_per_seg):
+def gauss_contour(vertices, points_per_segment):
     """
-    Generates a contour along the line segments between
-    vertices using Gauss-Legendre quadrature.
+    For each line between vertices
     """
-    num_segments = len(vertices) - 1
+    segment_count = len(vertices) - 1
     points = weights = sp.empty(0, complex)
-    for i in range(num_segments):
-        try:    (x, w) = p_roots(points_per_seg[i])
-        except: (x, w) = p_roots(points_per_seg)
+    for i in range(segment_count):
+        try:    (x, w) = p_roots(points_per_segment[i])
+        except: (x, w) = p_roots(points_per_segment)
         a = vertices[i]
         b = vertices[i + 1]
         scaled_x = (x * (b - a) + (a + b))/2
@@ -20,13 +19,32 @@ def gauss_contour(vertices, points_per_seg):
         weights = sp.hstack((weights, scaled_w))
     return (points, weights)
         
-def triangle_contour(peak_x, peak_y, k_max, order):
-    return triangle_contour_explicit(peak_x, peak_y, k_max, 2*order, order)
+def triangle_contour(peak_x, peak_y, k_max, points_per_segment):
+    """
+    Generates a triangular contour with a peak at (peak_x, -peak_y)
+    ending at k_max, with a certain number of points per segment.
+    
+          _ _ _ _ k_max
+    \    /
+     \  /
+      \/
+     peak
+    
+    """
+    return triangle_contour_explicit(peak_x, peak_y, k_max, 
+                                    2*points_per_segment, points_per_segment)
 
-def triangle_contour_explicit(peak_x, peak_y, k_max, trig_order, tail_order):
+def triangle_contour_explicit(peak_x, peak_y, k_max, 
+                              triangle_point_count, tail_point_count):
+    """
+    Generates a triangular contour with 
+    """
     vertices = [0, peak_x - 1j*peak_y, 2*peak_x, k_max]
-    points_per_seg = [trig_order/2, trig_order/2, tail_order]
-    return gauss_contour(vertices, points_per_seg)
+    points_per_segment = [ triangle_point_count/2
+                         , triangle_point_count/2
+                         , tail_point_count
+                         ]
+    return gauss_contour(vertices, points_per_segment)
     
 # OLD CODE AHEAD!
     

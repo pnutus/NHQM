@@ -39,3 +39,4 @@ nosetests.xml
 
 # Test-code
 test/
+*.mp4

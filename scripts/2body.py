@@ -9,7 +9,7 @@ from collections import namedtuple
 problem = He5
 problem.V0 = -70.
 bases = [osc, mom,]
-basis_size = 50
+basis_size = 20
 k_max = 7
 
 contour = gauss_contour([0, k_max], basis_size)
@@ -18,13 +18,11 @@ QNums = namedtuple('qnums', 'l j J M E m')
 Q = QNums(l=0, j=.5, J=0, M=0, 
           m=[-1.5, -0.5, 0.5, 1.5], 
           E=range(basis_size))
+          
 for basis in bases:
     print basis.name
     eigvals, eigvecs = basis.solution(contour, problem, Q)
-    if basis == osc:
-        wavef = basis.gen_wavefunction(eigvecs[:,0])
-    else:
-        wavef = mom.gen_wavefunction(eigvecs[:,0], contour, Q)
+    wavef = basis.gen_wavefunction(eigvecs[:,0], Q, problem, contour)
 
     print "Lowest energy:", eigvals[0]
     r = sp.linspace(0, 10, 100)
