@@ -1,3 +1,4 @@
+# This Python file uses the following encoding: utf-8
 from __future__ import division
 import scipy as sp
 from scipy import linalg, integrate
@@ -11,7 +12,9 @@ def matrix_from_function(function, order, dtype=complex,
     Given a function of two integer indexes, generates a square
     matrix of a certain order using that function. If the matrix 
     is known to be hermitian or symmetric, this can be entered to
-    almost halve the execution time.
+    almost double the speed of the algorithm.
+    
+    This function would greatly benefit from being run in parallel.
     """
     matrix = sp.empty((order, order), dtype)
     for i in xrange(order):
@@ -36,20 +39,20 @@ def hermitian(matrix):
     """
     return sp.allclose(matrix, sp.conj(matrix.T))
 
-def energies(H, hermitian=False):
+def eigensolve(H, hermitian=False):
     """
     Given a hamiltonian matrix, calculates energies and 
-    sorts them by their real part in ascending order.
-    
+    eigenvectors (≈ wavefunctions) and sorts them by 
+    the real part of the energy in ascending order.
     """
     if hermitian:
-        eigvals, eigvecs = linalg.eigh(H)
+        energies, eigenvectors = linalg.eigh(H)
     else:
-        eigvals, eigvecs = linalg.eig(H)
-        indexes = eigvals.argsort()
-        eigvals = sp.real_if_close(eigvals[indexes])
-        eigvecs = eigvecs[:, indexes]
-    return eigvals, eigvecs
+        energies, eigenvectors = linalg.eig(H)
+        indexes = energies.argsort()
+        energies = sp.real_if_close(energies[indexes])
+        eigenvectors = eigenvectors[:, indexes]
+    return energies, eigenvectors
 
 def j_l(l, x):
     """
@@ -105,15 +108,7 @@ def absq(x):
     it avoids the square root operation.
     """
     return sp.real(x)**2 + sp.imag(x)**2
-    
-def berggren_norm(x):
-    """
-    Computes the norm of a vector using the non-conjugated
-    scalar product. 
-    < x | y > = ∑ x_i y_i
-    < x | y > ≠ ∑ x_i y_i^*
-    """
-    return sp.sqrt(sp.dot(x, x))
+
 
 def L2_norm(f, a, b, weight = lambda x: 1):
     """

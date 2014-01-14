@@ -1,10 +1,5 @@
 from __future__ import division
 import scipy as sp
-
-#
-#   Decorators
-#
-    
 import collections
 import functools
 
