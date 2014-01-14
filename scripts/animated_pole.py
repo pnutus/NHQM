@@ -33,15 +33,21 @@ ks = sp.empty(steps, complex)
 # Solve the problem and save the momentum (k) values for 
 # every resonance state
 
+def force_positive_imaginary_part(k):
+    """
+    Hack to fix rounding errors.
+    """
+    if sp.real(k) < 1e-4 and abs(sp.imag(k)) > 0.02:
+        return 1j*abs(k)
+    else:
+        return k
+
 for (i, V0) in enumerate(V0s):
     problem.V0 = V0
     states = solve(problem, quantum_numbers, momentum_basis)
     resonance = find_resonance_state(states)
     k = sp.sqrt(2*problem.mass*resonance.energy)
-    # Hack to fix rounding errors
-    if sp.real(k) < 1e-4 and abs(sp.imag(k)) > 0.02:
-        k = 1j*abs(k)
-    ks[i] = k
+    ks[i] = force_positive_imaginary_part(k)
 
 # Plot the momentum poles together with the contour
 
