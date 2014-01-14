@@ -10,11 +10,12 @@ from nhqm.QM_helpers import absq
 # This example calculates the ground state energy of the hydrogen atom
 # using by expanding in the harmonic oscillator and momentum bases.
 # We also throw in the analytical solutions for good measure.
+# The Momentum basis is the worst, as its eigenstates are free particles.
 
 # Setup - try varying these parameters and guess what they do!
 
 problem = H_atom
-basis_state_count = 30
+basis_state_count = 20
 k_max = 7
 l = 0
 j = 0.5
@@ -39,7 +40,7 @@ for basis in bases:
     ground_state = states[0]
     
     print basis.name
-    print "Ground state energy:", ground_state.energy, problem.units
+    print "Ground state energy:", ground_state.energy, problem.energy_units
     
     plt.plot(r, absq(ground_state.wavefunction(r) * r) , label=basis.name )
 

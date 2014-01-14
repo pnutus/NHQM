@@ -4,7 +4,7 @@ import scipy as sp
 name = "He5"
 mass = 0.019272
 eV_factor = 1e6
-units = "MeV"
+energy_units = "MeV"
 HO_omega = 20
 
 V0 = -47 # MeV

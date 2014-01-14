@@ -5,7 +5,7 @@ name = "H_atom"
 mass = 1
 HO_omega = 1
 eV_factor = 27.2113
-units = "Hartrees"
+energy_units = "Hartrees"
 
 @sp.vectorize
 def V(r, l, s):
