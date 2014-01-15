@@ -2,7 +2,7 @@ from __future__ import division
 from imports import *
 from nhqm.plot_helpers import *
 from nhqm.bases.momentum import MomentumBasis, triangle_contour
-from nhqm.problems import He5
+from nhqm.problems import Helium5
 from nhqm.solution import solve
 from nhqm.quantum_numbers import QuantumNumbers
 
@@ -13,7 +13,6 @@ from nhqm.quantum_numbers import QuantumNumbers
 
 # Setup - try experimenting with the numbers!
 
-problem = He5  
 quantum_numbers = QuantumNumbers(l=1, j=1.5)
 basis_state_count = 30
 peak_x = 0.17
@@ -31,7 +30,7 @@ V0s = sp.linspace(startV0, endV0, steps)
 ks = sp.empty(steps, complex)
 
 
-def force_positive_imaginary(k):
+def positive_if_imaginary(k):
     """
     Hack to fix rounding errors that make bound states appear
     on the negative imaginary axis.
@@ -45,11 +44,11 @@ def force_positive_imaginary(k):
 # every resonance state
 
 for (i, V0) in enumerate(V0s):
-    problem.V0 = V0
+    problem = Helium5(V0 = V0) 
     states = solve(problem, quantum_numbers, momentum_basis)
     resonance = find_resonance_state(states)
-    k = sp.sqrt(2 * problem.mass * energy)
-    ks[i] = force_positive_imaginary(k)
+    k = sp.sqrt(2 * problem.mass * resonance.energy)
+    ks[i] = positive_if_imaginary(k)
 
 # Plot the momentum poles together with the contour
 

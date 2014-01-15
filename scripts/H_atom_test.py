@@ -4,7 +4,7 @@ from nhqm.solution import *
 from nhqm.quantum_numbers import QuantumNumbers
 from nhqm.bases.momentum import MomentumBasis, gauss_contour
 from nhqm.bases.harm_osc import HarmOscBasis
-from nhqm.problems import He5, H_atom
+from nhqm.problems import Helium5, HydrogenAtom
 from nhqm.QM_helpers import absq
 
 # This example calculates the ground state energy of the hydrogen atom
@@ -14,7 +14,7 @@ from nhqm.QM_helpers import absq
 
 # Setup - try varying these parameters and guess what they do!
 
-problem = H_atom
+problem = HydrogenAtom
 basis_state_count = 20
 k_max = 7
 l = 0
