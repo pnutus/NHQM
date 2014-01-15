@@ -1,7 +1,7 @@
 from __future__ import division
 import scipy as sp
 import matplotlib.pyplot as plt
-from nhqm.QM_helpers import absq
+from nhqm.helpers.quantum import absq
 
 def plot_contour(contour):
     points, _ = contour

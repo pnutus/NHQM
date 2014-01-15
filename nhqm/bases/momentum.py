@@ -2,11 +2,11 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from nhqm.bases.basis import Basis
-from nhqm.QM_helpers import matrix_from_function, j_l
+from nhqm.helpers.matrix import matrix_from_function
+from nhqm.helpers.quantum import j_l
 from scipy.special.orthogonal import p_roots
 
-class MomentumBasis(Basis):
+class MomentumBasis:
     name = "Momentum Basis"
     hermitian = False
     
@@ -104,9 +104,3 @@ def berggren_norm(x):
     < x | y > ≠ ∑ x_i y_i^*
     """
     return sp.sqrt(sp.dot(x, x))
-
-def berggren_normalize(x):
-    """
-    Normalizes a vector using the berggren norm. See berggren_norm.
-    """
-    return x / berggren_norm(x)

@@ -1,10 +1,11 @@
 from __future__ import division
 from imports import *
-from nhqm.plot_helpers import *
+from nhqm.helpers.plotting import *
 from nhqm.bases.momentum import MomentumBasis, triangle_contour
 from nhqm.problems import Helium5
-from nhqm.solution import solve
+from nhqm.solving import solve
 from nhqm.quantum_numbers import QuantumNumbers
+from nhqm.helpers.timing import progress
 
 # This example plots the resonance pole as the potential well
 # gets more and more shallow. The pole is first a bound state on
@@ -43,7 +44,7 @@ def positive_if_imaginary(k):
 # Solve the problem and save the momentum (k) values for 
 # every resonance state
 
-for (i, V0) in enumerate(V0s):
+for (i, V0) in enumerate(progress(V0s)):
     problem = Helium5(V0 = V0) 
     states = solve(problem, quantum_numbers, momentum_basis)
     resonance = find_resonance_state(states)

@@ -3,11 +3,10 @@ import scipy as sp
 from scipy.integrate import fixed_quad
 from scipy.misc import factorial, factorial2
 from scipy.special import genlaguerre
-from nhqm.bases.basis import Basis
-from nhqm.QM_helpers import matrix_from_function
-from nhqm.helpers import memoize
+from nhqm.helpers.matrix import matrix_from_function
+from nhqm.helpers.decorators import memoize
 
-class HarmOscBasis(Basis):
+class HarmOscBasis:
     
     name = "Harmonic Oscillator Basis"
     hermitian = True

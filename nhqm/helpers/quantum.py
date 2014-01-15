@@ -25,6 +25,11 @@ def absq(x):
     """
     return sp.real(x)**2 + sp.imag(x)**2
 
+def normalize(x, norm=sp.norm):
+    """
+    Normalizes an array using supplied norm.
+    """
+    return x / sp.norm(x)
 
 def L2_norm(f, a, b, weight = lambda x: 1):
     """

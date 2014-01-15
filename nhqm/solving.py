@@ -1,4 +1,4 @@
-from nhqm.QM_helpers import eigensolve
+from nhqm.helpers.matrix import eigensolve
 
 def solve(problem, quantum_numbers, basis):
     """

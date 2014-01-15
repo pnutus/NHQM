@@ -1,11 +1,11 @@
 from __future__ import division
 from imports import *
-from nhqm.solution import *
+from nhqm.solving import solve
 from nhqm.quantum_numbers import QuantumNumbers
 from nhqm.bases.momentum import MomentumBasis, gauss_contour
 from nhqm.bases.harm_osc import HarmOscBasis
-from nhqm.problems import Helium5, HydrogenAtom
-from nhqm.QM_helpers import absq
+from nhqm.problems import HydrogenAtom
+from nhqm.helpers.quantum import absq
 
 # This example calculates the ground state energy of the hydrogen atom
 # using by expanding in the harmonic oscillator and momentum bases.
