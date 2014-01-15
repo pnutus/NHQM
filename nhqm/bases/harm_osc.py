@@ -33,7 +33,8 @@ class HarmOscBasis:
         Oscillator basis.
         """
         nu = self.mass * self.omega / 2
-        R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(self.basis_state_count)]
+        R_nls = [self.gen_R_nl(n, Q.l, nu) 
+                 for n in xrange(self.basis_state_count)]
         def H_func(i, j):
             return self.H_element(i, j, problem.potential, 
                                   problem.HO_omega, Q, R_nls)
@@ -68,24 +69,33 @@ class HarmOscBasis:
         """
         ns = range(len(eigvec))
         nu = self.mass * self.omega / 2
-        R_nls = [gen_R_nl(n, Q.l, nu) for n in ns]
+        R_nls = [self.gen_R_nl(n, Q.l, nu) for n in ns]
         def wavefunction(r):
             return sum( R_nls[n](r)*eigvec[n] for n in ns )
         return wavefunction
     
-    
-@memoize
-def gen_R_nl(n, l, nu):
-    """
-    Generates a radial eigenfunction for the Spherical
-    Harmonic Oscillator. Used to speed up calculations.
-    """
-    norm = sp.sqrt(
-                    sp.sqrt(2*nu**3/sp.pi)*
-                    2**(n + 2*l + 3)*factorial(n, exact=True)*
-                    nu**l/factorial2(2*n + 2*l + 1, exact=True)
-                  )
-    laguerre = genlaguerre(n, l + .5)
-    def R_nl(r):
-        return norm * r**l * sp.exp(-nu * r**2) * laguerre(2*nu*r**2)
-    return R_nl
+    @staticmethod
+    def normalize(vector):
+        """
+        The identity function, since we don't want to do any special 
+        normalization.
+        """
+        return vector
+        
+    @staticmethod
+    @memoize
+    def gen_R_nl(n, l, nu):
+        """
+        Generates a radial eigenfunction for the Spherical
+        Harmonic Oscillator. Used to speed up calculations.
+        """
+        norm = sp.sqrt(
+                        sp.sqrt(2*nu**3/sp.pi)*
+                        2**(n + 2*l + 3)*factorial(n, exact=True)*
+                        nu**l/factorial2(2*n + 2*l + 1, exact=True)
+                      )
+        laguerre = genlaguerre(n, l + .5)
+        def R_nl(r):
+            return norm * r**l * sp.exp(-nu * r**2) * laguerre(2*nu*r**2)
+        return R_nl
+

@@ -12,10 +12,7 @@ def solve(problem, quantum_numbers, basis):
     energies, eigenvectors = eigensolve(H, hermitian=basis.hermitian)
     
     # because the Berggren is weird, we need to normalize the eigenvectors
-    try:
-        eigenvectors = map(basis.normalize, eigenvectors.T)
-    except AttributeError:
-        pass # the basis has no special normalization method
+    eigenvectors = map(basis.normalize, eigenvectors.T)
     
     def create_solution(energy, eigenvector):
         return SingleParticleStationaryState(energy, eigenvector, problem, 

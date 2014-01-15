@@ -15,7 +15,7 @@ from nhqm.helpers.timing import progress
 # Setup - try experimenting with the numbers!
 
 quantum_numbers = QuantumNumbers(l=1, j=1.5)
-basis_state_count = 30
+basis_state_count = 20
 peak_x = 0.17
 peak_y = 0.07
 k_max = 2.5
@@ -24,10 +24,10 @@ momentum_basis = MomentumBasis(contour)
 
 # Parameters for the potential strength variation
 
-startV0 = -55
-endV0 = -45
+start_V0 = -55 #MeV
+end_V0   = -47 #Mev
 steps = 20
-V0s = sp.linspace(startV0, endV0, steps)
+V0s = sp.linspace(start_V0, end_V0, steps)
 ks = sp.empty(steps, complex)
 
 
@@ -55,4 +55,5 @@ for (i, V0) in enumerate(progress(V0s)):
 
 plot_contour(contour)
 plt.plot(sp.real(ks), sp.imag(ks), 'ro')
+plt.title("Movement of the resonance pole as the potential s")
 plt.show()

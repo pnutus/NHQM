@@ -57,9 +57,11 @@ plt.plot(r, absq(analytical_ground_state_wavefunction(r) * r),
 
 # A pretty title and legend and we're done!
 
-plt.title("Hydrogen atom ground state radial probability distribution \n"
+plt.title("Hydrogen atom ground state radial distribution \n"
           "with $l = {1}$, $j = {2}$ "
           "and a ${3} \\times\\,{3}$ matrix"
           .format("", l, j, basis_state_count))
+plt.xlabel("Radius in bohr radii")
+plt.ylabel("$|R(r)|^2 r^2$")
 plt.legend()
 plt.show()
