@@ -13,7 +13,7 @@ To use the library, choose a problem, a basis to expand the problem in and value
     from nhqm.bases.momentum import MomentumBasis, gauss_contour
     from nhqm.problems import Helium5
 
-Then you just:
+Then do something like this:
 
     problem = Helium5()
     quantum_numbers = QuantumNumbers(l=1, j=1.5)
@@ -21,11 +21,14 @@ Then you just:
     basis = MomentumBasis(contour)
     states = solve(problem, quantum_numbers, basis)
 
-The states obtained are solutions to the time-independent Schrödinger equation,
-i.e. stationary states. These can be used as a basis for a many body problem.
+The states obtained are solutions to the time-independent Schrödinger equation, i.e. stationary states. These can be used as a basis for a many body problem. The states contain information you can use:
+
+    ground_state = states[0]
+    print ground_state.energy
+    plot(ground_state.wavefunction) #pseudo-code
 
 ### Examples
-The `scripts` folder contains examples. Be sure to look at those. 
+The `scripts` folder contains examples. Be sure to run and look at those. 
 
 ##Problems
 

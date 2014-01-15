@@ -8,6 +8,10 @@ from nhqm.helpers.quantum import j_l, normalize
 
 
 class MomentumBasis:
+    """
+    Momentum basis class. Can construct a Hamiltonian matrix for a 
+    spherically symmetric problem.  
+    """
     name = "Momentum Basis"
     hermitian = False
     
@@ -17,6 +21,10 @@ class MomentumBasis:
         self.integration_range = int_range #fm
     
     def hamiltonian(self, problem, quantum_numbers):
+        """
+        Given a spherically symmetric problem and quantum numbers,
+        generates a Hamiltonian matrix in the momentum (k) basis.
+        """
         points, weights = self.contour
         def H_func(i, j):
             return self.H_element(
@@ -26,6 +34,9 @@ class MomentumBasis:
         return matrix_from_function(H_func, order=len(points), symmetric=True)
     
     def H_element(self, k, k_prim, weight, weight_prim, mass, V, Q):
+        """
+        Calculates the value of one element in the hamiltonian matrix.
+        """
         diagonal = k**2 / (2 * mass) * (k == k_prim)
         integral, _ = fixed_quad(integrand, 0, self.integration_range, 
                                     n = self.integration_order,
@@ -33,6 +44,10 @@ class MomentumBasis:
         return diagonal + 2*k*k_prim*sp.sqrt(weight*weight_prim) * integral / sp.pi
 
     def gen_wavefunction(self, eigvec, Q):
+        """
+        Given a solution eigenvector, generates a plottable radial
+        wavefunction psi(r). (The angular part is a spherical harmonic.)
+        """
         points, weights = self.contour
         @sp.vectorize
         def wavefunction(r):
@@ -44,6 +59,9 @@ class MomentumBasis:
     
     @staticmethod
     def normalize(vector):
+        """
+        Normalizes a vector using the Berggren norm. See berggren_norm().
+        """
         return normalize(vector, norm=berggren_norm)
 
 @sp.vectorize

@@ -1,4 +1,6 @@
-# This file imports the nhqm library relatively so the scripts can be easily used
+# This file does a relative import of the nhqm library to make the scripts 
+# simpler to run. However, we recommend that you add the nhqm folder to your
+# $PYTHONPATH environment variable.
 
 import scipy as sp
 import matplotlib.pyplot as plt

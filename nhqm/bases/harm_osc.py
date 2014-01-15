@@ -7,6 +7,11 @@ from nhqm.helpers.matrix import matrix_from_function
 from nhqm.helpers.decorators import memoize
 
 class HarmOscBasis:
+    """
+    Spherically symmetric harmonic oscillator basis class. (Wow, that's 
+    a mouthful...) Can construct a Hamiltonian matrix for a spherically 
+    symmetric problem.
+    """
     
     name = "Harmonic Oscillator Basis"
     hermitian = True
@@ -23,9 +28,9 @@ class HarmOscBasis:
     
     def hamiltonian(self, problem, Q):
         """
-        Given a basis size and a sph.symm. problem,
-        generates a Hamiltonian matrix in the Spherical
-        Harmonic Oscillator basis.
+        Given a spherically symmetric problem and quantum numbers,
+        generates a Hamiltonian matrix in the Spherical Harmonic 
+        Oscillator basis.
         """
         nu = self.mass * self.omega / 2
         R_nls = [gen_R_nl(n, Q.l, nu) for n in xrange(self.basis_state_count)]
@@ -58,8 +63,8 @@ class HarmOscBasis:
 
     def gen_wavefunction(self, eigvec, Q):
         """
-        Given a solution eigenvector, generates plottable
-        wavefunctions psi(r).
+        Given a solution eigenvector, generates a plottable radial
+        wavefunction psi(r). (The angular part is a spherical harmonic.)
         """
         ns = range(len(eigvec))
         nu = self.mass * self.omega / 2
