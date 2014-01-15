@@ -3,7 +3,7 @@ from imports import *
 from nhqm.helpers.plotting import *
 from nhqm.bases.momentum import MomentumBasis, triangle_contour
 from nhqm.problems import Helium5
-from nhqm.solving import solve
+from nhqm.solve import solve
 from nhqm.quantum_numbers import QuantumNumbers
 from nhqm.helpers.timing import progress
 
@@ -26,7 +26,7 @@ momentum_basis = MomentumBasis(contour)
 
 startV0 = -55
 endV0 = -45
-steps = 10
+steps = 20
 V0s = sp.linspace(startV0, endV0, steps)
 ks = sp.empty(steps, complex)
 
@@ -51,7 +51,7 @@ for (i, V0) in enumerate(progress(V0s)):
     k = sp.sqrt(2 * problem.mass * resonance.energy)
     ks[i] = positive_if_imaginary(k)
 
-# Plot the momentum poles together with the contour
+# Plot the resonance ks together with the contour
 
 plot_contour(contour)
 plt.plot(sp.real(ks), sp.imag(ks), 'ro')

@@ -1,6 +1,6 @@
 from __future__ import division
 from imports import *
-from nhqm.solving import solve
+from nhqm.solve import solve
 from nhqm.quantum_numbers import QuantumNumbers
 from nhqm.bases.momentum import MomentumBasis, gauss_contour
 from nhqm.bases.harm_osc import HarmOscBasis
