@@ -92,7 +92,8 @@ def gauss_contour(vertices, points_per_segment):
         weights = sp.hstack((weights, scaled_w))
     return (points, weights)
         
-def triangle_contour(peak, k_max, points_per_segment):
+def triangle_contour(peak_x, peak_y, k_max, 
+                     triangle_point_count, tail_point_count):
     """
     Generates a triangular contour with a specified peak 
     ending at k_max, with a certain number of points per segment.
@@ -104,7 +105,10 @@ def triangle_contour(peak, k_max, points_per_segment):
      peak
     
     """
-    vertices = [0, peak, 2 * sp.real(peak), k_max]
+    vertices = [0, peak_x + 1j*peak_y, 2 * peak_x, k_max]
+    points_per_segment = [sp.floor(triangle_point_count/2),
+                          sp.ceil(triangle_point_count/2),
+                          tail_point_count]
     return gauss_contour(vertices, points_per_segment)
 
 #

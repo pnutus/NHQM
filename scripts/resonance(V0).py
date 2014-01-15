@@ -16,10 +16,12 @@ from nhqm.helpers.timing import progress
 
 quantum_numbers = QuantumNumbers(l=1, j=1.5)
 basis_state_count = 20
+triangle_state_count = 16
 peak_x = 0.17
-peak_y = 0.07
+peak_y = -0.07
 k_max = 2.5
-contour = triangle_contour(peak_x - 1j*peak_y, k_max, basis_state_count/3)
+contour = triangle_contour(peak_x, peak_y, k_max, triangle_state_count, 
+                           basis_state_count - triangle_state_count)
 momentum_basis = MomentumBasis(contour)
 
 # Parameters for the potential strength variation
