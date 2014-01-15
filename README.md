@@ -3,7 +3,7 @@
 Library for solving spherically symmetric quantum-mechanical problems through
 basis expansion, with a focus on a complex-momentum basis.
 
-This code was part of a Bachelor thesis project. For more information, see the [thesis](http://publications.lib.chalmers.se/records/fulltext/179709/179709.pdf).
+This code was part of a Bachelor thesis project. For more information, see the [thesis](http://publications.lib.chalmers.se/records/fulltext/179709/179709.pdf). Some functionality has been removed during cleanup since then, so a legacy branch was created for historical purposes.
 
 ## Usage
 
