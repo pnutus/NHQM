@@ -2,9 +2,10 @@
 from __future__ import division
 import scipy as sp
 from scipy.integrate import fixed_quad
-from nhqm.helpers.matrix import matrix_from_function
-from nhqm.helpers.quantum import j_l
 from scipy.special.orthogonal import p_roots
+from nhqm.helpers.matrix import matrix_from_function
+from nhqm.helpers.quantum import j_l, normalize
+
 
 class MomentumBasis:
     name = "Momentum Basis"
@@ -30,12 +31,6 @@ class MomentumBasis:
                                     n = self.integration_order,
                                     args=(k, k_prim, V, Q.l, Q.j))
         return diagonal + 2*k*k_prim*sp.sqrt(weight*weight_prim) * integral / sp.pi
-    
-    def normalize_eigenvectors(self, eigvecs):
-        normed_eigvecs = sp.empty(sp.shape(eigvecs), complex)
-        for col in xrange(len(eigvecs)):
-             normed_eigvecs[:,col] = berggren_normalize(eigvecs[:, col])
-        return normed_eigvecs
 
     def gen_wavefunction(self, eigvec, Q):
         points, weights = self.contour
@@ -46,6 +41,10 @@ class MomentumBasis:
             # as it has no physical significance
             return sp.sqrt(2/sp.pi)*sp.sum(sp.sqrt(weights)*points*j_ls*eigvec)
         return wavefunction
+    
+    @staticmethod
+    def normalize(vector):
+        return normalize(vector, norm=berggren_norm)
 
 @sp.vectorize
 def integrand(r, k, k_prim, V, l, j):

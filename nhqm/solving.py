@@ -1,4 +1,5 @@
 from nhqm.helpers.matrix import eigensolve
+from nhqm.helpers.quantum import normalize
 
 def solve(problem, quantum_numbers, basis):
     """
@@ -9,11 +10,16 @@ def solve(problem, quantum_numbers, basis):
     H = basis.hamiltonian(problem, quantum_numbers)
     energies, eigenvectors = eigensolve(H, hermitian=basis.hermitian)
     
+    # because the Berggren is weird, we need to normalize the eigenvectors
+    try:
+        eigenvectors = map(basis.normalize, eigenvectors.T)
+    except AttributeError:
+        pass # the basis has no special normalization method
     
     def create_solution(energy, eigenvector):
         return StationaryState(energy, eigenvector, problem, 
                                quantum_numbers, basis)
-    solutions = map(create_solution, energies, eigenvectors.T)
+    solutions = map(create_solution, energies, eigenvectors)
     return solutions
     
 

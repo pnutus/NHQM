@@ -26,7 +26,7 @@ momentum_basis = MomentumBasis(contour)
 
 startV0 = -55
 endV0 = -45
-steps = 20
+steps = 10
 V0s = sp.linspace(startV0, endV0, steps)
 ks = sp.empty(steps, complex)
 

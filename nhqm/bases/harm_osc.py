@@ -67,9 +67,6 @@ class HarmOscBasis:
         def wavefunction(r):
             return sum( R_nls[n](r)*eigvec[n] for n in ns )
         return wavefunction
-
-    
-    
     
     
 @memoize
