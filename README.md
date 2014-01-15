@@ -3,7 +3,7 @@
 Library for solving spherically symmetric quantum-mechanical problems through
 basis expansion, with a focus on a complex-momentum basis.
 
-This code was part of a Bachelor thesis project. For more information, see the [thesis](http://publications.lib.chalmers.se/records/fulltext/179709/179709.pdf). Some functionality has been removed during cleanup since then, so a [legacy branch](https://github.com/pnutus/NHQM/tree/legacy) was created for historical purposes.
+This code was part of a Bachelor thesis project. For more information see the thesis [Quantum Resonances in a Complex-Momentum Basis](http://publications.lib.chalmers.se/records/fulltext/179709/179709.pdf). Some functionality has been removed during cleanup since then, so a [legacy branch](https://github.com/pnutus/NHQM/tree/legacy) was created for historical purposes.
 
 ## Usage
 
@@ -57,4 +57,4 @@ The Quantum Number object is very simple, only containing `l` and `j`.
 
 ## Helpers
 
-There are a number of helper functions included, ranging from very important to unimportant. Most important are the `matrix` and `quantum` modules.
+There are a number of helper functions included, ranging from very important to unimportant. The `matrix` and `quantum` modules contain the most important functions.
