@@ -56,6 +56,9 @@ for (i, V0) in enumerate(progress(V0s)):
 # Plot the resonance ks together with the contour
 
 plot_contour(contour)
-plt.plot(sp.real(ks), sp.imag(ks), 'ro')
-plt.title("Movement of the resonance pole as the potential s")
+plt.plot(sp.real(ks), sp.imag(ks), 'ro', label="Resonance")
+plt.legend()
+plt.title("Movement of the resonance pole as the potential depth decreases")
+plt.xlabel("Re $k$")
+plt.ylabel("Im $k$")
 plt.show()

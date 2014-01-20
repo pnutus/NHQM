@@ -8,7 +8,8 @@ def plot_contour(contour):
     Plots the points of a contour.
     """
     points, _ = contour
-    plt.plot(sp.real(points), sp.imag(points), 'o', color='gray')
+    return plt.plot(sp.real(points), sp.imag(points), 
+                    'o', color='gray', label="Contour")
 
 def plot_pole(state):
     """
@@ -17,14 +18,14 @@ def plot_pole(state):
     mass = state.problem.mass
     energy = state.energy
     k = sp.sqrt(2*mass*energy)
-    plt.plot(sp.real(k), sp.imag(k), 'o', color='red')
+    return plt.plot(sp.real(k), sp.imag(k), 'o', color='red')
     
 def plot_momentum_wavefunction(state):
     """
     Plots the momentum wavefunction (a vector) of a state.
     """
     points, _ = state.basis.contour
-    plt.plot(sp.real(points), absq(state.eigenvector))
+    return plt.plot(sp.real(points), absq(state.eigenvector))
     
 def find_resonance_state(states):
     """
