@@ -1,9 +1,15 @@
 # NHQM
 ## Non-Hermitian Quantum Mechanics
-Library for solving spherically symmetric quantum-mechanical problems through
+Python library for solving spherically symmetric quantum-mechanical problems through
 basis expansion, with a focus on a complex-momentum basis.
 
 This code was part of a Bachelor thesis project. For more information see the thesis [Quantum Resonances in a Complex-Momentum Basis](http://publications.lib.chalmers.se/records/fulltext/179709/179709.pdf). Some functionality has been removed during cleanup since then, so a [legacy branch](https://github.com/pnutus/NHQM/tree/legacy) was created for historical purposes.
+
+## Requirements
+
+- [Python](http://www.python.org/) 2.7.x (not Python 3)
+- [SciPy](http://scipy.org/) 0.11.0 or later (including NumPy 1.6.2 or later)
+- Optional: [matplotlib](http://matplotlib.org/) 1.1.1 or later (Great for sketches, but we recommend using something like [PGFPlots](http://pgfplots.sourceforge.net/) for quality graphics.)
 
 ## Usage
 
